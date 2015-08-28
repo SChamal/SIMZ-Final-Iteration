@@ -5,6 +5,11 @@
  */
 package simz2;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import static simz2.LoginFrame1.mhp;
+import static simz2.LoginFrame1.spi;
+
 /**
  *
  * @author DELL
@@ -17,6 +22,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     public SalespersonHomeScreen() {
         initComponents();
     }
+    DBOperations dbops = new DBOperations();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,14 +98,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel1.setText("SIMZ");
 
-        btnLogOut.setIcon(new javax.swing.ImageIcon("C:\\MINE\\2nd year- 1st semester\\Group Project\\1439648143_logout.png")); // NOI18N
         btnLogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOutActionPerformed(evt);
             }
         });
-
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\MINE\\2nd year- 1st semester\\Group Project\\998838_395612247222802_1083107196_n.jpg")); // NOI18N
 
         jButton1.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
         jButton1.setText("Edit My Profile");
@@ -165,14 +168,12 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel4.setText("SIMZ");
 
-        btnLogOut1.setIcon(new javax.swing.ImageIcon("C:\\MINE\\2nd year- 1st semester\\Group Project\\1439648143_logout.png")); // NOI18N
+        btnLogOut1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/1439648143_logout.png"))); // NOI18N
         btnLogOut1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOut1ActionPerformed(evt);
             }
         });
-
-        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\MINE\\2nd year- 1st semester\\Group Project\\998838_395612247222802_1083107196_n.jpg")); // NOI18N
 
         jButton2.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
         jButton2.setText("Edit My Profile");
@@ -230,7 +231,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             .addComponent(name3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnLogOut1)))))
+                            .addComponent(btnLogOut1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))))
         );
 
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -669,9 +670,24 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogOut1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.setVisible(false);
-        ManagerProfileFrame mpf =new ManagerProfileFrame();
-        mpf.setVisible(true);
+        //this.setVisible(false);
+        SalesPersonProfileFrame spf =new SalesPersonProfileFrame();
+        spf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        spf.name.setText(spi.name3.getText());
+        spf.name2.setText(spi.name3.getText());
+        
+        String s1=spf.name2.getText();
+        String rst= dbops.getPropic(s1);
+        String rst2= dbops.getName(spf.name2.getText());
+        String rst4=dbops.getNic(spf.name2.getText());
+        int rst3= dbops.getID(spf.name2.getText());
+        
+        ImageIcon image1 = new ImageIcon(rst);
+        spf.jLabel18.setIcon(image1);
+        spf.txtName.setText(rst2);
+        spf.empId.setText("PSB"+rst3);
+        spf.nicLabel.setText(rst4);
+        spf.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField2enter(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2enter
@@ -791,7 +807,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField1;

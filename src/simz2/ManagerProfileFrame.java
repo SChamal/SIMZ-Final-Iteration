@@ -5,22 +5,27 @@
  */
 package simz2;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import static simz2.LoginFrame1.mhp;
+
 /**
  *
  * @author Asus
  */
 public class ManagerProfileFrame extends javax.swing.JFrame {
+
     final JFileChooser fc = new JFileChooser();
     DBOperations dbOp = new DBOperations();
     boolean e1, e2, e3;
-    int i1,i2=0;
+    int st1 = 0, st2 = 0;
     //private Object name1;
     ManagerHomeScreen mhs = new ManagerHomeScreen();
+
     /**
      * Creates new form Profile
      */
@@ -44,7 +49,7 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        empId = new javax.swing.JLabel();
+        jLId = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -63,12 +68,14 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
         txtNewP = new javax.swing.JPasswordField();
         txtCrntP = new javax.swing.JPasswordField();
         btnChangeP = new javax.swing.JButton();
-        name2 = new javax.swing.JLabel();
+        uName = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        nicLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Profile - Manager");
 
-        jLabel1.setText("Name               :");
+        jLabel1.setText("Name                :");
 
         btnEdit1.setText("Edit");
         btnEdit1.addActionListener(new java.awt.event.ActionListener() {
@@ -77,15 +84,15 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Designation    :");
+        jLabel5.setText("Designation      :");
 
         jLabel6.setText("Manager");
 
-        jLabel7.setText("Employee ID   : ");
+        jLabel7.setText("Employee ID     :");
 
-        empId.setText("PSBamba 038");
+        jLId.setText("PSBamba 038");
 
-        jLabel9.setText("User Name     :  ");
+        jLabel9.setText("User Name        :");
 
         jLabel12.setText("Current Password");
 
@@ -154,8 +161,8 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnChangePic))
@@ -188,6 +195,8 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("NIC Number      :");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -198,22 +207,25 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel5))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(uName, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(empId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(nicLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
                                         .addGap(18, 18, 18)
-                                        .addComponent(btnEdit1))
-                                    .addComponent(name2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                                        .addComponent(btnEdit1)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,18 +271,22 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnEdit1))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(empId, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(name2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nicLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLId, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(uName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(17, 17, 17)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(btnChangeP)
@@ -321,167 +337,169 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
         boolean rsUn, rsPw;
         int a1 = 5, a2 = 5, b1 = 5, b2 = 5, c1 = 5, c2 = 5;
 
-        String s2 = empId.getText();
-        
-        String parts2 = s2.substring(3, s2.length());
-        int id = (int) Integer.parseInt(parts2);
-        if(i1==0 && i2==0){
-            JOptionPane.showMessageDialog(this, "No text field have been edited");
-            this.setVisible(e1);
+        if (st1 == 0 && st2 == 0) {
+            JOptionPane.showMessageDialog(this, "No changes have done to text fields");
+            this.setVisible(false);
             mhp.setVisible(true);
-        } else{
+        } else {
 
-        if (e1 == true) {
-            if(txtName.getText().isEmpty()){
-                JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
-                return;
-            }
-            String nme = txtName.getText();
-            try {
-                String[] parts = nme.split(" ");
-                String part1 = parts[0];
-                String part2 = parts[1];
+            String s2 = jLId.getText();
 
-                boolean rsName = dbOp.updateName(part1, part2, id); //result for updating the name
-                if (rsName == false) {
-                    JOptionPane.showMessageDialog(this, "Error occured while executing...");
-                    txtName.setText("");
-                    c1 = 0;
-                } else { //name inserted successfully
-                    txtName.setEditable(false);
-                    e1 = false;
+            String parts2 = s2.substring(3, s2.length());
+            int id = (int) Integer.parseInt(parts2);
+
+            if (e1 == true) {
+                if (txtName.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
+                    return;
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                JOptionPane.showMessageDialog(this, "Error occured! Please enter exactly 2 words...");
-                txtName.setText("");
-                c2 = 0;
-            }
-        }
-        }
+                String nme = txtName.getText();
+                try {
+                    String[] parts = nme.split(" ");
+                    String part1 = parts[0];
+                    String part2 = parts[1];
 
-        /*if (e2 == true) {
-            if(txtUserName.getText().isEmpty()){
-                JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
-                return;
-            }
-            String un = txtUserName.getText();
-            int rsUname = dbOp.checkUserName(un);
-            if (rsUname == 1) { //given user name is not in the db
-                rsUn = dbOp.updateUserName(un, id);
-                if (rsUn) { //new user name successfully updated 
-                    txtUserName.setEditable(false);
-                    this.name.setText(un);
-                    e2 = false;
-                } else {
-                    a1 = 0; //new user name didn't inserted to the db
-                    JOptionPane.showMessageDialog(this, "User name hasn't saved! Please enter again...");
-                    txtUserName.setText("");
-                }
-            } else if (rsUname == 0) { //given user name already exists in the db
-                a2 = 0;
-                JOptionPane.showMessageDialog(this, "User name already exists.. Enter another...");
-                txtUserName.setText("");
-            } else if (rsUname == 2) { //error occured while executing
-                a2 = 0;
-                JOptionPane.showMessageDialog(this, "Error occured while executing use name!!! Please enter again...");
-                txtUserName.setText("");
-            }
-        }*/
-
-        if (e3 == true) {
-            if (txtCrntP.getText().isEmpty() || txtNewP.getText().isEmpty() || txtCnfrmP.getText().isEmpty() || txtHint.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
-                return;
-            }
-            String ps = txtCrntP.getText();
-            int prslt = dbOp.checkPasswrd(ps, id);
-
-            if (prslt == 1) { //password matched with the given user
-                String np = txtNewP.getText();
-                String cp = txtCnfrmP.getText();
-                String hnt = txtHint.getText();
-
-                if (np.equals(cp)) { //new and confirm passwords matched
-                    rsPw = dbOp.updatePswrd(np, hnt, id);
-                    if (rsPw) { // new password updated successsfully 
-                        txtNewP.setText("");
-                        txtCrntP.setText("");
-                        txtCnfrmP.setText("");
-                        txtHint.setText("");
-                        txtNewP.setEditable(false);
-                        txtCrntP.setEditable(false);
-                        txtCnfrmP.setEditable(false);
-                        txtHint.setEditable(false);
-                        e3 = false;
-                    } else {
-                        b1 = 0; //new password didn't inserted to the db
-                        JOptionPane.showMessageDialog(this, "Password hasn't saved! Please enter again...");
-                        txtNewP.setText("");
-                        txtCrntP.setText("");
-                        txtCnfrmP.setText("");
-                        txtHint.setText("");
+                    boolean rsName = dbOp.updateName(part1, part2, id); //result for updating the name
+                    if (rsName == false) {
+                        JOptionPane.showMessageDialog(this, "Error occured while executing...");
+                        txtName.setText("");
+                        c1 = 0;
+                    } else { //name inserted successfully
+                        txtName.setEditable(false);
+                        e1 = false;
                     }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    JOptionPane.showMessageDialog(this, "Error occured! Please enter exactly 2 words...");
+                    txtName.setText("");
+                    c2 = 0;
                 }
-            } else if (prslt == 2 || prslt==0) { //provided password doesn't match
-                b2 = 0;
-                JOptionPane.showMessageDialog(this, "Incorrect current password!!!");
-                txtNewP.setText("");
-                txtCrntP.setText("");
-                txtCnfrmP.setText("");
-                txtHint.setText("");
-            } else if (prslt == 3) { //error occured while executing
-                b2 = 0;
-                JOptionPane.showMessageDialog(this, "Error occured while executing passwords!!! Please enter again...");
-                txtNewP.setText("");
-                txtCrntP.setText("");
-                txtCnfrmP.setText("");
-                txtHint.setText("");
             }
-        }
 
-        if (a1 == 5 && a2 == 5 && b1 == 5 && b2 == 5 && c1 == 5 && c2 == 5) {
-            JOptionPane.showMessageDialog(this, "Changes saved successfully...!");
+            /*if (e2 == true) {
+             if(txtUserName.getText().isEmpty()){
+             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
+             return;
+             }
+             String un = txtUserName.getText();
+             int rsUname = dbOp.checkUserName(un);
+             if (rsUname == 1) { //given user name is not in the db
+             rsUn = dbOp.updateUserName(un, id);
+             if (rsUn) { //new user name successfully updated 
+             txtUserName.setEditable(false);
+             this.name.setText(un);
+             e2 = false;
+             } else {
+             a1 = 0; //new user name didn't inserted to the db
+             JOptionPane.showMessageDialog(this, "User name hasn't saved! Please enter again...");
+             txtUserName.setText("");
+             }
+             } else if (rsUname == 0) { //given user name already exists in the db
+             a2 = 0;
+             JOptionPane.showMessageDialog(this, "User name already exists.. Enter another...");
+             txtUserName.setText("");
+             } else if (rsUname == 2) { //error occured while executing
+             a2 = 0;
+             JOptionPane.showMessageDialog(this, "Error occured while executing use name!!! Please enter again...");
+             txtUserName.setText("");
+             }
+             }*/
+            if (e3 == true) {
+                if (txtCrntP.getText().isEmpty() || txtNewP.getText().isEmpty() || txtCnfrmP.getText().isEmpty() || txtHint.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
+                    return;
+                }
+                String ps = txtCrntP.getText();
+                int prslt = dbOp.checkPasswrd(ps, id);
+
+                if (prslt == 1) { //password matched with the given user
+                    String np = txtNewP.getText();
+                    String cp = txtCnfrmP.getText();
+                    String hnt = txtHint.getText();
+
+                    if (np.equals(cp)) { //new and confirm passwords matched
+                        rsPw = dbOp.updatePswrd(np, hnt, id);
+                        if (rsPw) { // new password updated successsfully 
+                            txtNewP.setText("");
+                            txtCrntP.setText("");
+                            txtCnfrmP.setText("");
+                            txtHint.setText("");
+                            txtNewP.setEditable(false);
+                            txtCrntP.setEditable(false);
+                            txtCnfrmP.setEditable(false);
+                            txtHint.setEditable(false);
+                            e3 = false;
+                        } else {
+                            b1 = 0; //new password didn't inserted to the db
+                            JOptionPane.showMessageDialog(this, "Password hasn't saved! Please enter again...");
+                            txtNewP.setText("");
+                            txtCrntP.setText("");
+                            txtCnfrmP.setText("");
+                            txtHint.setText("");
+                        }
+                    }
+                } else if (prslt == 2 || prslt == 0) { //provided password doesn't match
+                    b2 = 0;
+                    JOptionPane.showMessageDialog(this, "Incorrect current password!!!");
+                    txtNewP.setText("");
+                    txtCrntP.setText("");
+                    txtCnfrmP.setText("");
+                    txtHint.setText("");
+                } else if (prslt == 3) { //error occured while executing
+                    b2 = 0;
+                    JOptionPane.showMessageDialog(this, "Error occured while executing passwords!!! Please enter again...");
+                    txtNewP.setText("");
+                    txtCrntP.setText("");
+                    txtCnfrmP.setText("");
+                    txtHint.setText("");
+                }
+            }
+
+            if (a1 == 5 && a2 == 5 && b1 == 5 && b2 == 5 && c1 == 5 && c2 == 5) {
+                JOptionPane.showMessageDialog(this, "Changes saved successfully...!");
+                this.setVisible(false);
+                mhp.setVisible(true);
+            }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnChangePicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePicActionPerformed
         //In response to a button click:
         String un = this.name.getText();
-        
+
         int returnVal = fc.showOpenDialog(fc);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String rslt = fc.getSelectedFile().getAbsolutePath();
             ImageIcon image = new ImageIcon(rslt);
-            this.jLabel18.setIcon(image);
-            
+            ImageIcon image1 =resizeImageIcon(image, 100, 100);
+            this.jLabel18.setIcon(image1);
+
             boolean result = dbOp.addProPic(rslt, un);
             if (result) {
-                    //say inserted successfully
-                    JOptionPane.showMessageDialog(this, "Profile picture successfully inserted...\nChanges will affect from next login...");
-                } else {
-                    //say insert is not successful
-                    JOptionPane.showMessageDialog(this, "Sorry! Error occured while inserting!\nPlease enter again.");
-                }
+                //say inserted successfully
+                JOptionPane.showMessageDialog(this, "Profile picture successfully inserted...\nChanges will affect from next login...");
+            } else {
+                //say insert is not successful
+                JOptionPane.showMessageDialog(this, "Sorry! Error occured while inserting!\nPlease enter again.");
+            }
         }
     }//GEN-LAST:event_btnChangePicActionPerformed
 
     private void btnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit1ActionPerformed
+        st1 = 1;
         e1 = true;
-        i2=1;
         txtName.setEditable(true);
     }//GEN-LAST:event_btnEdit1ActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        
         mhp.setVisible(true);
         this.setVisible(false);
-        
+
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnChangePActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePActionPerformed
-            // TODO add your handling code here:
-        e3 =true;
-        i1=1;
+        // TODO add your handling code here:
+        st2 = 1;
+        e3 = true;
         txtNewP.setEditable(true);
         txtCrntP.setEditable(true);
         txtCnfrmP.setEditable(true);
@@ -492,6 +510,15 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
 
+    public static ImageIcon resizeImageIcon( ImageIcon imageIcon , Integer width , Integer height ){
+    BufferedImage bufferedImage = new BufferedImage( width , height , BufferedImage.TRANSLUCENT );
+
+    Graphics2D graphics2D = bufferedImage.createGraphics();
+    graphics2D.drawImage( imageIcon.getImage() , 0 , 0 , width , height , null );
+    graphics2D.dispose();
+
+    return new ImageIcon( bufferedImage , imageIcon.getDescription() );
+}
     /**
      * @param args the command line arguments
      */
@@ -536,7 +563,7 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnChangePic;
     private javax.swing.JButton btnEdit1;
     private javax.swing.JButton btnSave;
-    public javax.swing.JLabel empId;
+    public javax.swing.JLabel jLId;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -544,6 +571,7 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     public javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -551,11 +579,12 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     public javax.swing.JLabel name;
-    public javax.swing.JLabel name2;
+    public javax.swing.JLabel nicLabel;
     private javax.swing.JPasswordField txtCnfrmP;
     private javax.swing.JPasswordField txtCrntP;
     private javax.swing.JTextField txtHint;
     public javax.swing.JTextField txtName;
     private javax.swing.JPasswordField txtNewP;
+    public javax.swing.JLabel uName;
     // End of variables declaration//GEN-END:variables
 }

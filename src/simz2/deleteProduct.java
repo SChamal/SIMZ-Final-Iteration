@@ -165,12 +165,22 @@ public class deleteProduct extends javax.swing.JFrame {
          
         int result = dbOps.removeProduct(ID,type);
         if(result==1){
-            JOptionPane.showMessageDialog(this, "Product Successfully removed");    
-        }else{
+            JOptionPane.showMessageDialog(this, "Product Successfully removed");  
+            clearFields();
+        }else if(result==2){
+            JOptionPane.showMessageDialog(this, "There is no such product");  
+            clearFields();
+        }
+        else{
             JOptionPane.showMessageDialog(this, "Error occured while removing the product!!!"); 
+            clearFields();
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
-
+     
+    void clearFields(){
+        txtProductID.setText("");
+        txtProductType.setText("");
+    }
     /**
      * @param args the command line arguments
      */
@@ -219,4 +229,6 @@ public class deleteProduct extends javax.swing.JFrame {
     private javax.swing.JTextField txtProductID;
     private javax.swing.JTextField txtProductType;
     // End of variables declaration//GEN-END:variables
+
+    
 }

@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
  *
  * @author CHAM PC
  */
-
 public class LoginFrame1 extends javax.swing.JFrame {
 
     /**
@@ -27,9 +26,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
     DBOperations dbOps = new DBOperations();
     int count = 1;
     public static ManagerHomeScreen mhp = new ManagerHomeScreen();
-    //public static ManagerProfileFrame mpf = new ManagerProfileFrame();
     public static SalespersonHomeScreen spi = new SalespersonHomeScreen();
-    //public static SalesPersonProfileFrame spf = new SalesPersonProfileFrame();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,34 +131,26 @@ public class LoginFrame1 extends javax.swing.JFrame {
 
         if (x == 11) {
             this.setVisible(false);
-            //SalespersonHomeScreen spi = new SalespersonHomeScreen();
             spi.setVisible(true);
-
-            spi.name.setText(s1);
+            spi.name3.setText(s1);
 
             String rst = dbOps.getPropic(s1);
 
             if (rst != null) {
                 ImageIcon image1 = new ImageIcon(rst);
-                //spi.jLabel12.setIcon(image1);
-                //SalesPersonProfileFrame spf = new SalesPersonProfileFrame();
                 //spf.jLabel15.setIcon(image1);
                 //spf.name.setText(s1);
             }
 
         } else if (x == 1) {
             this.setVisible(false);
-            //ManagerHomeScreen mhs = new ManagerHomeScreen();            
             mhp.setVisible(true);
             mhp.name1.setText(s1);
 
             String rst = dbOps.getPropic(s1);
-            //boolean output= dbOps.addToUsersTable();
 
             if (rst != null) {
                 ImageIcon image1 = new ImageIcon(rst);
-                //mhp.jLabel13.setIcon(image1);
-                //ManagerProfileFrame mpf = new ManagerProfileFrame();
                 //mpf.jLabel18.setIcon(image1);
                 //mpf.name.setText(s1);
             }
@@ -199,66 +188,57 @@ public class LoginFrame1 extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHintActionPerformed
 
     private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String s1 = getTxtUserName().getText();
-        String s2 = txtPassword.getText();
-        int x = dbOps.checkLogin(s1, s2);
+            String s2 = txtPassword.getText();
+            int x = dbOps.checkLogin(s1, s2);
 
-        if (x == 11) {
-            this.setVisible(false);
-            //SalespersonHomeScreen spi = new SalespersonHomeScreen();
-            spi.setVisible(true);
+            if (x == 11) {
+                this.setVisible(false);
+                spi.setVisible(true);
+                spi.name3.setText(s1);
 
-            spi.name.setText(s1);
+                String rst = dbOps.getPropic(s1);
 
-            String rst = dbOps.getPropic(s1);
-
-            if (rst != null) {
-                ImageIcon image1 = new ImageIcon(rst);
-                //spi.jLabel12.setIcon(image1);
-                //SalesPersonProfileFrame spf = new SalesPersonProfileFrame();
+                if (rst != null) {
+                    ImageIcon image1 = new ImageIcon(rst);
                 //spf.jLabel15.setIcon(image1);
-                //spf.name.setText(s1);
-            }
+                    //spf.name.setText(s1);
+                }
 
-        } else if (x == 1) {
-            this.setVisible(false);
-            //ManagerHomeScreen mhs = new ManagerHomeScreen();            
-            mhp.setVisible(true);
-            mhp.name1.setText(s1);
+            } else if (x == 1) {
+                this.setVisible(false);
+                mhp.setVisible(true);
+                mhp.name1.setText(s1);
 
-            String rst = dbOps.getPropic(s1);
-            //boolean output= dbOps.addToUsersTable();
+                String rst = dbOps.getPropic(s1);
 
-            if (rst != null) {
-                ImageIcon image1 = new ImageIcon(rst);
-                //mhp.jLabel13.setIcon(image1);
-                //ManagerProfileFrame mpf = new ManagerProfileFrame();
+                if (rst != null) {
+                    ImageIcon image1 = new ImageIcon(rst);
                 //mpf.jLabel18.setIcon(image1);
-                //mpf.name.setText(s1);
-            }
-        } else if (x == 2) {
-            if (count != 3) {
-                JOptionPane.showMessageDialog(this, "Incorrect password!!!");
-                count += 1;
+                    //mpf.name.setText(s1);
+                }
+            } else if (x == 2) {
+                if (count != 3) {
+                    JOptionPane.showMessageDialog(this, "Incorrect password!!!");
+                    count += 1;
+                    txtPassword.setText("");
+                    btnHint.setVisible(true);
+                } else if (count == 3) {
+                    JOptionPane.showMessageDialog(this, "ERROR!!! System will close!");
+                    this.dispose();
+                }
+            } else if (x == 0) {
+                JOptionPane.showMessageDialog(this, "Incorrect user Name!!!");
                 txtPassword.setText("");
-                btnHint.setVisible(true);
-            } else if (count == 3) {
-                JOptionPane.showMessageDialog(this, "ERROR!!! System will close!");
-                this.dispose();
-            }
-        } else if (x == 0) {
-            JOptionPane.showMessageDialog(this, "Incorrect user Name!!!");
-            txtPassword.setText("");
-            getTxtUserName().setText("");
+                getTxtUserName().setText("");
 
-        } else {
-            JOptionPane.showMessageDialog(this, "Error occured while checking the userName!!!");
-            return;
-        }
+            } else {
+                JOptionPane.showMessageDialog(this, "Error occured while checking the userName!!!");
+                return;
+            }
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
-
 
     /**
      * @param args the command line arguments

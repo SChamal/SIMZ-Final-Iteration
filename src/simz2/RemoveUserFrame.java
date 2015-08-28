@@ -5,7 +5,10 @@
  */
 package simz2;
 
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import net.proteanit.sql.DbUtils;
+import static simz2.LoginFrame1.mhp;
 
 /**
  *
@@ -120,7 +123,7 @@ public class RemoveUserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEmpIDActionPerformed
 
     private void btnRemoveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveUserActionPerformed
-        
+        /*
         if(txtEmpID.getText().isEmpty() || txtNIC.getText().isEmpty()){
             JOptionPane.showMessageDialog(this,"No text fields should be empty");
             return;
@@ -133,17 +136,19 @@ public class RemoveUserFrame extends javax.swing.JFrame {
         if (returnedVal==1){
             JOptionPane.showMessageDialog(this,"User Removed Successfully");
             this.setVisible(false);
-            ManagerHomeScreen mhs = new ManagerHomeScreen();
-            mhs.setVisible(true);
+            ResultSet rst = dbOps.viewUser();
+            mhp.tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+            //ManagerHomeScreen mhs = new ManagerHomeScreen();
+            mhp.setVisible(true);
         }
         else
-            JOptionPane.showMessageDialog(this,"Error occured while removing user");
+            JOptionPane.showMessageDialog(this,"Error occured while removing user");*/
     }//GEN-LAST:event_btnRemoveUserActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
-        ManagerHomeScreen mhc =new ManagerHomeScreen();
-        mhc.setVisible(true);
+        //ManagerHomeScreen mhc =new ManagerHomeScreen();
+        //mhc.setVisible(true);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     /**
