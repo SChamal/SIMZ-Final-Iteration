@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -21,6 +22,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
      */
     public LoginFrame1() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     DBOperations dbOps = new DBOperations();
@@ -302,4 +304,5 @@ public class LoginFrame1 extends javax.swing.JFrame {
     public void setTxtUserName(javax.swing.JTextField txtUserName) {
         this.txtUserName = txtUserName;
     }
+
 }

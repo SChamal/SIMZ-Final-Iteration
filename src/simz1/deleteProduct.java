@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +19,7 @@ public class deleteProduct extends javax.swing.JFrame {
      */
     public deleteProduct() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**

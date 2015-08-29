@@ -3,20 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
+import java.awt.EventQueue;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
-import static simz2.LoginFrame1.mhp;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *
@@ -24,15 +34,108 @@ import static simz2.LoginFrame1.mhp;
  */
 public class ManagerHomeScreen extends javax.swing.JFrame {
 
-    /**
-     * /**
-     * Creates new form ManagerHomeScreen
-     */
+    Vector<String> v = new Stack<String>();
+    JTextField tx;
+    private boolean hide_flag = false;
+
+    private void autoSuggest() {
+        jComboBoxSearch.removeAllItems();
+        try {
+            ResultSet rst = dbOps.getProducts();
+            rst.first();
+            if (jComboBoxSearch.getItemCount() == 0) {
+                do {
+                    jComboBoxSearch.addItem(rst.getString(1));
+                    v.addElement(rst.getString(1));
+                    jComboBoxSearch.addItemListener(new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent ie) {
+                            if (ie.getStateChange() == ItemEvent.SELECTED) {
+                                jComboBoxSearch.getSelectedIndex();
+
+                            }
+                        }
+                    });
+                } while (rst.next());
+            } else {
+                jComboBoxSearch.addItem("");
+            }
+        } catch (SQLException e) {
+        }
+        
+        //jComboBoxSearch.setEditable(true);
+        tx = (JTextField) jComboBoxSearch.getEditor().getEditorComponent();
+        tx.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String text = tx.getText();
+                        if (text.length() == 0) {
+                            jComboBoxSearch.hidePopup();
+                            setModel(new DefaultComboBoxModel(v), "");
+                        } else {
+                            DefaultComboBoxModel m = getSuggestedModel(v, text);
+                            if(m.getSize() == 0){
+                                jComboBoxSearch.hidePopup();
+                            }else{
+                                setModel(m,text);
+                                jComboBoxSearch.showPopup();
+                            }
+                        }
+                    }
+                });
+            }
+            
+            @Override
+            public void keyPressed(KeyEvent ke){
+                String txt = tx.getText();
+                int code = ke.getKeyCode();
+                if(code == KeyEvent.VK_ESCAPE){
+                    hide_flag = true;
+                }else if(code == KeyEvent.VK_ENTER){
+                    for(int i=0; i<v.size(); i++){
+                        String str = (String)v.elementAt(i);
+                        if(str.startsWith(txt)){
+                            tx.setText(str);
+                            return;
+                        }
+                    }
+                }
+            }
+            
+        });
+    }
+
+    private void setModel(DefaultComboBoxModel mdl, String str) {
+        jComboBoxSearch.setModel(mdl);
+        tx.setText(str);
+    }
+
+    private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
+        DefaultComboBoxModel m = new DefaultComboBoxModel();
+        for (String s : list) {
+            if (s.startsWith(txt)) {
+                m.addElement(s);
+            }
+        }
+        return m;
+    }
+
     public ManagerHomeScreen() {
         initComponents();
-        //loggedInAs();
+        this.autoSuggest();
+        jComboBoxSearch.setSelectedIndex(-1);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
+
         ResultSet rst = dbOps.viewUser();
         tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+
+        /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
+         "Jordina", "Jorge", "Sergi" });
+         AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
     }
     DBOperations dbOps = new DBOperations();
 
@@ -55,11 +158,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         btnAddProduct = new javax.swing.JButton();
         btnUpdateProduct = new javax.swing.JButton();
         btnDeleteProduct = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableProduct = new javax.swing.JTable();
         resetBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jComboBoxSearch = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -155,12 +258,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                enter(evt);
-            }
-        });
-
         tableProduct.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tableProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -221,6 +318,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Search");
 
+        jComboBoxSearch.setEditable(true);
+        jComboBoxSearch.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jComboBoxSearchKeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -228,15 +333,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(598, 598, 598)
                 .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdateProduct)
@@ -253,8 +358,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(btnUpdateProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeleteProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -684,12 +789,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel1.setText("SIMZ");
 
-        btnLogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/1439648143_logout.png"))); // NOI18N
+        btnLogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/1439648143_logout.png"))); // NOI18N
         btnLogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOutActionPerformed(evt);
             }
         });
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/logo1.jpg"))); // NOI18N
 
         jButton1.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
         jButton1.setText("Edit My Profile");
@@ -711,8 +818,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
@@ -735,22 +842,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(name)
-                        .addGap(8, 8, 8)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addContainerGap())
-                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(name1)
-                                .addComponent(jLabel2)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addComponent(name)
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(name1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -804,7 +909,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } else {
             int dialogButton = JOptionPane.YES_NO_OPTION;
             String uID = model.getValueAt(tblUsers.getSelectedRow(), 0).toString();
-            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete user having Employee ID of "+uID +"? ", "Warning", dialogButton);
+            int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete user having Employee ID of " + uID + "? ", "Warning", dialogButton);
             if (a == JOptionPane.YES_OPTION) {
 
                 int id = Integer.parseInt(uID);
@@ -846,10 +951,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         mpf.nicLabel.setText(tmpNic);
         mpf.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void enter(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_enter
-        // TODO add your handling code here:
-    }//GEN-LAST:event_enter
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         addProduct ad = new addProduct();
@@ -900,6 +1001,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         tableProduct.setModel(DbUtils.resultSetToTableModel(rst));
     }//GEN-LAST:event_resetBtnActionPerformed
 
+    private void jComboBoxSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBoxSearchKeyPressed
+
+    }//GEN-LAST:event_jComboBoxSearchKeyPressed
+
     /**
      * @return the name1
      */
@@ -922,15 +1027,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }
 
-     public static ImageIcon resizeImageIcon( ImageIcon imageIcon , Integer width , Integer height ){
-    BufferedImage bufferedImage = new BufferedImage( width , height , BufferedImage.TRANSLUCENT );
+    public static ImageIcon resizeImageIcon(ImageIcon imageIcon, Integer width, Integer height) {
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 
-    Graphics2D graphics2D = bufferedImage.createGraphics();
-    graphics2D.drawImage( imageIcon.getImage() , 0 , 0 , width , height , null );
-    graphics2D.dispose();
+        Graphics2D graphics2D = bufferedImage.createGraphics();
+        graphics2D.drawImage(imageIcon.getImage(), 0, 0, width, height, null);
+        graphics2D.dispose();
 
-    return new ImageIcon( bufferedImage , imageIcon.getDescription() );
-}
+        return new ImageIcon(bufferedImage, imageIcon.getDescription());
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -1000,6 +1106,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JCheckBox jCheckBox8;
     private javax.swing.JCheckBox jCheckBox9;
+    private javax.swing.JComboBox jComboBoxSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1026,7 +1133,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;

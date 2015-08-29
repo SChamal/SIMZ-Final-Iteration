@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import static simz2.LoginFrame1.spi;
+import static simz1.LoginFrame1.spi;
 
 /**
  *
@@ -28,6 +29,7 @@ public class SalesPersonProfileFrame extends javax.swing.JFrame {
      */
     public SalesPersonProfileFrame() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**

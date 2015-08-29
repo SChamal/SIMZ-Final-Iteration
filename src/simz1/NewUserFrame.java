@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
 
+import java.awt.Toolkit;
 import java.sql.ResultSet;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
-import static simz2.LoginFrame1.mhp;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *
@@ -30,6 +30,7 @@ public class NewUserFrame extends javax.swing.JFrame {
      */
     public NewUserFrame() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**

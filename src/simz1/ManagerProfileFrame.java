@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import static simz2.LoginFrame1.mhp;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *

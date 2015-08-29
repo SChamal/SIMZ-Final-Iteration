@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
 import java.sql.*;
 import java.sql.Connection;
@@ -529,7 +529,7 @@ public class DBOperations {
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             while (rs.next()) {
-                if ((rs.getString(1) == "Manager") && pswd.equals(rs.getString(2))) {
+                if (("Manager".equals(rs.getString(1))) && pswd.equals(rs.getString(2))) {
                     return true;//the provided password matches with the id
                 }
             }
@@ -601,7 +601,8 @@ public class DBOperations {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "INSERT INTO productdetails VALUES(?,?,?,?,?,?)";
             pst = (PreparedStatement) con.prepareStatement(query);
-
+            
+            pst.setInt(1, pd.getProductID());
             pst.setString(2, pd.getProductType());
             pst.setString(3, pd.getProductName());
             pst.setDouble(4, pd.getReceivingPrice());
@@ -659,6 +660,19 @@ public class DBOperations {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "SELECT productID,productType,productName,receivingPrice,sellingPrice,expiryDate FROM productdetails";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+    
+    ResultSet getProducts(){
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT productName FROM productdetails ORDER BY productName";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             return rs;

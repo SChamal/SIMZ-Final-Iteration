@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
 /**
  *
@@ -17,7 +17,13 @@ public class ProductDetails {
     private double sellingPrice;
     private String date;                            ///?????????? How can we store date??
 
-
+    public int getProductID() {
+        return productID;
+    }
+    
+    public void setProductID(int id) {
+        this.productID = id;
+    }
     /**
      * @return the productType
      */

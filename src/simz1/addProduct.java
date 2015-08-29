@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +19,7 @@ public class addProduct extends javax.swing.JFrame {
      */
     public addProduct() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**
@@ -175,7 +177,7 @@ public class addProduct extends javax.swing.JFrame {
         }else{
         ProductDetails pd = new ProductDetails();
         
-        
+        pd.setProductID(0);
         pd.setProductType(txtType.getText());
         pd.setProductName(txtName.getText());
         pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));

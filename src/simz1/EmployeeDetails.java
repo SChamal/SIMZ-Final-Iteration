@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package simz2;
+package simz1;
 
 /**
  *

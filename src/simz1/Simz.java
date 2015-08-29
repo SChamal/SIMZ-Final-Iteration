@@ -1,5 +1,4 @@
-package simz2;
-
+package simz1;
 
 public class Simz {
     
@@ -9,5 +8,6 @@ public class Simz {
         lf.setVisible(true);
         lf.btnHint.setVisible(false);
     }
+    
     
 }

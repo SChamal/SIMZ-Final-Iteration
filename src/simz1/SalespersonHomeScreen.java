@@ -3,24 +3,126 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simz2;
+package simz1;
 
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import static simz2.LoginFrame1.mhp;
-import static simz2.LoginFrame1.spi;
+import javax.swing.JTextField;
+import static simz1.LoginFrame1.spi;
 
 /**
  *
  * @author DELL
  */
 public class SalespersonHomeScreen extends javax.swing.JFrame {
+    
+    Vector<String> v = new Stack<String>();
+    JTextField tx;
+    private boolean hide_flag = false;
 
-    /**
-     * Creates new form SalespersonHomeScreen
-     */
+    private void autoSuggest() {
+        jComboSearch1.removeAllItems();
+        try {
+            ResultSet rst = dbops.getProducts();
+            rst.first();
+            if (jComboSearch1.getItemCount() == 0) {
+                do {
+                    jComboSearch1.addItem(rst.getString(1));
+                    v.addElement(rst.getString(1));
+                    jComboSearch1.addItemListener(new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent ie) {
+                            if (ie.getStateChange() == ItemEvent.SELECTED) {
+                                jComboSearch1.getSelectedIndex();
+
+                            }
+                        }
+                    });
+                } while (rst.next());
+            } else {
+                jComboSearch1.addItem("");
+            }
+        } catch (SQLException e) {
+        }
+        
+        //jComboBoxSearch.setEditable(true);
+        tx = (JTextField) jComboSearch1.getEditor().getEditorComponent();
+        tx.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String text = tx.getText();
+                        if (text.length() == 0) {
+                            jComboSearch1.hidePopup();
+                            setModel(new DefaultComboBoxModel(v), "");
+                        } else {
+                            DefaultComboBoxModel m = getSuggestedModel(v, text);
+                            if(m.getSize() == 0){
+                                jComboSearch1.hidePopup();
+                            }else{
+                                setModel(m,text);
+                                jComboSearch1.showPopup();
+                            }
+                        }
+                    }
+                });
+            }
+            
+            @Override
+            public void keyPressed(KeyEvent ke){
+                String txt = tx.getText();
+                int code = ke.getKeyCode();
+                if(code == KeyEvent.VK_ESCAPE){
+                    hide_flag = true;
+                }else if(code == KeyEvent.VK_ENTER){
+                    for(int i=0; i<v.size(); i++){
+                        String str = (String)v.elementAt(i);
+                        if(str.startsWith(txt)){
+                            tx.setText(str);
+                            return;
+                        }
+                    }
+                }
+            }
+            
+        });
+    }
+
+    private void setModel(DefaultComboBoxModel mdl, String str) {
+        jComboSearch1.setModel(mdl);
+        tx.setText(str);
+    }
+
+    private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
+        DefaultComboBoxModel m = new DefaultComboBoxModel();
+        for (String s : list) {
+            if (s.startsWith(txt)) {
+                m.addElement(s);
+            }
+        }
+        return m;
+    }
+    
     public SalespersonHomeScreen() {
         initComponents();
+        autoSuggest();
+        jComboSearch1.setSelectedIndex(-1);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
     DBOperations dbops = new DBOperations();
 
@@ -91,9 +193,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jCheckBox33 = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        jComboSearch1 = new javax.swing.JComboBox();
 
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel1.setText("SIMZ");
@@ -168,12 +270,14 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel4.setText("SIMZ");
 
-        btnLogOut1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/1439648143_logout.png"))); // NOI18N
+        btnLogOut1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/1439648143_logout.png"))); // NOI18N
         btnLogOut1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOut1ActionPerformed(evt);
             }
         });
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/logo1.jpg"))); // NOI18N
 
         jButton2.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
         jButton2.setText("Edit My Profile");
@@ -195,8 +299,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
@@ -553,12 +657,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Search");
 
-        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField2enter(evt);
-            }
-        });
-
         jTable3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -601,6 +699,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jTable3.setRowHeight(20);
         jScrollPane3.setViewportView(jTable3);
 
+        jComboSearch1.setEditable(true);
+        jComboSearch1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -610,8 +711,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE))
                 .addGap(81, 81, 81))
@@ -621,8 +722,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(111, Short.MAX_VALUE))
@@ -689,10 +790,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         spf.nicLabel.setText(rst4);
         spf.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jTextField2enter(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2enter
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2enter
 
     private void jCheckBox17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox17ActionPerformed
         // TODO add your handling code here:
@@ -788,6 +885,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JCheckBox jCheckBox8;
     private javax.swing.JCheckBox jCheckBox9;
+    private javax.swing.JComboBox jComboSearch1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -811,7 +909,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JToggleButton jToggleButton1;
