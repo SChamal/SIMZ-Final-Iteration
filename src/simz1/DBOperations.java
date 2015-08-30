@@ -656,10 +656,10 @@ public class DBOperations {
         return 2;
     }
     
-    ResultSet viewStock() {
+    ResultSet viewStock() { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT productID,productType,productName,receivingPrice,sellingPrice,expiryDate FROM productdetails";
+            String query = "SELECT productName,sellingPrice,expiryDate,receivingPrice FROM productdetails";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             return rs;

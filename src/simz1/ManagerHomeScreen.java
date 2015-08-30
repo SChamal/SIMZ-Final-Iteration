@@ -5,6 +5,8 @@
  */
 package simz1;
 
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Boolean;
+import java.awt.Checkbox;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -18,13 +20,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
 
@@ -62,7 +70,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         } catch (SQLException e) {
         }
-        
+
         //jComboBoxSearch.setEditable(true);
         tx = (JTextField) jComboBoxSearch.getEditor().getEditorComponent();
         tx.addKeyListener(new KeyAdapter() {
@@ -78,34 +86,34 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             setModel(new DefaultComboBoxModel(v), "");
                         } else {
                             DefaultComboBoxModel m = getSuggestedModel(v, text);
-                            if(m.getSize() == 0){
+                            if (m.getSize() == 0) {
                                 jComboBoxSearch.hidePopup();
-                            }else{
-                                setModel(m,text);
+                            } else {
+                                setModel(m, text);
                                 jComboBoxSearch.showPopup();
                             }
                         }
                     }
                 });
             }
-            
+
             @Override
-            public void keyPressed(KeyEvent ke){
+            public void keyPressed(KeyEvent ke) {
                 String txt = tx.getText();
                 int code = ke.getKeyCode();
-                if(code == KeyEvent.VK_ESCAPE){
+                if (code == KeyEvent.VK_ESCAPE) {
                     hide_flag = true;
-                }else if(code == KeyEvent.VK_ENTER){
-                    for(int i=0; i<v.size(); i++){
-                        String str = (String)v.elementAt(i);
-                        if(str.startsWith(txt)){
+                } else if (code == KeyEvent.VK_ENTER) {
+                    for (int i = 0; i < v.size(); i++) {
+                        String str = (String) v.elementAt(i);
+                        if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
                             return;
                         }
                     }
                 }
             }
-            
+
         });
     }
 
@@ -117,7 +125,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
         DefaultComboBoxModel m = new DefaultComboBoxModel();
         for (String s : list) {
-            if (s.startsWith(txt)) {
+            if (s.toLowerCase().startsWith(txt)) {
                 m.addElement(s);
             }
         }
@@ -163,6 +171,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         resetBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jComboBoxSearch = new javax.swing.JComboBox();
+        btnSetStock = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -261,7 +270,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         tableProduct.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tableProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
+                { new Boolean(false), null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -295,17 +304,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             new String [] {
                 "Product Code", "Name", "Price", "Expiry Date", "Quantity"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         tableProduct.setGridColor(new java.awt.Color(51, 51, 51));
         tableProduct.setRowHeight(20);
         jScrollPane2.setViewportView(tableProduct);
-        if (tableProduct.getColumnModel().getColumnCount() > 0) {
-            tableProduct.getColumnModel().getColumn(0).setHeaderValue("Product Code");
-            tableProduct.getColumnModel().getColumn(1).setHeaderValue("Name");
-            tableProduct.getColumnModel().getColumn(2).setHeaderValue("Price");
-            tableProduct.getColumnModel().getColumn(3).setHeaderValue("Expiry Date");
-            tableProduct.getColumnModel().getColumn(4).setHeaderValue("Quantity");
-        }
 
         resetBtn.setText("Reset");
         resetBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -326,28 +336,38 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        btnSetStock.setText("Create Today's Stock");
+        btnSetStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSetStockActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(598, 598, 598)
-                .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(225, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(598, 598, 598)
+                        .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdateProduct)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDeleteProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2))
+                        .addComponent(btnSetStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnUpdateProduct)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDeleteProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2))))
                 .addGap(81, 81, 81))
         );
         jPanel1Layout.setVerticalGroup(
@@ -363,7 +383,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSetStock))
                 .addContainerGap(81, Short.MAX_VALUE))
         );
 
@@ -557,7 +579,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     .addComponent(jCheckBox17)
                                     .addComponent(jCheckBox29)
                                     .addComponent(jCheckBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jCheckBox33)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -682,7 +704,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 963, Short.MAX_VALUE)
+            .addGap(0, 972, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -695,7 +717,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 963, Short.MAX_VALUE)
+            .addGap(0, 972, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -708,7 +730,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 963, Short.MAX_VALUE)
+            .addGap(0, 972, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -765,7 +787,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(usersLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRemoveUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -997,13 +1019,48 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox30ActionPerformed
 
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-        ResultSet rst = dbOps.viewStock();
-        tableProduct.setModel(DbUtils.resultSetToTableModel(rst));
+        try {
+            ResultSet rst = dbOps.viewStock();
+            MyTableModel model = new MyTableModel();
+
+            tableProduct.setModel(model);
+            while (rst.next()) {
+                model.addRow(new Object[]{false, rst.getString(1), rst.getString(2), rst.getString(3), rst.getString(4)});
+            }
+        } catch (SQLException e) {
+
+        }
     }//GEN-LAST:event_resetBtnActionPerformed
 
     private void jComboBoxSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBoxSearchKeyPressed
 
     }//GEN-LAST:event_jComboBoxSearchKeyPressed
+
+    private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
+        
+        DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
+        int count = tableProduct.getRowCount();
+        
+        int num = 0;
+        for (int i = 0; i < count; i++) {
+            if ((boolean) tableProduct.getModel().getValueAt(i, 0) == true) {
+                num++;
+            }
+        }
+        int[] rows = new int[num];
+        int index = 0;
+        for (int i = 0; i < count; i++) {
+            if ((boolean) tableProduct.getModel().getValueAt(i, 0) == true) {
+                rows[index] = i;
+                index++;
+            }
+        }
+        
+        for (int i = 0; i < rows.length; i++) {
+            model.removeRow(rows[i] - i);
+        }
+
+    }//GEN-LAST:event_btnSetStockActionPerformed
 
     /**
      * @return the name1
@@ -1078,6 +1135,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnNewUser;
     private javax.swing.JButton btnRemoveUser;
+    private javax.swing.JButton btnSetStock;
     private javax.swing.JButton btnUpdateProduct;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
