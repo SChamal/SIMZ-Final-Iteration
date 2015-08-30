@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/ProductDetails.java</file>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/ManagerHomeScreen.java</file>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/addProduct.java</file>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/DBOperations.java</file>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/updateProduct.java</file>
-            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz2/SalesPersonProfileFrame.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz1/ManagerHomeScreen.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz1/LoginFrame1.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz1/SalesPersonProfileFrame.java</file>
+            <file>file:/C:/Users/Asus/Documents/NetBeansProjects/new/simz/src/simz1/SalespersonHomeScreen.java</file>
         </group>
     </open-files>
 </project-private>
