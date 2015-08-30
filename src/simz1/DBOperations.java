@@ -611,7 +611,7 @@ public class DBOperations {
 
             pst.executeUpdate();
             return true;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println(e);
             return false;
         } finally {

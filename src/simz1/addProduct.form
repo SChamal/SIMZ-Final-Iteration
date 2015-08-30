@@ -42,11 +42,11 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="txtType" min="-2" pref="177" max="-2" attributes="0"/>
-                  <Component id="txtName" alignment="0" min="-2" pref="177" max="-2" attributes="0"/>
-                  <Component id="txtReceivingPrice" alignment="0" min="-2" pref="177" max="-2" attributes="0"/>
-                  <Component id="txtSellingPrice" alignment="0" min="-2" pref="177" max="-2" attributes="0"/>
-                  <Component id="txtExpiryDate" min="-2" pref="177" max="-2" attributes="0"/>
+                  <Component id="txtType" pref="177" max="32767" attributes="0"/>
+                  <Component id="txtName" alignment="0" pref="177" max="32767" attributes="0"/>
+                  <Component id="txtReceivingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
+                  <Component id="txtSellingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
+                  <Component id="jXDatePicker1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="35" max="32767" attributes="0"/>
           </Group>
@@ -75,12 +75,12 @@
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtSellingPrice" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtExpiryDate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jXDatePicker1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnAddProduct" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnCancel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -128,11 +128,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtSellingPriceActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtExpiryDate">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtExpiryDateActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="btnAddProduct">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add Product"/>
@@ -156,6 +151,8 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker1">
     </Component>
   </SubComponents>
 </Form>

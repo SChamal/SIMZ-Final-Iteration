@@ -5,6 +5,8 @@
  */
 package simz1;
 
+import java.util.Date;
+
 /**
  *
  * @author DELL
