@@ -5,7 +5,6 @@
  */
 package simz1;
 
-import java.awt.Toolkit;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
@@ -23,7 +22,6 @@ public class RemoveUserFrame extends javax.swing.JFrame {
      */
     public RemoveUserFrame() {
         initComponents();
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**

@@ -656,10 +656,10 @@ public class DBOperations {
         return 2;
     }
     
-    ResultSet viewStock() {
+    ResultSet viewStock() { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT productID,productType,productName,receivingPrice,sellingPrice,expiryDate FROM productdetails";
+            String query = "SELECT productName,sellingPrice,expiryDate,receivingPrice FROM productdetails";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             return rs;
@@ -682,12 +682,12 @@ public class DBOperations {
         return null;
     }
     
-    ResultSet viewStock2(String productName) {
+    ResultSet viewStock2(String productName ) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT productID,productType,productName,receivingPrice,sellingPrice,expiryDate FROM productdetails WHERE productName = ?";
+            String query = "SELECT productID,productType,productName,receivingPrice, sellingPrice,expiryDate FROM productdetails WHERE productName = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
-            pst.setString(1, productName);
+            pst.setString(1,productName);
             rs = pst.executeQuery();
             return rs;
         } catch (SQLException ex) {

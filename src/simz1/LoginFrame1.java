@@ -53,8 +53,6 @@ public class LoginFrame1 extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setFocusable(false);
-        setMaximumSize(new java.awt.Dimension(755, 610));
-        setPreferredSize(new java.awt.Dimension(755, 610));
         getContentPane().setLayout(null);
 
         jLabel1.setText("User Name");
@@ -111,16 +109,16 @@ public class LoginFrame1 extends javax.swing.JFrame {
         getContentPane().add(btnHint);
         btnHint.setBounds(460, 400, 50, 20);
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/logo1.jpg"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/logo1.jpg"))); // NOI18N
         getContentPane().add(jLabel7);
         jLabel7.setBounds(680, 510, 50, 50);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/user.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/user.png"))); // NOI18N
         jLabel4.setText("jLabel5");
         getContentPane().add(jLabel4);
         jLabel4.setBounds(320, 220, 100, 110);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/background1.jpg"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz2/background1.jpg"))); // NOI18N
         getContentPane().add(jLabel3);
         jLabel3.setBounds(0, 0, 740, 590);
 

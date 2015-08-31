@@ -6,7 +6,6 @@
 package simz1;
 
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -32,7 +31,6 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
      */
     public ManagerProfileFrame() {
         initComponents();
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
         name.setText(mhs.getName1().getText());
     }
 

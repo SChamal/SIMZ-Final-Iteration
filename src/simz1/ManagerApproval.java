@@ -5,7 +5,6 @@
  */
 package simz1;
 
-import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 /**
  *
@@ -19,7 +18,6 @@ public class ManagerApproval extends javax.swing.JFrame {
      */
     public ManagerApproval() {
         initComponents();
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
 
     /**
