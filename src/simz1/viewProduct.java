@@ -67,8 +67,7 @@ public class viewProduct extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(400, 350));
-        setPreferredSize(new java.awt.Dimension(400, 350));
+        setAlwaysOnTop(true);
 
         jLabel1.setText("Product ID                          :");
 
@@ -190,7 +189,7 @@ public class viewProduct extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

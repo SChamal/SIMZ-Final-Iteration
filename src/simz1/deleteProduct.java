@@ -152,8 +152,7 @@ public class deleteProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        ManagerHomeScreen mhs = new ManagerHomeScreen();
-        mhs.setVisible(true);
+
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 

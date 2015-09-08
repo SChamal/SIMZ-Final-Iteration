@@ -7,6 +7,8 @@ package simz1;
 
 import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Boolean;
 import java.awt.Checkbox;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -15,8 +17,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.math.MathContext;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -27,14 +31,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.Table.*;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
+import java.util.*;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+
 
 /**
  *
@@ -242,9 +252,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jMenu5.setText("jMenu5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1366, 768));
-        setMinimumSize(new java.awt.Dimension(1366, 768));
-        setPreferredSize(new java.awt.Dimension(1366, 768));
         setResizable(false);
 
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -859,14 +866,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(11, 11, 11)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -882,7 +893,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewUserActionPerformed
         NewUserFrame nu = new NewUserFrame();
         nu.setVisible(true);
-        nu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        nu.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
@@ -947,22 +958,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         mpf.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        addProduct ad = new addProduct();
-        ad.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnAddProductActionPerformed
-
-    private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
-        deleteProduct dp = new deleteProduct();
-        dp.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_btnDeleteProductActionPerformed
-
-    private void btnUpdateProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateProductActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnUpdateProductActionPerformed
-
     private void jCheckBox22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox22ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox22ActionPerformed
@@ -991,29 +986,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBox30ActionPerformed
 
-    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-        try {
-            ResultSet rst = dbOps.viewStock();
-            MyTableModel model = new MyTableModel();
-
-            tableProduct.setModel(model);
-            while (rst.next()) {
-                model.addRow(new Object[]{false, rst.getString(1), rst.getString(2), rst.getString(3), rst.getString(4)});
-            }
-        } catch (SQLException e) {
-
-        }
-    }//GEN-LAST:event_resetBtnActionPerformed
-
-    private void jComboBoxSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBoxSearchKeyPressed
-
-    }//GEN-LAST:event_jComboBoxSearchKeyPressed
-
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
-        
+
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
         int count = tableProduct.getRowCount();
-        
+
         int num = 0;
         for (int i = 0; i < count; i++) {
             if ((boolean) tableProduct.getModel().getValueAt(i, 0) == true) {
@@ -1028,16 +1005,57 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 index++;
             }
         }
-        
+
         for (int i = 0; i < rows.length; i++) {
             model.removeRow(rows[i] - i);
         }
-
     }//GEN-LAST:event_btnSetStockActionPerformed
+
+    private void jComboBoxSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBoxSearchKeyPressed
+
+    }//GEN-LAST:event_jComboBoxSearchKeyPressed
 
     private void jComboBoxSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxSearchActionPerformed
+
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        try {
+            int a = JOptionPane.showConfirmDialog(null,"Are you sure you want to reset? ","warning", JOptionPane.YES_NO_OPTION); 
+        if (a == JOptionPane.YES_OPTION) {ResultSet rst = dbOps.viewStock();
+            MyTableModel model = new MyTableModel();
+
+            tableProduct.setModel(model);
+            while (rst.next()) {
+                model.addRow(new Object[]{false, rst.getString(1), rst.getString(2), rst.getString(3), rst.getString(4)});
+            }
+        }
+        } catch (SQLException e) {
+
+        }
+        System.out.println("jdfkdf");
+        DefaultTableModel model = new DefaultTableModel(10, 4);
+        RowTable table = new RowTable(model);
+        table.setPreferredScrollableViewportSize(table.getPreferredSize());
+
+        table.setRowColor(1, Color.RED);
+    }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
+        deleteProduct dp = new deleteProduct();
+        dp.setVisible(true);
+        dp.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    }//GEN-LAST:event_btnDeleteProductActionPerformed
+
+    private void btnUpdateProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateProductActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateProductActionPerformed
+
+    private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
+        addProduct ad = new addProduct();
+        ad.setVisible(true);
+        ad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    }//GEN-LAST:event_btnAddProductActionPerformed
 
     /**
      * @return the name1
@@ -1070,6 +1088,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         return new ImageIcon(bufferedImage, imageIcon.getDescription());
     }
+    
 
     /**
      * @param args the command line arguments

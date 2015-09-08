@@ -98,9 +98,9 @@ public class addProduct extends javax.swing.JFrame {
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddProduct))
-                .addGap(48, 48, 48)
+                    .addComponent(btnAddProduct)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnClear)
@@ -152,8 +152,7 @@ public class addProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSellingPriceActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        ManagerHomeScreen mhs =new ManagerHomeScreen();
-        mhs.setVisible(true);
+
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 
@@ -173,8 +172,14 @@ public class addProduct extends javax.swing.JFrame {
         pd.setProductID(0);
         pd.setProductType(txtType.getText());
         pd.setProductName(txtName.getText());
+        try{
         pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));
         pd.setSellingPrice(Double.parseDouble(txtSellingPrice.getText()));
+        } catch(Exception e){
+            txtReceivingPrice.setText(null);
+            txtSellingPrice.setText(null);
+            
+        }
         SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         pd.setDate(javadate.format(jXDatePicker1.getDate()));
         
@@ -183,10 +188,11 @@ public class addProduct extends javax.swing.JFrame {
         if(result){
             JOptionPane.showMessageDialog(this, "Product successfully added");
             clearFields();
-        }else{
-            JOptionPane.showMessageDialog(this, "Error occured while adding the product!!! ");
+        }else {
+            JOptionPane.showMessageDialog(this, "Error occured while adding the product please check you inputs ");
             clearFields();
         }
+        
         }
         /*if(result==true){
             pd.setProductID(Integer.parseInt(txtProductID.getText()));

@@ -6,18 +6,26 @@
 
 package simz1;
 
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
  *
  * @author CHAM PC
  */
 public class MyTableModel extends DefaultTableModel {
-
     public MyTableModel() {
       super(new String[]{"Product Code", "Name", "Price", "Expiry Date", "Quantity"}, 0);
     }
+
+ 
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
@@ -43,5 +51,7 @@ public class MyTableModel extends DefaultTableModel {
         fireTableCellUpdated(row, column);
       }
     }
+    
+    
+}
 
-  }

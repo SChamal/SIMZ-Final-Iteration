@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import static simz1.LoginFrame1.spi;
+import static simz1.ManagerHomeScreen.resizeImageIcon;
 
 /**
  *
@@ -669,7 +670,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         int rst3= dbops.getID(spf.name2.getText());
         
         ImageIcon image1 = new ImageIcon(rst);
-        spf.jLabel18.setIcon(image1);
+        ImageIcon image2 = resizeImageIcon(image1, 100, 100);
+        spf.jLabel18.setIcon(image2);
         spf.txtName.setText(rst2);
         spf.empId.setText("PSB"+rst3);
         spf.nicLabel.setText(rst4);
