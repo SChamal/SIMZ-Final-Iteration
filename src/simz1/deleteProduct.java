@@ -6,6 +6,7 @@
 package simz1;
 
 import java.awt.Toolkit;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -152,8 +153,7 @@ public class deleteProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        ManagerHomeScreen mhs = new ManagerHomeScreen();
-        mhs.setVisible(true);
+
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 
@@ -162,27 +162,29 @@ public class deleteProduct extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this,"No text fields should be empty");
             return;
         }
-        int ID = Integer.parseInt(txtProductID.getText());
+        
+        int a = JOptionPane.showConfirmDialog(null,"Are you sure you want to delete this product? ","warning", JOptionPane.YES_NO_OPTION);
+        if(a ==JOptionPane.YES_OPTION){
+            int ID = Integer.parseInt(txtProductID.getText());
         String type = txtProductType.getText();
-         
+
         int result = dbOps.removeProduct(ID,type);
+        
         if(result==1){
             JOptionPane.showMessageDialog(this, "Product Successfully removed");  
-            clearFields();
+                
         }else if(result==2){
             JOptionPane.showMessageDialog(this, "There is no such product");  
-            clearFields();
         }
         else{
             JOptionPane.showMessageDialog(this, "Error occured while removing the product!!!"); 
-            clearFields();
+                
+            }
+            
         }
+        
     }//GEN-LAST:event_btnRemoveActionPerformed
-     
-    void clearFields(){
-        txtProductID.setText("");
-        txtProductType.setText("");
-    }
+    
     /**
      * @param args the command line arguments
      */
