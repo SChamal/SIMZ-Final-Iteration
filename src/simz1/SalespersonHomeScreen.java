@@ -28,38 +28,39 @@ import static simz1.ManagerHomeScreen.resizeImageIcon;
  * @author DELL
  */
 public class SalespersonHomeScreen extends javax.swing.JFrame {
+    DBOperations dbOps = new DBOperations();
     
     Vector<String> v = new Stack<String>();
     JTextField tx;
     private boolean hide_flag = false;
 
-    private void autoSuggest() {
-        jComboSearch1.removeAllItems();
+    public void autoSuggest() {
+        jComboBoxSearch.removeAllItems();
         try {
-            ResultSet rst = dbops.getProducts();
+            ResultSet rst = dbOps.getProducts();
             rst.first();
-            if (jComboSearch1.getItemCount() == 0) {
+            if (jComboBoxSearch.getItemCount() == 0) {
                 do {
-                    jComboSearch1.addItem(rst.getString(1));
+                    jComboBoxSearch.addItem(rst.getString(1));
                     v.addElement(rst.getString(1));
-                    jComboSearch1.addItemListener(new ItemListener() {
+                    jComboBoxSearch.addItemListener(new ItemListener() {
                         @Override
                         public void itemStateChanged(ItemEvent ie) {
                             if (ie.getStateChange() == ItemEvent.SELECTED) {
-                                jComboSearch1.getSelectedIndex();
+                                jComboBoxSearch.getSelectedIndex();
 
                             }
                         }
                     });
                 } while (rst.next());
             } else {
-                jComboSearch1.addItem("");
+                jComboBoxSearch.addItem("");
             }
         } catch (SQLException e) {
         }
-        
+
         //jComboBoxSearch.setEditable(true);
-        tx = (JTextField) jComboSearch1.getEditor().getEditorComponent();
+        tx = (JTextField) jComboBoxSearch.getEditor().getEditorComponent();
         tx.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -69,50 +70,52 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     public void run() {
                         String text = tx.getText();
                         if (text.length() == 0) {
-                            jComboSearch1.hidePopup();
+                            jComboBoxSearch.hidePopup();
                             setModel(new DefaultComboBoxModel(v), "");
                         } else {
                             DefaultComboBoxModel m = getSuggestedModel(v, text);
-                            if(m.getSize() == 0){
-                                jComboSearch1.hidePopup();
-                            }else{
-                                setModel(m,text);
-                                jComboSearch1.showPopup();
+                            if (m.getSize() == 0) {
+                                jComboBoxSearch.hidePopup();
+                            } else {
+                                setModel(m, text);
+                                jComboBoxSearch.showPopup();
                             }
                         }
                     }
                 });
             }
-            
+
             @Override
-            public void keyPressed(KeyEvent ke){
+            public void keyPressed(KeyEvent ke) {
                 String txt = tx.getText();
                 int code = ke.getKeyCode();
-                if(code == KeyEvent.VK_ESCAPE){
+                if (code == KeyEvent.VK_ESCAPE) {
                     hide_flag = true;
-                }else if(code == KeyEvent.VK_ENTER){
-                    for(int i=0; i<v.size(); i++){
-                        String str = (String)v.elementAt(i);
-                        if(str.startsWith(txt)){
+                } else if (code == KeyEvent.VK_ENTER) {
+                    for (int i = 0; i < v.size(); i++) {
+                        String str = (String) v.elementAt(i);
+                        if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
+                            viewProduct vw = new viewProduct(str);
+                            vw.setVisible(true);
+                            vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
                         }
                     }
                 }
             }
-            
+
         });
     }
-
     private void setModel(DefaultComboBoxModel mdl, String str) {
-        jComboSearch1.setModel(mdl);
+        jComboBoxSearch.setModel(mdl);
         tx.setText(str);
     }
 
     private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
         DefaultComboBoxModel m = new DefaultComboBoxModel();
         for (String s : list) {
-            if (s.startsWith(txt)) {
+            if (s.toLowerCase().startsWith(txt)) {
                 m.addElement(s);
             }
         }
@@ -121,8 +124,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     
     public SalespersonHomeScreen() {
         initComponents();
-        autoSuggest();
-        jComboSearch1.setSelectedIndex(-1);
+        this.autoSuggest();
+        jComboBoxSearch.setSelectedIndex(-1);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
     DBOperations dbops = new DBOperations();
@@ -130,7 +133,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * regenerated by the Form Editor. 
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -152,6 +155,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         name3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        lablePic = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -196,7 +200,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
-        jComboSearch1 = new javax.swing.JComboBox();
+        jComboBoxSearch = new javax.swing.JComboBox();
 
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel1.setText("SIMZ");
@@ -267,8 +271,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1366, 768));
-        setPreferredSize(new java.awt.Dimension(1366, 768));
 
         jLabel4.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
         jLabel4.setText("SIMZ");
@@ -296,6 +298,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 18)); // NOI18N
         jLabel6.setText("Logged in As: ");
 
+        lablePic.setMaximumSize(new java.awt.Dimension(60, 60));
+        lablePic.setMinimumSize(new java.awt.Dimension(60, 60));
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -309,28 +314,26 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGap(281, 281, 281)
                         .addComponent(name2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(144, 144, 144))
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(268, 268, 268)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(name3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLogOut1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(name3, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addComponent(lablePic, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLogOut1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+            .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(name2)
                         .addGap(8, 8, 8)
@@ -338,7 +341,14 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             .addComponent(name3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnLogOut1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(btnLogOut1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lablePic, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
 
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -585,8 +595,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jTable3.setRowHeight(20);
         jScrollPane3.setViewportView(jTable3);
 
-        jComboSearch1.setEditable(true);
-        jComboSearch1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxSearch.setEditable(true);
+        jComboBoxSearch.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -598,9 +608,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 840, Short.MAX_VALUE))
                 .addGap(81, 81, 81))
         );
         jPanel2Layout.setVerticalGroup(
@@ -609,7 +619,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(111, Short.MAX_VALUE))
@@ -653,7 +663,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private void btnLogOut1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOut1ActionPerformed
         this.setVisible(false);
         LoginFrame1 lf = new LoginFrame1();
+        lf.setSize(755, 610);
         lf.setVisible(true);
+        lf.btnHint.setVisible(false);
+        lf.btnHint.setVisible(false);
     }//GEN-LAST:event_btnLogOut1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -772,7 +785,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JCheckBox jCheckBox8;
     private javax.swing.JCheckBox jCheckBox9;
-    private javax.swing.JComboBox jComboSearch1;
+    private javax.swing.JComboBox jComboBoxSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -799,6 +812,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JToggleButton jToggleButton1;
+    public javax.swing.JLabel lablePic;
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     public javax.swing.JLabel name2;

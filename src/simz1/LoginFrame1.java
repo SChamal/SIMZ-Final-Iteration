@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import static simz1.ManagerHomeScreen.resizeImageIcon;
 
 /**
  *
@@ -204,8 +205,8 @@ public class LoginFrame1 extends javax.swing.JFrame {
 
                 if (rst != null) {
                     ImageIcon image1 = new ImageIcon(rst);
-                //spf.jLabel15.setIcon(image1);
-                    //spf.name.setText(s1);
+                    ImageIcon image2 = resizeImageIcon(image1, 60, 60);
+                    spi.lablePic.setIcon(image2);
                 }
 
             } else if (x == 1) {
@@ -217,7 +218,8 @@ public class LoginFrame1 extends javax.swing.JFrame {
 
                 if (rst != null) {
                     ImageIcon image1 = new ImageIcon(rst);
-                //mpf.jLabel18.setIcon(image1);
+                    ImageIcon image2 = resizeImageIcon(image1, 60, 60);
+                    mhp.lablePic.setIcon(image2);
                     //mpf.name.setText(s1);
                 }
             } else if (x == 2) {

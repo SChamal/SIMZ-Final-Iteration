@@ -6,26 +6,18 @@
 
 package simz1;
 
-import java.awt.Color;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
 
 /**
  *
  * @author CHAM PC
  */
 public class MyTableModel extends DefaultTableModel {
-    public MyTableModel() {
-      super(new String[]{"Product Code", "Name", "Price", "Expiry Date", "Quantity"}, 0);
-    }
 
- 
+    public MyTableModel() {
+      super(new String[]{" ", "Product Code", "Product Name", "Price", "Expiry Date", "Quantity", "Received Qty."}, 0);
+    }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
@@ -40,7 +32,7 @@ public class MyTableModel extends DefaultTableModel {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-      return column == 0;
+      return column == 0 || column == 4 || column ==5;
     }
 
     @Override
@@ -50,8 +42,17 @@ public class MyTableModel extends DefaultTableModel {
         rowData.set(0, (boolean)aValue);
         fireTableCellUpdated(row, column);
       }
+      if(column == 4){
+        Vector rowData = (Vector)getDataVector().get(row);
+        rowData.set(4, aValue);
+        fireTableCellUpdated(row, column);
+      }
+      if(column == 5){
+        Vector rowData = (Vector)getDataVector().get(row);
+        rowData.set(5, aValue);
+        fireTableCellUpdated(row, column);
+      }
     }
     
-    
-}
 
+  }

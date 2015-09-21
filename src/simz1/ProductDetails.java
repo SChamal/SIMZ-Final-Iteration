@@ -18,7 +18,9 @@ public class ProductDetails {
     private double receivingPrice;
     private double sellingPrice;
     private String date;                            ///?????????? How can we store date??
-
+    private int qtyLimit;
+    private String productIndicator;
+    
     public int getProductID() {
         return productID;
     }
@@ -94,6 +96,34 @@ public class ProductDetails {
      */
     public void setDate(String date) {
         this.date = date;
+    }
+
+    /**
+     * @return the qtyLimit
+     */
+    public int getQtyLimit() {
+        return qtyLimit;
+    }
+
+    /**
+     * @param qtyLimit the qtyLimit to set
+     */
+    public void setQtyLimit(int qtyLimit) {
+        this.qtyLimit = qtyLimit;
+    }
+
+    /**
+     * @return the productIndicator
+     */
+    public String getProductIndicator() {
+        return productIndicator;
+    }
+
+    /**
+     * @param productIndicator the productIndicator to set
+     */
+    public void setProductIndicator(String productIndicator) {
+        this.productIndicator = productIndicator;
     }
     
 }
