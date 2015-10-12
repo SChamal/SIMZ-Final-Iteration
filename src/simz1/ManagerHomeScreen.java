@@ -1008,11 +1008,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     dbOps.addTransaction(time, today);
                     int billNo = dbOps.getBillID(time, today);
 
+                    DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
+                    //from transactions(here we get the table model of the stock table)
+
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
+                        dbOps.updateTodayStockByTransactions(id, quantity);
+
+                        for (int j = 0; j < model.getRowCount(); j++) {
+                            if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
+                                int current = (int) model.getValueAt(j, 5);
+                                model.setValueAt(current - quantity, j, 5);
+                            }
+                        }
                     }
                     for (int i = 0; i < BillingTable.getRowCount(); i++) {
                         for (int j = 0; j < 4; j++) {
@@ -1112,11 +1123,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 dbOps.addTransaction(time, today);
                 int billNo = dbOps.getBillID(time, today);
 
+                DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
+                //from transactions(here we get the table model of the stock table)
+
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
+                    dbOps.updateTodayStockByTransactions(id, quantity);
+
+                    for (int j = 0; j < model.getRowCount(); j++) {
+                        if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
+                            int current = (int) model.getValueAt(j, 5);
+                            model.setValueAt(current - quantity, j, 5);
+                        }
+                    }
                 }
                 for (int i = 0; i < BillingTable.getRowCount(); i++) {
                     for (int j = 0; j < 4; j++) {
@@ -1170,7 +1192,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         if (tableProduct.isColumnSelected(6)) {
             for (int i = 0; i < tableProduct.getRowCount(); i++) {
-               //tableProduct.setValueAt("mika", i, 5);
+                //tableProduct.setValueAt("mika", i, 5);
             }
         }
     }//GEN-LAST:event_btnSaveChangesActionPerformed

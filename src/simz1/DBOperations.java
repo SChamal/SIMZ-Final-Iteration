@@ -12,8 +12,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 
 /**
  *
@@ -885,6 +883,46 @@ public class DBOperations {
             }
         }
 
+    }
+        
+    boolean updateTodayStockByTransactions(int id,int qty) { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT currentQuantity FROM today_stock WHERE productID=?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);
+            rs = pst.executeQuery();
+            while(rs.next()){
+                if(rs.isFirst()){
+                    String query1 = "UPDATE today_stock SET currentQuantity = ? WHERE productID = ?";
+                    pst = (PreparedStatement) con.prepareStatement(query1);
+                    int current = rs.getInt(1);
+                    pst.setInt(1, current-qty);
+                    pst.setInt(2, id);
+                    pst.executeUpdate();
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+            
+        } catch (SQLException ex) {
+          System.out.println(ex);
+          return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+        return false;
     }
         
     int getBillID(String time, String date) {
