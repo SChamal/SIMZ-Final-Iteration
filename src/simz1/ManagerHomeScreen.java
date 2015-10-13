@@ -153,10 +153,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.btnSaveChanges.setVisible(false);
         this.btnSetStock.setVisible(false);
         autoSuggest();
-        Search.setSelectedIndex(-1);
         as.autoSuggest(ItemSelecter);
-        Search.setSelectedIndex(-1);
         ItemSelecter.setSelectedIndex(-1);
+        Search.setSelectedIndex(-1);
+        Search.setSelectedIndex(-1);
+        
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
         ResultSet rst = dbOps.viewUser();
@@ -437,7 +438,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         });
 
         ItemSelecter.setEditable(true);
-        ItemSelecter.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ItemSelecter.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                ItemSelecterFocusLost(evt);
+            }
+        });
         ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ItemSelecterActionPerformed(evt);
@@ -760,6 +765,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRemoveUserActionPerformed
 
+    
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //this.setVisible(false);
         ManagerProfileFrame mpf = new ManagerProfileFrame();
@@ -783,6 +791,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
+        
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
@@ -881,7 +890,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
         this.btnSaveChanges.setVisible(true);
         this.btnSetStock.setVisible(false);
-        this.resetBtn.setVisible(false);
+        this.resetBtn.setVisible(false);as.autoSuggest(ItemSelecter);
+        ItemSelecter.setSelectedIndex(-1);
+        
 
     }//GEN-LAST:event_btnSetStockActionPerformed
 
@@ -984,7 +995,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_amountActionPerformed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_ItemSelecterActionPerformed
 
     private void txtCashKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCashKeyPressed
@@ -1196,6 +1207,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnSaveChangesActionPerformed
+
+    private void ItemSelecterFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusLost
+       
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ItemSelecterFocusLost
 
     /**
      * @return the name1
