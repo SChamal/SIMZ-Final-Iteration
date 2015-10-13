@@ -105,7 +105,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             tx.setText(str);
                             ViewProductForSP vw = new ViewProductForSP(str);
                             vw.setVisible(true);
-                            
+
                             vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
                         }
@@ -140,7 +140,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
     }
-    
+
     DBOperations dbops = new DBOperations();
 
     /**
@@ -652,13 +652,17 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     int billNo = dbOps.getBillID(time, today);
 
                     DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                    DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
-                        dbOps.updateTodayStockByTransactions(id, quantity);
+                        int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                        if (rslt == 11) {
+                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
                             if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
@@ -836,13 +840,17 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 int billNo = dbOps.getBillID(time, today);
 
                 DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
-                    dbOps.updateTodayStockByTransactions(id, quantity);
+                    int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                    if (rslt == 11) {
+                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                    }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
                         if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
