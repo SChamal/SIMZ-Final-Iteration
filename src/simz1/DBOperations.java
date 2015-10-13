@@ -826,6 +826,21 @@ public class DBOperations {
         return null;
     }
     
+    ResultSet getTodayProducts(){
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT p.productName from today_stock t ,productdetails p where (p.productID=t.productID) Order By productName";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            System.out.println(rs);
+            
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+    
     ResultSet viewStock2(String productName ) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);

@@ -20,6 +20,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import sun.util.calendar.CalendarUtils;
 
 class AutoSuggest {
     DBOperations dbOps = new DBOperations();
@@ -31,12 +32,13 @@ class AutoSuggest {
         
         Search.removeAllItems();
         try {
-            ResultSet rst = dbOps.getProducts();
+            ResultSet rst = dbOps.getTodayProducts();
             rst.first();
             if (Search.getItemCount() == 0) {
                 do {
                     Search.addItem(rst.getString(1));
                     v.addElement(rst.getString(1));
+                    //System.out.println(rst.getString(1));
                     Search.addItemListener(new ItemListener() {
                         @Override
                         public void itemStateChanged(ItemEvent ie) {
@@ -90,7 +92,9 @@ class AutoSuggest {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
+                            
                             return;
+                            
                         }
                     }
                 }
