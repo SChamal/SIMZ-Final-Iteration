@@ -5,8 +5,6 @@
  */
 package simz1;
 
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Boolean;
-import java.awt.Checkbox;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -15,32 +13,20 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
 
@@ -1449,7 +1435,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     private javax.swing.JButton resetBtn;
-    private javax.swing.JTable tableProduct;
+    public javax.swing.JTable tableProduct;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;
