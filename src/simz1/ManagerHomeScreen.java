@@ -30,7 +30,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
-
 //import java.util.Date;
 /**
  *
@@ -140,7 +139,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.btnSaveChanges.setVisible(false);
         this.btnSetStock.setVisible(false);
         autoSuggest();
-        
         Search.setSelectedIndex(-1);
         Search.setSelectedIndex(-1);
 
