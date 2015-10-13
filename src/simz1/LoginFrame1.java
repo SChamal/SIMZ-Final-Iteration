@@ -26,6 +26,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
      * Creates new form LoginFrame1
      */
     public LoginFrame1() {
+        System.out.println("545");
         initComponents();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }

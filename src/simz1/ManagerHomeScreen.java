@@ -43,6 +43,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
+
 //import java.util.Date;
 
 /**
@@ -153,8 +154,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.btnSaveChanges.setVisible(false);
         this.btnSetStock.setVisible(false);
         autoSuggest();
-        as.autoSuggest(ItemSelecter);
-        ItemSelecter.setSelectedIndex(-1);
         Search.setSelectedIndex(-1);
         Search.setSelectedIndex(-1);
         
@@ -1005,7 +1004,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
         this.btnSaveChanges.setVisible(true);
         this.btnSetStock.setVisible(false);
-        this.resetBtn.setVisible(false);as.autoSuggest(ItemSelecter);
+        this.resetBtn.setVisible(false);
+        as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
         
 
