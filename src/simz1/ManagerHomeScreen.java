@@ -1130,6 +1130,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
                         if (rslt == 11) {
+                            NewPopup nw = new NewPopup();
+                            nw.pop();
                             model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                         }
 
