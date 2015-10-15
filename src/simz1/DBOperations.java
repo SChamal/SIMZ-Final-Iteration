@@ -812,7 +812,21 @@ public class DBOperations {
         }
         return null;
     }
-
+    
+    ResultSet combineTwoTablesForSP(int id){
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+    
     ResultSet getProducts() {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);

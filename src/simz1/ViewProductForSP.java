@@ -31,7 +31,8 @@ public class ViewProductForSP extends javax.swing.JFrame {
                 txtName.setText(rs.getString(3));
                 txtSellingPrice.setText(rs.getString(5));
                 txtExpiryDate.setText(rs.getString(6));
-                //txtQty.setText(rs.getString(7));
+                
+                
             }
         } catch (SQLException ex) {
             System.out.println("ex");

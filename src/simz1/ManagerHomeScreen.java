@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
+import static simz1.LoginFrame1.spi;
 //import java.util.Date;
 /**
  *
@@ -991,6 +992,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
 
+        tableModelSalesperson tmSPmodel =new tableModelSalesperson();
+        spi.SalesPStock.setModel(tmSPmodel);
+        for (int k = 0; k < model.getRowCount(); k++) {
+                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+                ResultSet rs = dbOps.combineTwoTablesForSP(Id);
+            try {
+                while(rs.next()){
+                    if(rs.isFirst()){
+                        tmSPmodel.addRow(new Object[]{ Id, rs.getString(1), rs.getString(2), rs.getString(3),rs.getString(4)});
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
+            }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed

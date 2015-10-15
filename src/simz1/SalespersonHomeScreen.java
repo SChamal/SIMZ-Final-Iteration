@@ -103,10 +103,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
-                            ViewProductForSP vw = new ViewProductForSP(str);
-                            vw.setVisible(true);
+                            ViewProductForSP vpSP = new ViewProductForSP(str);
+                            vpSP.setVisible(true);
 
-                            vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                            vpSP.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
                         }
                     }
@@ -912,7 +912,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
-    private javax.swing.JTable SalesPStock;
+    public javax.swing.JTable SalesPStock;
     private javax.swing.JTextField amount;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
