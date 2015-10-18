@@ -656,11 +656,16 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                        String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                        
                         if (rslt == 11) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.b2.setVisible(false);
+                            nw2.main1("Quantity limit reached for "+prdctName);
                             model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                         }
 
@@ -844,11 +849,16 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                    String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                    
                     if (rslt == 11) {
+                        NotificationPopup nw2 = new NotificationPopup();
+                        nw2.b2.setVisible(false);
+                        nw2.main1("Quantity limit reached for "+prdctName);
                         model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                     }
 
@@ -913,7 +923,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
     private javax.swing.JTable SalesPStock;
-    private javax.swing.JTextField amount;
+    public javax.swing.JTextField amount;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnLogOut1;

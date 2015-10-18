@@ -31,6 +31,7 @@ import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
 //import java.util.Date;
+
 /**
  *
  * @author DELL
@@ -430,14 +431,19 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         });
 
         ItemSelecter.setEditable(true);
+        ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemSelecterActionPerformed(evt);
+            }
+        });
         ItemSelecter.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 ItemSelecterFocusLost(evt);
             }
         });
-        ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ItemSelecterActionPerformed(evt);
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
             }
         });
 
@@ -1125,13 +1131,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                        String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+
                         if (rslt == 11) {
-                            NewPopup nw = new NewPopup();
-                            nw.pop();
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
                             model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                         }
 
@@ -1246,11 +1254,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                    String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+
                     if (rslt == 11) {
+                        NotificationPopup nw2 = new NotificationPopup();
+                        nw2.main1("Quantity limit reached for " + prdctName);
                         model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                     }
 
@@ -1329,6 +1341,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         oc.setVisible(true);
     }//GEN-LAST:event_btnProcessOrderActionPerformed
 
+    private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
+       
+    }//GEN-LAST:event_ItemSelecterKeyPressed
+
     /**
      * @return the name1
      */
@@ -1400,7 +1416,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
     public javax.swing.JComboBox Search;
-    private javax.swing.JTextField amount;
+    public javax.swing.JTextField amount;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnCancel;

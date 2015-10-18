@@ -20,6 +20,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import static simz1.LoginFrame1.mhp;
+import static simz1.LoginFrame1.spi;
 import sun.util.calendar.CalendarUtils;
 
 class AutoSuggest {
@@ -92,7 +94,8 @@ class AutoSuggest {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
-                            
+                            mhp.amount.requestFocusInWindow();
+                            spi.amount.requestFocusInWindow();
                             return;
                             
                         }
