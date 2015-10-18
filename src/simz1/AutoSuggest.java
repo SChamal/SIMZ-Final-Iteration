@@ -21,13 +21,15 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import sun.util.calendar.CalendarUtils;
+import static simz1.LoginFrame1.mhp;
+import static simz1.LoginFrame1.spi;
 
 class AutoSuggest {
     DBOperations dbOps = new DBOperations();
     Vector<String> v = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx;
-
+    //ManagerHomeScreen mhp = new ManagerHomeScreen();
     public void autoSuggest(final JComboBox Search) {
         
         Search.removeAllItems();
@@ -44,7 +46,7 @@ class AutoSuggest {
                         public void itemStateChanged(ItemEvent ie) {
                             if (ie.getStateChange() == ItemEvent.SELECTED) {
                                 Search.getSelectedIndex();
-
+                                
                             }
                         }
                     });
@@ -92,9 +94,11 @@ class AutoSuggest {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
+                            spi.amount.requestFocusInWindow();
+                            mhp.amount.requestFocusInWindow();
                             
                             return;
-                            
+
                         }
                     }
                 }

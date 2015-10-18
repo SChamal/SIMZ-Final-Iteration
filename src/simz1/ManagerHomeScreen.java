@@ -60,7 +60,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         public void itemStateChanged(ItemEvent ie) {
                             if (ie.getStateChange() == ItemEvent.SELECTED) {
                                 Search.getSelectedIndex();
-
+                                
                             }
                         }
                     });
@@ -108,9 +108,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
-                            viewProduct vw = new viewProduct(str);
-                            vw.setVisible(true);
-                            vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                            
                             return;
                         }
                     }
@@ -142,12 +140,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         autoSuggest();
         Search.setSelectedIndex(-1);
         Search.setSelectedIndex(-1);
-        
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
         ResultSet rst = dbOps.viewUser();
         tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
-
+        
+        
         /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
          "Jordina", "Jorge", "Sergi" });
          AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
@@ -432,6 +430,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         ItemSelecter.setEditable(true);
         ItemSelecter.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ItemSelecterFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 ItemSelecterFocusLost(evt);
             }
@@ -441,7 +442,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 ItemSelecterActionPerformed(evt);
             }
         });
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
+            }
+        });
 
+        amount.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                amountFocusGained(evt);
+            }
+        });
         amount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 amountActionPerformed(evt);
@@ -993,7 +1004,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.resetBtn.setVisible(false);
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
-        
+        ItemSelecter.requestFocusInWindow();
 
     }//GEN-LAST:event_btnSetStockActionPerformed
 
@@ -1002,7 +1013,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchKeyPressed
 
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
-        // TODO add your handling code here:
+        Search.requestFocusInWindow();
     }//GEN-LAST:event_SearchActionPerformed
 
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
@@ -1092,7 +1103,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOKActionPerformed
 
     private void amountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_amountActionPerformed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
@@ -1206,7 +1217,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         }
 
                     }
+                    ItemSelecter.requestFocusInWindow();
                     ItemSelecter.setSelectedIndex(-1);
+                    //ItemSelecter.setEditable(true);
                     amount.setText(null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
@@ -1311,14 +1324,28 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
 
     private void ItemSelecterFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusLost
-       
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
         OrderConfirmation oc = new OrderConfirmation();
         oc.setVisible(true);
     }//GEN-LAST:event_btnProcessOrderActionPerformed
+
+    private void ItemSelecterFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusGained
+        
+    }//GEN-LAST:event_ItemSelecterFocusGained
+
+    private void amountFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_amountFocusGained
+        //ItemSelecter.requestFocus();
+    }//GEN-LAST:event_amountFocusGained
+
+    private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
+       int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_F2) {
+            txtCash.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_ItemSelecterKeyPressed
 
 
     /**
@@ -1390,9 +1417,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable BillingTable;
-    private javax.swing.JComboBox ItemSelecter;
+    public javax.swing.JComboBox ItemSelecter;
     public javax.swing.JComboBox Search;
-    private javax.swing.JTextField amount;
+    public javax.swing.JTextField amount;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnCancel;

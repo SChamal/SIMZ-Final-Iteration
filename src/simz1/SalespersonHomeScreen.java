@@ -392,6 +392,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 ItemSelecterActionPerformed(evt);
             }
         });
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
+            }
+        });
 
         amount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -684,7 +689,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCashKeyPressed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
-        // TODO add your handling code here:
+        ItemSelecter.requestFocusInWindow();
     }//GEN-LAST:event_ItemSelecterActionPerformed
 
     private void amountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountActionPerformed
@@ -745,6 +750,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         }
 
                     }
+                    ItemSelecter.requestFocusInWindow();
                     ItemSelecter.setSelectedIndex(-1);
                     amount.setText(null);
                 } catch (SQLException ex) {
@@ -866,6 +872,14 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBalanceActionPerformed
 
+    private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
+       int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_F2) {
+            txtCash.requestFocusInWindow();
+        }
+         
+    }//GEN-LAST:event_ItemSelecterKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -905,7 +919,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
     private javax.swing.JTable SalesPStock;
-    private javax.swing.JTextField amount;
+    public javax.swing.JTextField amount;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnLogOut1;

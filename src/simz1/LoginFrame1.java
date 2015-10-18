@@ -7,6 +7,7 @@ package simz1;
 
 import com.jtattoo.plaf.aluminium.AluminiumLookAndFeel;
 import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
+import java.awt.Cursor;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
@@ -26,7 +27,6 @@ public class LoginFrame1 extends javax.swing.JFrame {
      * Creates new form LoginFrame1
      */
     public LoginFrame1() {
-        System.out.println("545");
         initComponents();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
     }
@@ -59,7 +59,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setFocusable(false);
-        setPreferredSize(new java.awt.Dimension(737, 589));
+        setPreferredSize(new java.awt.Dimension(755, 610));
         getContentPane().setLayout(null);
 
         jLabel1.setText("User Name");
@@ -70,6 +70,12 @@ public class LoginFrame1 extends javax.swing.JFrame {
         user.setText("User");
         getContentPane().add(user);
         user.setBounds(300, 330, 130, 14);
+
+        txtUserName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUserNameKeyPressed(evt);
+            }
+        });
         getContentPane().add(txtUserName);
         txtUserName.setBounds(280, 360, 170, 20);
 
@@ -251,6 +257,13 @@ public class LoginFrame1 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
 
+    private void txtUserNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserNameKeyPressed
+        int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_ENTER) {
+            txtPassword.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_txtUserNameKeyPressed
+    
     /**
      * @param args the command line arguments
      */
