@@ -20,6 +20,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import static simz1.LoginFrame1.mhp;
+import static simz1.LoginFrame1.spi;
 import sun.util.calendar.CalendarUtils;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
@@ -87,6 +89,11 @@ class AutoSuggest {
             public void keyPressed(KeyEvent ke) {
                 String txt = tx.getText();
                 int code = ke.getKeyCode();
+                
+                if (code== KeyEvent.VK_F2) {
+                    spi.txtCash.requestFocusInWindow();
+                    
+                }
                 if (code == KeyEvent.VK_ESCAPE) {
                     hide_flag = true;
                 } else if (code == KeyEvent.VK_ENTER) {
@@ -94,9 +101,14 @@ class AutoSuggest {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
+
                             spi.amount.requestFocusInWindow();
                             mhp.amount.requestFocusInWindow();
                             
+
+                            mhp.amount.requestFocusInWindow();
+                            spi.amount.requestFocusInWindow();
+
                             return;
 
                         }

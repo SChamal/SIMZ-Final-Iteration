@@ -27,9 +27,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
-
+import static simz1.LoginFrame1.spi;
 //import java.util.Date;
 
 /**
@@ -140,6 +141,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         autoSuggest();
         Search.setSelectedIndex(-1);
         Search.setSelectedIndex(-1);
+
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
         ResultSet rst = dbOps.viewUser();
@@ -193,7 +195,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblOrder = new javax.swing.JTable();
         btnProcessOrder = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
@@ -429,6 +431,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         });
 
         ItemSelecter.setEditable(true);
+        ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemSelecterActionPerformed(evt);
+            }
+        });
         ItemSelecter.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 ItemSelecterFocusGained(evt);
@@ -437,9 +444,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 ItemSelecterFocusLost(evt);
             }
         });
-        ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ItemSelecterActionPerformed(evt);
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
             }
         });
         ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -574,7 +581,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Reports  ", jPanel4);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -609,7 +616,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tblOrder);
 
         btnProcessOrder.setText("Process Order");
         btnProcessOrder.addActionListener(new java.awt.event.ActionListener() {
@@ -876,9 +883,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRemoveUserActionPerformed
 
-    
-    
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //this.setVisible(false);
         ManagerProfileFrame mpf = new ManagerProfileFrame();
@@ -902,7 +907,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
-        
+
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
@@ -933,7 +938,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            int lmt = 0;
+            int date = 0;
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
             int crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
@@ -949,7 +954,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 } catch (SQLException ex) {
                     System.out.println(ex);
                 }
-                boolean c = dbOps.updateTodayStockQty(id, lmt, totl, crnt, dte);
+                boolean c = dbOps.updateTodayStockQty(id, date, totl, crnt, dte);
                 model.setValueAt(crnt, j, 5);
                 model.setValueAt(dte, j, 4);
                 model.setValueAt(totl, j, 6);
@@ -959,7 +964,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
             } else {
                 crnt = crnt + totl;
-                boolean ans = dbOps.setTodayStock(id, lmt, totl, crnt, dte);
+                boolean ans = dbOps.setTodayStock(id, date, totl, crnt, dte);
                 model.setValueAt(crnt, j, 5);
                 model.setValueAt(totl, j, 6);
                 if (ans == false) {
@@ -1004,8 +1009,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.resetBtn.setVisible(false);
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
+
         ItemSelecter.requestFocusInWindow();
 
+
+
+        tableModelSalesperson tmSPmodel =new tableModelSalesperson();
+        spi.SalesPStock.setModel(tmSPmodel);
+        for (int k = 0; k < model.getRowCount(); k++) {
+                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+                ResultSet rs = dbOps.combineTwoTablesForSP(Id);
+            try {
+                while(rs.next()){
+                    if(rs.isFirst()){
+                        tmSPmodel.addRow(new Object[]{ Id, rs.getString(1), rs.getString(2), rs.getString(3),rs.getString(4)});
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
+            }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -1022,8 +1045,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             if (a == JOptionPane.YES_OPTION) {
                 ResultSet rst = dbOps.viewStock();
                 MyTableModel model = new MyTableModel();
-
                 tableProduct.setModel(model);
+
+                OrderTableModel model2 = new OrderTableModel();
+                tblOrder.setModel((TableModel) model2);//new table model for order table.....
+
                 this.btnSetStock.setVisible(true);
                 while (rst.next()) {
                     model.addRow(new Object[]{false, rst.getString(1), rst.getString(2), rst.getString(3), rst.getString(4), rst.getString(5), 0});
@@ -1107,7 +1133,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_amountActionPerformed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
-        
+
     }//GEN-LAST:event_ItemSelecterActionPerformed
 
     private void txtCashKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCashKeyPressed
@@ -1133,13 +1159,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
+                    DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                        String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
-                        dbOps.updateTodayStockByTransactions(id, quantity);
+                        int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+
+                        if (rslt == 11) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
+                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
                             if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
@@ -1166,61 +1200,66 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void amountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
+            
             if (amount.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "First you should select an item");
             } else if (ItemSelecter.getSelectedIndex() == -1) {
                 JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
             } else {
                 quantity = Integer.parseInt(amount.getText().toString());
+                
                 try {
                     String txt = (String) ItemSelecter.getEditor().getItem();
-                    ResultSet rst = dbOps.getPID(txt);
 
-                    while (rst.next()) {
-                        if (rawNo != 0) {
-                            for (int i = 0; i < rawNo; i++) {
-                                if (Integer.parseInt(BillingTable.getValueAt(i, 0).toString()) == rst.getInt(1)) {
-                                    int oldQuantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
-                                    int a = rst.getInt(3);
-                                    BillingTable.setValueAt(a * quantity, i, 3);
-                                    String c = rst.getString(1);
-                                    BillingTable.setValueAt(c, i, 0);
-                                    String b = rst.getString(2);
-                                    BillingTable.setValueAt(b, i, 1);
-                                    BillingTable.setValueAt(quantity, i, 2);
-                                    txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity - (oldQuantity * a)));
-                                    ItemSelecter.setSelectedIndex(-1);
-                                    amount.setText(null);
-                                    return;
+                        ResultSet rst = dbOps.getPID(txt);
+
+                        while (rst.next()) {
+                            if (rawNo != 0) {
+                                for (int i = 0; i < rawNo; i++) {
+                                    if (Integer.parseInt(BillingTable.getValueAt(i, 0).toString()) == rst.getInt(1)) {
+                                        int oldQuantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
+                                        int a = rst.getInt(3);
+                                        BillingTable.setValueAt(a * quantity, i, 3);
+                                        String c = rst.getString(1);
+                                        BillingTable.setValueAt(c, i, 0);
+                                        String b = rst.getString(2);
+                                        BillingTable.setValueAt(b, i, 1);
+                                        BillingTable.setValueAt(quantity, i, 2);
+                                        txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity - (oldQuantity * a)));
+                                        ItemSelecter.setSelectedIndex(-1);
+                                        amount.setText(null);
+                                        return;
+                                    }
                                 }
+                                int a = rst.getInt(3);
+                                BillingTable.setValueAt(a * quantity, rawNo, 3);
+                                txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity));
+                                String c = rst.getString(1);
+                                BillingTable.setValueAt(c, rawNo, 0);
+                                String b = rst.getString(2);
+                                BillingTable.setValueAt(b, rawNo, 1);
+                                BillingTable.setValueAt(quantity, rawNo, 2);
+                                rawNo++;
+
+                            } else {
+                                int a = rst.getInt(3);
+                                BillingTable.setValueAt(a * quantity, rawNo, 3);
+                                txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity));
+                                String c = rst.getString(1);
+                                BillingTable.setValueAt(c, rawNo, 0);
+                                String b = rst.getString(2);
+                                BillingTable.setValueAt(b, rawNo, 1);
+                                BillingTable.setValueAt(quantity, rawNo, 2);
+                                rawNo++;
                             }
-                            int a = rst.getInt(3);
-                            BillingTable.setValueAt(a * quantity, rawNo, 3);
-                            txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity));
-                            String c = rst.getString(1);
-                            BillingTable.setValueAt(c, rawNo, 0);
-                            String b = rst.getString(2);
-                            BillingTable.setValueAt(b, rawNo, 1);
-                            BillingTable.setValueAt(quantity, rawNo, 2);
-                            rawNo++;
 
-                        } else {
-                            int a = rst.getInt(3);
-                            BillingTable.setValueAt(a * quantity, rawNo, 3);
-                            txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity));
-                            String c = rst.getString(1);
-                            BillingTable.setValueAt(c, rawNo, 0);
-                            String b = rst.getString(2);
-                            BillingTable.setValueAt(b, rawNo, 1);
-                            BillingTable.setValueAt(quantity, rawNo, 2);
-                            rawNo++;
                         }
-
-                    }
+                    
                     ItemSelecter.requestFocusInWindow();
                     ItemSelecter.setSelectedIndex(-1);
                     //ItemSelecter.setEditable(true);
                     amount.setText(null);
+                    
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
                 }
@@ -1250,13 +1289,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
+                DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                    String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
-                    dbOps.updateTodayStockByTransactions(id, quantity);
+                    int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+
+                    if (rslt == 11) {
+                        NotificationPopup nw2 = new NotificationPopup();
+                        nw2.main1("Quantity limit reached for " + prdctName);
+                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                    }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
                         if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
@@ -1324,13 +1371,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
 
     private void ItemSelecterFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusLost
-        
+
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
         OrderConfirmation oc = new OrderConfirmation();
         oc.setVisible(true);
     }//GEN-LAST:event_btnProcessOrderActionPerformed
+
 
     private void ItemSelecterFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusGained
         
@@ -1341,10 +1389,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_amountFocusGained
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
-       int code = evt.getKeyCode();
-        if (code== KeyEvent.VK_F2) {
-            txtCash.requestFocusInWindow();
-        }
+     
     }//GEN-LAST:event_ItemSelecterKeyPressed
 
 
@@ -1457,12 +1502,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     public javax.swing.JLabel lablePic;
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     private javax.swing.JButton resetBtn;
     public javax.swing.JTable tableProduct;
+    public javax.swing.JTable tblOrder;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;

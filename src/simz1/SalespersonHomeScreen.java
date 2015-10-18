@@ -103,10 +103,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
-                            ViewProductForSP vw = new ViewProductForSP(str);
-                            vw.setVisible(true);
-                            
-                            vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                            ViewProductForSP vpSP = new ViewProductForSP(str);
+                            vpSP.setVisible(true);
+
+                            vpSP.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
                         }
                     }
@@ -140,7 +140,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
     }
-    
+
     DBOperations dbops = new DBOperations();
 
     /**
@@ -657,13 +657,17 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     int billNo = dbOps.getBillID(time, today);
 
                     DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                    DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
-                        dbOps.updateTodayStockByTransactions(id, quantity);
+                        int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                        if (rslt == 11) {
+                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
                             if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
@@ -689,7 +693,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCashKeyPressed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
-        ItemSelecter.requestFocusInWindow();
+        // TODO add your handling code here:int code = evt.getKeyCode();
+        
     }//GEN-LAST:event_ItemSelecterActionPerformed
 
     private void amountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountActionPerformed
@@ -842,13 +847,17 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 int billNo = dbOps.getBillID(time, today);
 
                 DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
-                    dbOps.updateTodayStockByTransactions(id, quantity);
+                    int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                    if (rslt == 11) {
+                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                    }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
                         if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
@@ -873,11 +882,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBalanceActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
-       int code = evt.getKeyCode();
-        if (code== KeyEvent.VK_F2) {
-            txtCash.requestFocusInWindow();
-        }
-         
+
     }//GEN-LAST:event_ItemSelecterKeyPressed
 
     /**
@@ -918,7 +923,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
-    private javax.swing.JTable SalesPStock;
+    public javax.swing.JTable SalesPStock;
     public javax.swing.JTextField amount;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
@@ -950,7 +955,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel name3;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;
-    private javax.swing.JTextField txtCash;
+    public javax.swing.JTextField txtCash;
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }
