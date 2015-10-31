@@ -651,16 +651,20 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     dbOps.addTransaction(time, today);
                     int billNo = dbOps.getBillID(time, today);
 
-                    DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                    DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                     DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                        String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
                         if (rslt == 11) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
+                            nw2.b2.setVisible(false);
                             model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                         }
 
@@ -839,16 +843,20 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 dbOps.addTransaction(time, today);
                 int billNo = dbOps.getBillID(time, today);
 
-                DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                    String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
                     if (rslt == 11) {
+                        NotificationPopup nw2 = new NotificationPopup();
+                        nw2.main1("Quantity limit reached for " + prdctName);
+                        nw2.b2.setVisible(false);
                         model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
                     }
 

@@ -1358,7 +1358,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProcessOrderActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
-       
+        
     }//GEN-LAST:event_ItemSelecterKeyPressed
 
     /**

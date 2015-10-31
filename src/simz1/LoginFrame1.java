@@ -135,8 +135,9 @@ public class LoginFrame1 extends javax.swing.JFrame {
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
 
         String s1 = getTxtUserName().getText();
-        String s2 = txtPassword.getText();
-        int x = dbOps.checkLogin(s1, s2);
+        String encrypt = PswrdEncrypt.main2(txtPassword.getText());
+        //String s2 = txtPassword.getText();
+        int x = dbOps.checkLogin(s1, encrypt);
 
         if (x == 11) {
             this.setVisible(false);
@@ -199,8 +200,9 @@ public class LoginFrame1 extends javax.swing.JFrame {
     private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String s1 = getTxtUserName().getText();
-            String s2 = txtPassword.getText();
-            int x = dbOps.checkLogin(s1, s2);
+            String encrypt = PswrdEncrypt.main2(txtPassword.getText());
+            //String s2 = txtPassword.getText();
+            int x = dbOps.checkLogin(s1, encrypt);
 
             if (x == 11) {
                 this.setVisible(false);

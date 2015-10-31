@@ -259,17 +259,19 @@ public class NewUserFrame extends javax.swing.JFrame {
         }
         //create an instance of the entity class
         EmployeeDetails ed = new EmployeeDetails();
+        //PswrdEncrypt pe = new PswrdEncrypt();
 
         if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
             int x = dbOps.checkUserName(txtUserName.getText());
 
             if (x == 1) {
+                String encrypt = PswrdEncrypt.main2(txtPassword.getText());
                 ed.setEmpId(0);
                 ed.setFirstName(txtFirstName.getText());
                 ed.setLastName(txtLastName.getText());
                 ed.setDesignation(ddDesignation.getSelectedItem().toString());
                 ed.setUserName(txtUserName.getText());
-                ed.setPassword(txtPassword.getText());
+                ed.setPassword(encrypt);
                 ed.setHint(txtHint.getText());
                 ed.setNIC(txtNIC.getText());
                 try {

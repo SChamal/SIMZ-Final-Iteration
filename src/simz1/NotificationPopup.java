@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import static simz1.LoginFrame1.mhp;
 
 public class NotificationPopup extends JDialog {
 
@@ -77,7 +78,7 @@ public class NotificationPopup extends JDialog {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 
-                System.out.println("Button clicked...");
+                mhp.jTabbedPane1.setSelectedIndex(4);
             }
         });
 
