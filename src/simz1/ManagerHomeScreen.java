@@ -68,18 +68,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 int min = cal.get(Calendar.MINUTE);
                 int sec = cal.get(Calendar.SECOND);
-                if(sec<10){
-                    timeLabel.setText(hour + ":" + min + ":" + "0"+sec);
-                }else if(min<10){
-                    timeLabel.setText(hour + ":" + "0"+min + ":" + sec);
-                }else{
+                if (sec < 10) {
+                    timeLabel.setText(hour + ":" + min + ":" + "0" + sec);
+                } else if (min < 10) {
+                    timeLabel.setText(hour + ":" + "0" + min + ":" + sec);
+                } else {
                     timeLabel.setText(hour + ":" + min + ":" + sec);
                 }
-                
-                if(min<10 && sec<10){
-                    timeLabel.setText(hour + ":" + "0"+min + ":" + "0"+sec);
+
+                if (min < 10 && sec < 10) {
+                    timeLabel.setText(hour + ":" + "0" + min + ":" + "0" + sec);
                 }
-                
+
             }
         }
         Timer t = new Timer(1000, new Listner());
@@ -1245,8 +1245,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No text feild should be empty");
             } else {
                 String payment = txtCash.getText();
-                int paymenti = Integer.parseInt(payment);
+                int paymenti = 0;
                 int amounti = Integer.parseInt(amount);
+                try {
+                    paymenti = Integer.parseInt(payment);
+                    if (paymenti < 0) {
+                        JOptionPane.showMessageDialog(this, "Only positive numbers are allowed");
+                        txtCash.setText("");
+                        return;
+                    }
+                    if (paymenti < amounti) {
+                        JOptionPane.showMessageDialog(this, "Please enter an amonut larger than total");
+                        txtCash.setText("");
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Please enter only numbers");
+                    txtCash.setText("");
+                    return;
+                }
+
                 int balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
@@ -1257,11 +1275,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
                     DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
+                    Bill b1 = new Bill();
 
                     for (int i = 0; i < rawNo; i++) {
                         int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                         String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
+                        int subTot = Integer.parseInt(BillingTable.getValueAt(i, 3).toString());
+
+                        b1.printBill.setValueAt(prdctName, i, 0);
+                        b1.printBill.setValueAt(quantity, i, 1);
+                        b1.printBill.setValueAt(subTot, i, 2);
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
@@ -1279,6 +1303,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             }
                         }
                     }
+
+                    b1.total.setText(amounti + "");
+                    b1.recieve.setText(paymenti + "");
+                    b1.balance.setText(balance + "");
+                    int max1 = dbOps.getMaxBillID();
+                    b1.billNo.setText(max1 + 1 + "");
+                    b1.setVisible(true);
+                    b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
+
                     for (int i = 0; i < BillingTable.getRowCount(); i++) {
                         for (int j = 0; j < 4; j++) {
                             BillingTable.setValueAt("", i, j);
@@ -1395,8 +1428,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No text feild should be empty");
         } else {
             String payment = txtCash.getText();
-            int paymenti = Integer.parseInt(payment);
+            int paymenti = 0;
             int amounti = Integer.parseInt(amount);
+            try {
+                paymenti = Integer.parseInt(payment);
+                if (paymenti < 0) {
+                    JOptionPane.showMessageDialog(this, "Only positive numbers are allowed");
+                    txtCash.setText("");
+                    return;
+                }
+                if (paymenti < amounti) {
+                    JOptionPane.showMessageDialog(this, "Please enter an amonut larger than total");
+                    txtCash.setText("");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter only numbers");
+                txtCash.setText("");
+                return;
+            }
+
             int balance = paymenti - amounti;
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
@@ -1407,11 +1458,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
                 DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
+                Bill b1 = new Bill();
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
                     String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
+                    int subTot = Integer.parseInt(BillingTable.getValueAt(i, 3).toString());
+
+                    b1.printBill.setValueAt(prdctName, i, 0);
+                    b1.printBill.setValueAt(quantity, i, 1);
+                    b1.printBill.setValueAt(subTot, i, 2);
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
@@ -1429,6 +1486,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         }
                     }
                 }
+
+                b1.total.setText(amounti + "");
+                b1.recieve.setText(paymenti + "");
+                b1.balance.setText(balance + "");
+                int max1 = dbOps.getMaxBillID();
+                b1.billNo.setText(max1 + 1 + "");
+                b1.setVisible(true);
+                b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
+
                 for (int i = 0; i < BillingTable.getRowCount(); i++) {
                     for (int j = 0; j < 4; j++) {
                         BillingTable.setValueAt("", i, j);
@@ -1511,18 +1577,23 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnRefillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefillActionPerformed
         DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
         int rowCount = model2.getRowCount();
-        int current = 0,regular = 0;
-        for(int i = 0; i<rowCount; i++){
-            int id = Integer.parseInt(model2.getValueAt(i, 2).toString());
-            ResultSet rst = dbOps.getTodayStockQty(id);
-            try {
-                current = rst.getInt(1);
-                regular = rst.getInt(4);
-            } catch (SQLException ex) {
-                
+        int current = 0, regular = 0;
+        for (int i = 0; i < rowCount; i++) {
+            if (model2.getValueAt(i, 2) == null) {
+                break;
+            } else {
+                int id = Integer.parseInt(model2.getValueAt(i, 2).toString());
+                ResultSet rst = dbOps.getTodayStockQty(id);
+                try {
+                    current = rst.getInt(1);
+                    regular = rst.getInt(4);
+                } catch (SQLException ex) {
+
+                }
+
+                model2.setValueAt((regular - current), i, 6);
             }
-            
-            model2.setValueAt((regular-current), i, 6);
+
         }
     }//GEN-LAST:event_btnRefillActionPerformed
 
