@@ -7,6 +7,7 @@ public class Simz {
         lf.setSize(755, 610);
         lf.setVisible(true);
         lf.btnHint.setVisible(false);
+        //System.out.println(PswrdEncrypt.main2("123"));
     }
 
 }

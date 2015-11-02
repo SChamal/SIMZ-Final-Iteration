@@ -8,6 +8,8 @@ package simz1;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -15,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -23,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import static simz1.LoginFrame1.spi;
 import static simz1.ManagerHomeScreen.resizeImageIcon;
@@ -40,6 +44,38 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     JTextField tx;
     private boolean hide_flag = false;
     int rawNo = 0;
+
+    java.util.Date date = new java.util.Date();
+    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+    String time = sdf.format(date);
+    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
+    String today = sdf2.format(date);
+
+    public void clocker() {
+        class Listner implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar cal = Calendar.getInstance();
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                int min = cal.get(Calendar.MINUTE);
+                int sec = cal.get(Calendar.SECOND);
+                if(sec<10){
+                    timeLabel.setText(hour + ":" + min + ":" + "0"+sec);
+                }else if(min<10){
+                    timeLabel.setText(hour + ":" + "0"+min + ":" + sec);
+                }else{
+                    timeLabel.setText(hour + ":" + min + ":" + sec);
+                }
+                
+                if(min<10 && sec<10){
+                    timeLabel.setText(hour + ":" + "0"+min + ":" + "0"+sec);
+                }
+            }
+        }
+        Timer t = new Timer(1000, new Listner());
+        t.start();
+    }
 
     public void autoSuggest() {
         jComboBoxSearch.removeAllItems();
@@ -138,7 +174,12 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         ItemSelecter.setSelectedIndex(-1);
         jComboBoxSearch.setSelectedIndex(-1);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
+        this.ItemSelecter.requestFocusInWindow();
 
+        this.dateLabel.setText(today);
+        this.clocker();
+        int max = dbOps.getMaxBillID();
+        this.billNo.setText(max + 1 + "");
     }
 
     DBOperations dbops = new DBOperations();
@@ -183,6 +224,12 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         btnBalance = new javax.swing.JButton();
         txtBalance = new javax.swing.JTextField();
         total = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        billNo = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        timeLabel = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        dateLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -392,6 +439,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 ItemSelecterActionPerformed(evt);
             }
         });
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
+            }
+        });
 
         amount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -424,6 +476,26 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         total.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         total.setText("Total");
 
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("Bill No:");
+
+        billNo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        billNo.setText("Bill No");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel10.setText("Time:");
+
+        timeLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        timeLabel.setText("Time");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Date:");
+
+        dateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        dateLabel.setText("Date");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -438,7 +510,18 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         .addComponent(amount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnOK)
-                        .addGap(0, 438, Short.MAX_VALUE)))
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(273, 273, 273)
@@ -466,7 +549,13 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ItemSelecter, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(amount, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(45, 45, 45)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -483,7 +572,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBalance)
                     .addComponent(txtBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Transactions  ", jPanel3);
@@ -643,11 +732,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    java.util.Date date = new java.util.Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                    String time = sdf.format(date);
-                    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
-                    String today = sdf2.format(date);
+
                     dbOps.addTransaction(time, today);
                     int billNo = dbOps.getBillID(time, today);
 
@@ -665,7 +750,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
                             nw2.b2.setVisible(false);
-                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
                         }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
@@ -685,6 +770,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     txtCash.setText("");
                     txtBalance.setText("");
                     rawNo = 0;
+
+                    int max = dbOps.getMaxBillID();
+                    this.billNo.setText(max + 1 + "");
                 }
 
             }
@@ -703,11 +791,38 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
             if (amount.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "First you should select an item");
-            } else if (ItemSelecter.getSelectedIndex() == -1) {
                 JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
+            } else if (ItemSelecter.getSelectedIndex() == -1) {
+                JOptionPane.showMessageDialog(this, "First you should select an item");
             } else {
-                quantity = Integer.parseInt(amount.getText().toString());
+                int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
+
+                try {
+                    quantity = Integer.parseInt(amount.getText().toString());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
+                    amount.setText("");
+                    amount.requestFocusInWindow();
+                    return;
+                }
+                if (quantity < 1) {
+                    JOptionPane.showMessageDialog(this, "Quantity cannot be less than 1!!!");
+                    amount.setText("");
+                    amount.requestFocusInWindow();
+                    return;
+                }
+                if (crntQty == -1) {
+                    JOptionPane.showMessageDialog(this, "This product is not in the stock!!!");
+                    ItemSelecter.setSelectedIndex(-1);
+                    amount.setText("");
+                    ItemSelecter.requestFocusInWindow();
+                    return;
+                } else if (crntQty < quantity) {
+                    JOptionPane.showMessageDialog(this, "There is only " + crntQty + " items left in the stock!!!");
+                    amount.setText("");
+                    amount.requestFocusInWindow();
+                    return;
+                }
                 try {
                     String txt = (String) ItemSelecter.getEditor().getItem();
                     ResultSet rst = dbOps.getPID(txt);
@@ -754,6 +869,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     }
                     ItemSelecter.setSelectedIndex(-1);
+                    ItemSelecter.requestFocusInWindow();
                     amount.setText(null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
@@ -769,7 +885,34 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         } else if (ItemSelecter.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
         } else {
-            quantity = Integer.parseInt(amount.getText().toString());
+            int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
+
+            try {
+                quantity = Integer.parseInt(amount.getText().toString());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
+                amount.setText("");
+                amount.requestFocusInWindow();
+                return;
+            }
+            if (quantity < 1) {
+                JOptionPane.showMessageDialog(this, "Quantity cannot be less than 1!!!");
+                amount.setText("");
+                amount.requestFocusInWindow();
+                return;
+            }
+            if (crntQty == -1) {
+                JOptionPane.showMessageDialog(this, "This product is not in the stock!!!");
+                ItemSelecter.setSelectedIndex(-1);
+                amount.setText("");
+                ItemSelecter.requestFocusInWindow();
+                return;
+            } else if (crntQty < quantity) {
+                JOptionPane.showMessageDialog(this, "There is only " + crntQty + " items left in the stock!!!");
+                amount.setText("");
+                amount.requestFocusInWindow();
+                return;
+            }
             try {
                 String txt = (String) ItemSelecter.getEditor().getItem();
                 ResultSet rst = dbOps.getPID(txt);
@@ -835,11 +978,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                java.util.Date date = new java.util.Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                String time = sdf.format(date);
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
-                String today = sdf2.format(date);
+
                 dbOps.addTransaction(time, today);
                 int billNo = dbOps.getBillID(time, today);
 
@@ -857,7 +996,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         NotificationPopup nw2 = new NotificationPopup();
                         nw2.main1("Quantity limit reached for " + prdctName);
                         nw2.b2.setVisible(false);
-                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -877,10 +1016,20 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 txtCash.setText("");
                 txtBalance.setText("");
                 rawNo = 0;
+
+                int max = dbOps.getMaxBillID();
+                this.billNo.setText(max + 1 + "");
             }
 
         }
     }//GEN-LAST:event_btnBalanceActionPerformed
+
+    private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
+        int code = evt.getKeyCode();
+        if (code == KeyEvent.VK_F2) {
+            txtCash.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_ItemSelecterKeyPressed
 
     /**
      * @param args the command line arguments
@@ -922,14 +1071,18 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JComboBox ItemSelecter;
     public javax.swing.JTable SalesPStock;
     public javax.swing.JTextField amount;
+    private javax.swing.JLabel billNo;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnLogOut1;
     private javax.swing.JButton btnOK;
+    private javax.swing.JLabel dateLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBoxSearch;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -938,6 +1091,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
@@ -950,6 +1104,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel name1;
     public javax.swing.JLabel name2;
     public javax.swing.JLabel name3;
+    private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;
     private javax.swing.JTextField txtCash;
