@@ -54,9 +54,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v = new Stack<String>();
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
-    JTextField tx,tx2;
+    JTextField tx, tx2;
     public int rawNo = 0;
-
 
     java.util.Date date = new java.util.Date();
     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -152,7 +151,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     for (int i = 0; i < v.size(); i++) {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
-                            tx.setText(str);                           
+                            tx.setText(str);
                             viewProduct vw = new viewProduct(str);
                             vw.setVisible(true);
                             vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -165,8 +164,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         });
     }
-    
-    public void autoSuggest2() {       
+
+    public void autoSuggest2() {
         jcomboAddTodaysStock.removeAllItems();
         try {
             ResultSet rst = dbOps.getProducts();
@@ -219,21 +218,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent ke) {
                 String txt = tx2.getText();
-                
+
                 int code = ke.getKeyCode();
                 if (code == KeyEvent.VK_ESCAPE) {
                     hide_flag = true;
                 } else if (code == KeyEvent.VK_ENTER) {
                     for (int i = 0; i < v2.size(); i++) {
-                        String str = (String) v2.elementAt(i);                        
+                        String str = (String) v2.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
                             try {
-                                tx2.setText(str); 
+                                tx2.setText(str);
                                 DefaultTableModel model = (DefaultTableModel) tableProduct.getModel();
                                 ResultSet rst = dbOps.viewStock2(str);
                                 DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-                                if(rst.next()){
-                                    model.addRow(new Object[]{true,rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6),0,0});
+                                if (rst.next()) {
+                                    model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                                 }
                                 return;
                             } catch (SQLException ex) {
@@ -246,12 +245,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         });
     }
-    
+
     private void setModel(DefaultComboBoxModel mdl, String str) {
         Search.setModel(mdl);
         tx.setText(str);
     }
-    
+
     private void setModel2(DefaultComboBoxModel mdl, String str) {
         jcomboAddTodaysStock.setModel(mdl);
         tx2.setText(str);
@@ -272,7 +271,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.btnReset.setVisible(false);
         this.btnSaveChanges.setVisible(false);
         autoSuggest();
-        autoSuggest2(); 
+        autoSuggest2();
         Search.setSelectedIndex(-1);
 
         jcomboAddTodaysStock.setSelectedIndex(-1);
@@ -428,7 +427,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
                 true, false, false, false, true, false, true
@@ -819,9 +818,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, true
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jScrollPane4.setViewportView(tblOrder);
@@ -919,10 +925,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
                 {null, null, null, null, null}
             },
             new String [] {
@@ -973,12 +975,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(usersLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(usersLayout.createSequentialGroup()
                         .addComponent(btnNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
                         .addComponent(btnRemoveUser, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(382, Short.MAX_VALUE))
+                .addContainerGap(412, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Users ", users);
@@ -1154,14 +1156,24 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
             int date = 0;
             String dte = "0000-00-00";
-            try{
-            //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
-            }catch(NullPointerException ex){
+            try {
+                //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+            } catch (NullPointerException ex) {
                 //System.out.println(ex);
             }
-            int crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
-            int totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+            int crnt = 0,totl = 0;
+            try {
+                crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
+                totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+                if(totl<0 || crnt<0){
+                    JOptionPane.showMessageDialog(this, "Please enter only positive numbers in quantity field!!!");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter only numbers in quantity field!!!");
+                return;
+            }
             if (dbOps.getTodayStockQty(id) != null) {
                 try {
                     crnt = totl + dbOps.getTodayStockQty(id).getInt(1);
@@ -1243,9 +1255,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
-            }
+        }
         JOptionPane.showMessageDialog(this, "Todays Stock has been created successfully");
-        
+
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -1256,20 +1268,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
     //Set default morning stock to the tableProduct table
-    private void setMorningStock(){
+    private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
         MyTableModel model = new MyTableModel();
-        tableProduct.setModel(model);        
+        tableProduct.setModel(model);
         try {
-            while(rst.next()){
-                model.addRow(new Object[]{true,rst.getString(1), rst.getString(2), rst.getString(3), rst.getDate(4), rst.getString(5),rst.getString(6)});
+            while (rst.next()) {
+                model.addRow(new Object[]{true, rst.getString(1), rst.getString(2), rst.getString(3), rst.getDate(4), rst.getString(5), rst.getString(6)});
             }
         } catch (SQLException ex) {
             //Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex);
-        }        
+        }
     }
-    
+
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         try {
             int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset? ", "warning", JOptionPane.YES_NO_OPTION);
@@ -1677,7 +1689,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     if (rslt == 11) {
 
-
                         for (int k = 0; k < model2.getRowCount(); k++) {
                             if (id == (int) model2.getValueAt(k, 2)) {
                                 flag = false;
@@ -1797,7 +1808,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jcomboAddTodaysStockActionPerformed
 
     private void jcomboAddTodaysStockKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jcomboAddTodaysStockKeyPressed
-        
+
     }//GEN-LAST:event_jcomboAddTodaysStockKeyPressed
 
     private void btnAddOrderToStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderToStockActionPerformed
@@ -1828,7 +1839,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnRefillActionPerformed
-
 
     /**
      * @return the name1
