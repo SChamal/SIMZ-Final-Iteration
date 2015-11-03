@@ -15,11 +15,16 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -42,10 +47,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     AutoSuggest as = new AutoSuggest();
     DBOperations dbOps = new DBOperations();
     Vector<String> v = new Stack<String>();
+    Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
-    JTextField tx;
+    JTextField tx,tx2;
     public int rawNo = 0;
-
+    
+    
     public void autoSuggest() {
 
         Search.removeAllItems();
@@ -61,7 +68,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         public void itemStateChanged(ItemEvent ie) {
                             if (ie.getStateChange() == ItemEvent.SELECTED) {
                                 Search.getSelectedIndex();
-
                             }
                         }
                     });
@@ -108,7 +114,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     for (int i = 0; i < v.size(); i++) {
                         String str = (String) v.elementAt(i);
                         if (str.toLowerCase().startsWith(txt)) {
-                            tx.setText(str);
+                            tx.setText(str);                           
                             viewProduct vw = new viewProduct(str);
                             vw.setVisible(true);
                             vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -116,14 +122,101 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         }
                     }
                 }
+                Search.setSelectedIndex(-1);
             }
 
         });
     }
+    
+    public void autoSuggest2() {       
+        jcomboAddTodaysStock.removeAllItems();
+        try {
+            ResultSet rst = dbOps.getProducts();
+            rst.first();
+            if (jcomboAddTodaysStock.getItemCount() == 0) {
+                do {
+                    jcomboAddTodaysStock.addItem(rst.getString(1));
+                    v2.addElement(rst.getString(1));
+                    jcomboAddTodaysStock.addItemListener(new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent ie) {
+                            if (ie.getStateChange() == ItemEvent.SELECTED) {
+                                jcomboAddTodaysStock.getSelectedIndex();
+                            }
+                        }
+                    });
+                } while (rst.next());
+            } else {
+                jcomboAddTodaysStock.addItem("");
+            }
+        } catch (SQLException e) {
+        }
 
+        //jComboBoxSearch.setEditable(true);
+        tx2 = (JTextField) jcomboAddTodaysStock.getEditor().getEditorComponent();
+        tx2.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String text = tx2.getText();
+                        if (text.length() == 0) {
+                            jcomboAddTodaysStock.hidePopup();
+                            setModel2(new DefaultComboBoxModel(v2), "");
+                        } else {
+                            DefaultComboBoxModel m = getSuggestedModel(v2, text);
+                            if (m.getSize() == 0) {
+                                jcomboAddTodaysStock.hidePopup();
+                            } else {
+                                setModel2(m, text);
+                                jcomboAddTodaysStock.showPopup();
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                String txt = tx2.getText();
+                
+                int code = ke.getKeyCode();
+                if (code == KeyEvent.VK_ESCAPE) {
+                    hide_flag = true;
+                } else if (code == KeyEvent.VK_ENTER) {
+                    for (int i = 0; i < v2.size(); i++) {
+                        String str = (String) v2.elementAt(i);                        
+                        if (str.toLowerCase().startsWith(txt)) {
+                            try {
+                                tx2.setText(str); 
+                                DefaultTableModel model = (DefaultTableModel) tableProduct.getModel();
+                                ResultSet rst = dbOps.viewStock2(str);
+                                DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+                                if(rst.next()){
+                                    model.addRow(new Object[]{true,rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6),0,0});
+                                }
+                                return;
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                }
+            }
+
+        });
+    }
+    
     private void setModel(DefaultComboBoxModel mdl, String str) {
         Search.setModel(mdl);
         tx.setText(str);
+    }
+    
+    private void setModel2(DefaultComboBoxModel mdl, String str) {
+        jcomboAddTodaysStock.setModel(mdl);
+        tx2.setText(str);
     }
 
     private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
@@ -138,20 +231,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     public ManagerHomeScreen() {
         initComponents();
+        this.btnReset.setVisible(false);
         this.btnSaveChanges.setVisible(false);
-        this.btnSetStock.setVisible(false);
         autoSuggest();
+        autoSuggest2(); 
         Search.setSelectedIndex(-1);
-        Search.setSelectedIndex(-1);
-
+        jcomboAddTodaysStock.setSelectedIndex(-1);
+        
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
         ResultSet rst = dbOps.viewUser();
         tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
-
+        //this.Search.requestFocusInWindow();
         /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
          "Jordina", "Jorge", "Sergi" });
          AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
+        setMorningStock();
     }
 
     /**
@@ -173,11 +268,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         btnAddProduct = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableProduct = new javax.swing.JTable();
-        resetBtn = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         Search = new javax.swing.JComboBox();
         btnSetStock = new javax.swing.JButton();
         btnSaveChanges = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jcomboAddTodaysStock = new javax.swing.JComboBox();
+        btnAddOrderToStock = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         BillingTable = new javax.swing.JTable();
@@ -299,10 +397,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         tableProduct.setRowHeight(20);
         jScrollPane2.setViewportView(tableProduct);
 
-        resetBtn.setText("Reset");
-        resetBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetBtnActionPerformed(evt);
+                btnResetActionPerformed(evt);
             }
         });
 
@@ -337,6 +435,28 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setText("Add new product to Todays Stock");
+
+        jcomboAddTodaysStock.setEditable(true);
+        jcomboAddTodaysStock.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcomboAddTodaysStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcomboAddTodaysStockActionPerformed(evt);
+            }
+        });
+        jcomboAddTodaysStock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jcomboAddTodaysStockKeyPressed(evt);
+            }
+        });
+
+        btnAddOrderToStock.setText("Add Orders");
+        btnAddOrderToStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddOrderToStockActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -345,26 +465,29 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(Search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 457, Short.MAX_VALUE)
-                                .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(27, 27, 27)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 457, Short.MAX_VALUE)
+                        .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(228, 228, 228)
-                                .addComponent(btnSetStock))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 910, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 910, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jcomboAddTodaysStock, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnAddOrderToStock, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(96, 96, 96)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSetStock)
+                        .addGap(26, 26, 26))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -376,12 +499,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(resetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSetStock)
-                    .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2))
+                .addGap(11, 11, 11)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAddOrderToStock)
+                            .addComponent(btnSetStock)
+                            .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcomboAddTodaysStock, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Stock Details", jPanel1);
@@ -802,9 +933,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 987, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -857,7 +989,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 int rst = dbOps.removeUser(id);
                 if (rst == 1) {
-                    JOptionPane.showMessageDialog(this, "Product successfully deleted");
+                    JOptionPane.showMessageDialog(this, "User successfully deleted");
                     ResultSet rst1 = dbOps.viewUser();
                     mhp.tblUsers.setModel(DbUtils.resultSetToTableModel(rst1));
                 } else {
@@ -927,8 +1059,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
             int date = 0;
+            String dte = "0000-00-00";
+            try{
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+            dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+            }catch(NullPointerException ex){
+                //System.out.println(ex);
+            }
             int crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
             int totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
             if (dbOps.getTodayStockQty(id) != null) {
@@ -992,9 +1129,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-        this.btnSaveChanges.setVisible(true);
-        this.btnSetStock.setVisible(false);
-        this.resetBtn.setVisible(false);
+        //this.btnSaveChanges.setVisible(true);
+        //this.btnSetStock.setVisible(false);
+        //this.btnReset.setVisible(false);
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
 
@@ -1013,6 +1150,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 System.out.println(ex);
             }
             }
+        JOptionPane.showMessageDialog(this, "Todays Stock has been created successfully");
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -1022,8 +1160,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
-
-    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+    //Set default morning stock to the tableProduct table
+    private void setMorningStock(){
+        ResultSet rst = dbOps.combineMorningStockAndStock();
+        MyTableModel model = new MyTableModel();
+        tableProduct.setModel(model);        
+        try {
+            while(rst.next()){
+                model.addRow(new Object[]{true,rst.getString(1), rst.getString(2), rst.getString(3), rst.getDate(4), rst.getString(5),rst.getString(6)});
+            }
+        } catch (SQLException ex) {
+            //Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
+        }        
+    }
+    
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         try {
             int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset? ", "warning", JOptionPane.YES_NO_OPTION);
             if (a == JOptionPane.YES_OPTION) {
@@ -1043,7 +1195,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }//GEN-LAST:event_resetBtnActionPerformed
+    }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
         addProduct ad = new addProduct();
@@ -1156,7 +1308,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         if (rslt == 11) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
-                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+    /********************/  model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 10, 0});
                         }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
@@ -1236,6 +1388,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     }
                     ItemSelecter.setSelectedIndex(-1);
+                    ItemSelecter.requestFocusInWindow();
                     amount.setText(null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
@@ -1279,7 +1432,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     if (rslt == 11) {
                         NotificationPopup nw2 = new NotificationPopup();
                         nw2.main1("Quantity limit reached for " + prdctName);
-                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 10, 0});
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -1358,8 +1511,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProcessOrderActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
-        
+        int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_F2) {
+            txtCash.requestFocusInWindow();
+        }
+
     }//GEN-LAST:event_ItemSelecterKeyPressed
+
+    private void jcomboAddTodaysStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcomboAddTodaysStockActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcomboAddTodaysStockActionPerformed
+
+    private void jcomboAddTodaysStockKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jcomboAddTodaysStockKeyPressed
+        
+    }//GEN-LAST:event_jcomboAddTodaysStockKeyPressed
+
+    private void btnAddOrderToStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderToStockActionPerformed
+        AddOrderToStock order = new AddOrderToStock();
+        order.setVisible(true);
+        order.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    }//GEN-LAST:event_btnAddOrderToStockActionPerformed
 
     /**
      * @return the name1
@@ -1433,6 +1604,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JComboBox ItemSelecter;
     public javax.swing.JComboBox Search;
     public javax.swing.JTextField amount;
+    private javax.swing.JButton btnAddOrderToStock;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnCancel;
@@ -1441,6 +1613,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnOK;
     private javax.swing.JButton btnProcessOrder;
     private javax.swing.JButton btnRemoveUser;
+    private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveChanges;
     private javax.swing.JButton btnSetStock;
@@ -1453,6 +1626,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -1470,10 +1644,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JComboBox jcomboAddTodaysStock;
     public javax.swing.JLabel lablePic;
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
-    private javax.swing.JButton resetBtn;
     public javax.swing.JTable tableProduct;
     public javax.swing.JTable tblOrder;
     public javax.swing.JTable tblUsers;

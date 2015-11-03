@@ -138,7 +138,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         ItemSelecter.setSelectedIndex(-1);
         jComboBoxSearch.setSelectedIndex(-1);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
-
+        this.ItemSelecter.requestFocusInWindow();
     }
 
     DBOperations dbops = new DBOperations();
@@ -390,6 +390,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         ItemSelecter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ItemSelecterActionPerformed(evt);
+            }
+        });
+        ItemSelecter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                ItemSelecterKeyPressed(evt);
             }
         });
 
@@ -665,7 +670,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
                             nw2.b2.setVisible(false);
-                            model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 10, 0});
                         }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
@@ -754,6 +759,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     }
                     ItemSelecter.setSelectedIndex(-1);
+                    ItemSelecter.requestFocusInWindow();
                     amount.setText(null);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
@@ -857,7 +863,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         NotificationPopup nw2 = new NotificationPopup();
                         nw2.main1("Quantity limit reached for " + prdctName);
                         nw2.b2.setVisible(false);
-                        model2.addRow(new Object[]{false, 01, id, "name", today, time, 10, 0});
+                        model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 10, 0});
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -881,6 +887,13 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnBalanceActionPerformed
+
+    private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
+        int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_F2) {
+            txtCash.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_ItemSelecterKeyPressed
 
     /**
      * @param args the command line arguments
