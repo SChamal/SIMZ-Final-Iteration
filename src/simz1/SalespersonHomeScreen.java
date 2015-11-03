@@ -179,7 +179,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         this.dateLabel.setText(today);
         this.clocker();
         int max = dbOps.getMaxBillID();
-        this.billNo.setText(max + 1 + "");
+        this.billno.setText(max + 1 + "");
     }
 
     DBOperations dbops = new DBOperations();
@@ -225,7 +225,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         txtBalance = new javax.swing.JTextField();
         total = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        billNo = new javax.swing.JLabel();
+        billno = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         timeLabel = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -480,8 +480,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Bill No:");
 
-        billNo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        billNo.setText("Bill No");
+        billno.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        billno.setText("Bill No");
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Time:");
@@ -513,7 +513,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -551,7 +551,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     .addComponent(amount, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -815,7 +815,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     rawNo = 0;
 
                     int max = dbOps.getMaxBillID();
-                    this.billNo.setText(max + 1 + "");
+                    this.billno.setText(max + 1 + "");
+                } else if (result == JOptionPane.NO_OPTION) {
+                    txtCash.setText("");
+                    txtBalance.setText("");
                 }
 
             }
@@ -1136,7 +1139,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 rawNo = 0;
 
                 int max = dbOps.getMaxBillID();
-                this.billNo.setText(max + 1 + "");
+                this.billno.setText(max + 1 + "");
+            } else if (result == JOptionPane.NO_OPTION) {
+                txtCash.setText("");
+                txtBalance.setText("");
             }
 
         }
@@ -1189,7 +1195,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JComboBox ItemSelecter;
     public javax.swing.JTable SalesPStock;
     public javax.swing.JTextField amount;
-    private javax.swing.JLabel billNo;
+    private javax.swing.JLabel billno;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnLogOut1;

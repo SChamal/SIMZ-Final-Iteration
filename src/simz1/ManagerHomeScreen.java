@@ -1350,6 +1350,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     int max = dbOps.getMaxBillID();
                     this.billno.setText(max + 1 + "");
+                } else if (result == JOptionPane.NO_OPTION) {
+                    txtCash.setText("");
+                    txtBalance.setText("");
                 }
 
             }
@@ -1560,6 +1563,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 int max = dbOps.getMaxBillID();
                 this.billno.setText(max + 1 + "");
+            } else if (result == JOptionPane.NO_OPTION) {
+                txtCash.setText("");
+                txtBalance.setText("");
             }
 
         }
