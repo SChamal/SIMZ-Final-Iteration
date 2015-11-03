@@ -672,10 +672,10 @@ public class DBOperations {
         return null;
     }
 
-    boolean setTodayStock(int id, int date, int totl, int crnt, String dte) { // getting values changed by me
+    boolean setTodayStock(int id, int date, int totl, int crnt, String dte, int tot) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "INSERT INTO today_stock VALUES(?,?,?,?,?)";
+            String query = "INSERT INTO today_stock VALUES(?,?,?,?,?,?)";
             pst = (PreparedStatement) con.prepareStatement(query);
 
             pst.setInt(1, id);
@@ -683,7 +683,8 @@ public class DBOperations {
             pst.setInt(3, totl);
             pst.setInt(4, crnt);
             pst.setString(5, dte);
-
+            pst.setInt(6, tot);
+            
             pst.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -740,7 +741,7 @@ public class DBOperations {
     ResultSet getTodayStockQty(int id) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT currentQuantity,totalreceivedQuantity,expiryDate FROM today_stock WHERE productID = ?";
+            String query = "SELECT currentQuantity,totalreceivedQuantity,expiryDate,firstReceivedQty FROM today_stock WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setInt(1, id);
             rs = pst.executeQuery();
@@ -759,7 +760,37 @@ public class DBOperations {
         return null;
     }
 
-    boolean updateTodayStockQty(int id, int date, int totl, int crnt, String dte) { // getting values changed by me
+    boolean updateTodayStockQty(int id, int date, int totl, int crnt, String dte, int tot) { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "UPDATE today_stock SET currentDate = ?, totalreceivedQuantity = ?,expiryDate = ?, currentQuantity = ?, firstReceivedQty = ? WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, date);
+            pst.setInt(2, totl);
+            pst.setString(3, dte);
+            pst.setInt(4, crnt);
+            pst.setInt(5, tot);
+            pst.setInt(6, id);
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+    }
+    
+    boolean updateTodayStockQty2(int id, int date, int totl, int crnt, String dte) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "UPDATE today_stock SET currentDate = ?, totalreceivedQuantity = ?,expiryDate = ?, currentQuantity = ? WHERE productID = ?";
@@ -1056,6 +1087,65 @@ public class DBOperations {
             }
         }
 
+    }
+    
+    int getMaxBillID() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "SELECT max(Bill_no) FROM transaction_main";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();//execute the sql query and get the result
+            while (rs.next()) {
+                int BID = rs.getInt(1);
+                return BID;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return -1;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return -1;
+    }
+    
+    int getPrdctQty(String name) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "SELECT t.currentQuantity FROM today_stock t ,productdetails p WHERE (p.productID=t.productID) and p.productName = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, name);
+            rs = pst.executeQuery();//execute the sql query and get the result
+            while (rs.next()) {
+                int qty = rs.getInt(1);
+                return qty;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return -1;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return -1;
     }
 
 }

@@ -255,11 +255,21 @@ public class NewUserFrame extends javax.swing.JFrame {
         }
         if(txtNIC.getText().length() != 10){
             JOptionPane.showMessageDialog(this, "Please enter a valid NIC!!!");
+            txtNIC.setText("");
+            return;
+            
+        }
+        String nic = (txtNIC.getText()).substring(1, 9);
+        try{
+            Integer.parseInt(nic);
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Please enter a valid NIC!!!");
+            txtNIC.setText("");
             return;
         }
         //create an instance of the entity class
         EmployeeDetails ed = new EmployeeDetails();
-        //PswrdEncrypt pe = new PswrdEncrypt();
+        //PswrdEncrypt pe = new PswrdEnceypt();
 
         if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
             int x = dbOps.checkUserName(txtUserName.getText());

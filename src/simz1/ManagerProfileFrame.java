@@ -408,12 +408,12 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
                     return;
                 }
-                String ps = txtCrntP.getText();
+                String ps = PswrdEncrypt.main2(txtCrntP.getText());
                 int prslt = dbOp.checkPasswrd(ps, id);
 
                 if (prslt == 1) { //password matched with the given user
-                    String np = txtNewP.getText();
-                    String cp = txtCnfrmP.getText();
+                    String np = PswrdEncrypt.main2(txtNewP.getText());
+                    String cp = PswrdEncrypt.main2(txtCnfrmP.getText());
                     String hnt = txtHint.getText();
 
                     if (np.equals(cp)) { //new and confirm passwords matched
