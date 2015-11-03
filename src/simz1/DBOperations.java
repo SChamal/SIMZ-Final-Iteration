@@ -19,7 +19,8 @@ import java.sql.SQLException;
  */
 public class DBOperations {
 
-    String url = "jdbc:mysql://localhost:3306/simz";
+    //String url = "jdbc:mysql://localhost:3306/simz";
+    private static String url = "jdbc:mysql://localhost:3306/simz?zeroDateTimeBehavior=convertToNull";
     String username = "root";
     String password = "";
     Connection con = null;
@@ -423,6 +424,7 @@ public class DBOperations {
         }
         return -1;
     }
+    
 
     boolean updateUserName(String name, int id) {
         try {
@@ -858,6 +860,20 @@ public class DBOperations {
         return null;
     }
     
+    ResultSet combineMorningStockAndStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT p.productID,p.productName,p.sellingPrice,m.expiryDate,m.currentQuantity,m.totalreceivedQuantity from morning_stock m ,productdetails p where (p.productID=m.productID) ";
+            pst = (PreparedStatement) con.prepareStatement(query);           
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
+    
     ResultSet getProducts() {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
@@ -895,9 +911,10 @@ public class DBOperations {
             rs = pst.executeQuery();
             return rs;
         } catch (SQLException ex) {
-            System.out.println(ex);
+            
+            return null;
         }
-        return null;
+        
     }
 
     ResultSet getPID(String productName) { // getting values changed by me
@@ -913,7 +930,21 @@ public class DBOperations {
         }
         return null;
     }
-
+    
+    ResultSet getCurrentQandExpiryDate(int id) { 
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT currentQuantity,expiryDate FROM today_stock WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+        
     boolean addTransaction(String time, String date) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection

@@ -176,6 +176,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
         this.ItemSelecter.requestFocusInWindow();
 
+
         this.dateLabel.setText(today);
         this.clocker();
         int max = dbOps.getMaxBillID();
@@ -772,6 +773,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         boolean flag = true;
 
                         if (rslt == 11) {
+
+
                             for (int k = 0; k < model2.getRowCount(); k++) {
                                 if (id == (int) model2.getValueAt(k, 2)) {
                                     flag = false;
@@ -781,6 +784,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
+                                nw2.b2.setVisible(false);
                                 model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
 
                             }
@@ -1096,6 +1100,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     boolean flag = true;
 
                     if (rslt == 11) {
+
+
                         for (int k = 0; k < model2.getRowCount(); k++) {
                             if (id == (int) model2.getValueAt(k, 2)) {
                                 flag = false;
@@ -1105,6 +1111,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
+                            nw2.b2.setVisible(false);
                             model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
 
                         }
@@ -1150,6 +1157,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
         int code = evt.getKeyCode();
+
         if (code == KeyEvent.VK_F2) {
             txtCash.requestFocusInWindow();
         }
