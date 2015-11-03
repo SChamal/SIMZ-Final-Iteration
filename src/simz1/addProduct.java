@@ -16,7 +16,9 @@ import static simz1.LoginFrame1.mhp;
  * @author DELL
  */
 public class addProduct extends javax.swing.JFrame {
-    DBOperations dbOps =new DBOperations();
+
+    DBOperations dbOps = new DBOperations();
+
     /**
      * Creates new form addProduct
      */
@@ -187,57 +189,74 @@ public class addProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        clearFields();  
+        clearFields();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        
-        if (txtType.getText().isEmpty() || txtName.getText().isEmpty() || txtReceivingPrice.getText().isEmpty() || txtSellingPrice.getText().isEmpty() || txtQtyLimit.getText().isEmpty() || txtIndicator.getText().isEmpty() || 
-            jXDatePicker1.getDate().toString().isEmpty()){
+
+        if (txtType.getText().isEmpty() || txtName.getText().isEmpty() || txtReceivingPrice.getText().isEmpty() || txtSellingPrice.getText().isEmpty() || txtQtyLimit.getText().isEmpty() || txtIndicator.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
             return;
-        }else{
-        ProductDetails pd = new ProductDetails();
-        
-        pd.setProductID(0);
-        pd.setProductType(txtType.getText());
-        pd.setProductName(txtName.getText());
-        pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));
-        pd.setSellingPrice(Double.parseDouble(txtSellingPrice.getText()));
-        SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        pd.setDate(javadate.format(jXDatePicker1.getDate()));
-        pd.setQtyLimit(Integer.parseInt(txtQtyLimit.getText()));
-        pd.setProductIndicator(txtIndicator.getText());
-        
-        boolean result = dbOps.addProduct(pd);
-        
-        if(result){
-            JOptionPane.showMessageDialog(this, "Product successfully added");
-            mhp.autoSuggest();
-            
-            mhp.Search.setSelectedIndex(-1);
-            clearFields();
-        }else{
-            JOptionPane.showMessageDialog(this, "Error occured while adding the product!!! ");
-            clearFields();
-        }
-        }
-        /*if(result==true){
-            pd.setProductID(Integer.parseInt(txtProductID.getText()));
+        } else {
+            ProductDetails pd = new ProductDetails();
+
+            pd.setProductID(0);
             pd.setProductType(txtType.getText());
             pd.setProductName(txtName.getText());
-            pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));
-            pd.setSellingPrice(Double.parseDouble(txtSellingPrice.getText()));
-            pd.setDate(txtExpiryDate.getText());
+            try {
+                Double receive = Double.parseDouble(txtReceivingPrice.getText());
+                pd.setReceivingPrice(receive);
+                Double sell = Double.parseDouble(txtSellingPrice.getText());
+                pd.setSellingPrice(sell);
+                int lmt = Integer.parseInt(txtQtyLimit.getText());
+                pd.setQtyLimit(lmt);
+                if (receive < 0 || sell < 0 || lmt < 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter only positive numbers!!!");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+
+                return;
+            }
+            SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            try {
+                String dte = javadate.format(jXDatePicker1.getDate());
+                pd.setDate(dte);
+            } catch (NullPointerException ex) {
+                pd.setDate("");
+            }
+
+            pd.setProductIndicator(txtIndicator.getText());
+
+            boolean result = dbOps.addProduct(pd);
+
+            if (result) {
+                JOptionPane.showMessageDialog(this, "Product successfully added");
+                mhp.autoSuggest();
+
+                mhp.Search.setSelectedIndex(-1);
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error occured while adding the product!!! ");
+                clearFields();
+            }
+        }
+        /*if(result==true){
+         pd.setProductID(Integer.parseInt(txtProductID.getText()));
+         pd.setProductType(txtType.getText());
+         pd.setProductName(txtName.getText());
+         pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));
+         pd.setSellingPrice(Double.parseDouble(txtSellingPrice.getText()));
+         pd.setDate(txtExpiryDate.getText());
             
-        }else{
+         }else{
         
-        }*/
-        
+         }*/
+
     }//GEN-LAST:event_btnAddProductActionPerformed
 
-    void clearFields(){
-        
+    void clearFields() {
+
         txtType.setText("");
         txtName.setText("");
         txtReceivingPrice.setText("");
@@ -246,6 +265,7 @@ public class addProduct extends javax.swing.JFrame {
         txtQtyLimit.setText("");
         txtIndicator.setText("");
     }
+
     /**
      * @param args the command line arguments
      */
