@@ -14,8 +14,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import static java.lang.Thread.sleep;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -24,13 +24,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -192,7 +191,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.dateLabel.setText(today);
         this.clocker();
         int max = dbOps.getMaxBillID();
-        this.billNo.setText(max + 1 + "");
+        this.billno.setText(max + 1 + "");
     }
 
     /**
@@ -234,7 +233,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         total = new javax.swing.JLabel();
         dateLabel = new javax.swing.JLabel();
         billLabel = new javax.swing.JLabel();
-        billNo = new javax.swing.JLabel();
+        billno = new javax.swing.JLabel();
         timeLabel = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -534,8 +533,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         billLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         billLabel.setText("Bill No:");
 
-        billNo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        billNo.setText("Bill No");
+        billno.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        billno.setText("Bill No");
 
         timeLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         timeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -566,7 +565,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(billLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -605,7 +604,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(billLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(billNo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1152,7 +1151,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } else {
             int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
             try {
-                quantity = Integer.parseInt(amount.getText().toString());
+                quantity = Integer.parseInt(amount.getText());
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
                 amount.setText("");
@@ -1224,6 +1223,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
                 ItemSelecter.setSelectedIndex(-1);
                 amount.setText(null);
+                BillingTable.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent ke) {
+                        int code = ke.getKeyCode();
+                        DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+                        int selectedRow = BillingTable.getSelectedRow();
+                        if ((code == KeyEvent.VK_DELETE) && (selectedRow != -1)) {
+                            int tot = (int) model.getValueAt(selectedRow, 3);
+                            int temp = Integer.parseInt(txtTotal.getText());
+                            txtTotal.setText(temp - tot + "");
+                            model.removeRow(selectedRow);
+                            rawNo--;
+                        }
+                    }
+                });
+
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Error occured while the transaction");
             }
@@ -1289,11 +1304,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                        boolean flag = true;
 
                         if (rslt == 11) {
-                            NotificationPopup nw2 = new NotificationPopup();
-                            nw2.main1("Quantity limit reached for " + prdctName);
-                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+                            for (int k = 0; k < model2.getRowCount(); k++) {
+                                if (id == (int) model2.getValueAt(k, 2)) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag == true) {
+                                NotificationPopup nw2 = new NotificationPopup();
+                                nw2.main1("Quantity limit reached for " + prdctName);
+                                model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+
+                            }
                         }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
@@ -1308,7 +1333,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     b1.recieve.setText(paymenti + "");
                     b1.balance.setText(balance + "");
                     int max1 = dbOps.getMaxBillID();
-                    b1.billNo.setText(max1 + 1 + "");
+                    b1.billnum.setText(max1 + 1 + "");
+                    b1.setSize(350, 500);
                     b1.setVisible(true);
                     b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -1323,7 +1349,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     rawNo = 0;
 
                     int max = dbOps.getMaxBillID();
-                    this.billNo.setText(max + 1 + "");
+                    this.billno.setText(max + 1 + "");
                 }
 
             }
@@ -1415,6 +1441,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     ItemSelecter.setSelectedIndex(-1);
                     ItemSelecter.requestFocusInWindow();
                     amount.setText(null);
+                    BillingTable.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyPressed(KeyEvent ke) {
+                            int code = ke.getKeyCode();
+                            DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+                            int selectedRow = BillingTable.getSelectedRow();
+                            if ((code == KeyEvent.VK_DELETE) && (selectedRow != -1)) {
+                                int tot = (int) model.getValueAt(selectedRow, 3);
+                                int temp = Integer.parseInt(txtTotal.getText());
+                                txtTotal.setText(temp - tot + "");
+                                model.removeRow(selectedRow);
+                                rawNo--;
+                            }
+                        }
+                    });
+
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
                 }
@@ -1472,11 +1514,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                    boolean flag = true;
 
                     if (rslt == 11) {
-                        NotificationPopup nw2 = new NotificationPopup();
-                        nw2.main1("Quantity limit reached for " + prdctName);
-                        model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+                        for (int k = 0; k < model2.getRowCount(); k++) {
+                            if (id == (int) model2.getValueAt(k, 2)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag == true) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
+                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+
+                        }
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -1491,7 +1543,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.recieve.setText(paymenti + "");
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
-                b1.billNo.setText(max1 + 1 + "");
+                b1.billnum.setText(max1 + 1 + "");
+                b1.setSize(350, 500);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -1506,7 +1559,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 rawNo = 0;
 
                 int max = dbOps.getMaxBillID();
-                this.billNo.setText(max + 1 + "");
+                this.billno.setText(max + 1 + "");
             }
 
         }
@@ -1670,7 +1723,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JComboBox Search;
     public javax.swing.JTextField amount;
     private javax.swing.JLabel billLabel;
-    private javax.swing.JLabel billNo;
+    private javax.swing.JLabel billno;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnCancel;

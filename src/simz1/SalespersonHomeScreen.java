@@ -769,11 +769,21 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                         dbOps.addTransaction_2(billNo, id, quantity);
                         int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                        boolean flag = true;
+
                         if (rslt == 11) {
-                            NotificationPopup nw2 = new NotificationPopup();
-                            nw2.main1("Quantity limit reached for " + prdctName);
-                            nw2.b2.setVisible(false);
-                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+                            for (int k = 0; k < model2.getRowCount(); k++) {
+                                if (id == (int) model2.getValueAt(k, 2)) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag == true) {
+                                NotificationPopup nw2 = new NotificationPopup();
+                                nw2.main1("Quantity limit reached for " + prdctName);
+                                model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+
+                            }
                         }
 
                         for (int j = 0; j < model.getRowCount(); j++) {
@@ -784,16 +794,16 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         }
 
                     }
-                    
+
                     b1.total.setText(amounti + "");
                     b1.recieve.setText(paymenti + "");
                     b1.balance.setText(balance + "");
                     int max1 = dbOps.getMaxBillID();
-                    b1.billNo.setText(max1 + 1 + "");
+                    b1.billnum.setText(max1 + 1 + "");
                     b1.setSize(350, 500);
                     b1.setVisible(true);
                     b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
-                    
+
                     for (int i = 0; i < BillingTable.getRowCount(); i++) {
                         for (int j = 0; j < 4; j++) {
                             BillingTable.setValueAt("", i, j);
@@ -904,6 +914,22 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     ItemSelecter.setSelectedIndex(-1);
                     ItemSelecter.requestFocusInWindow();
                     amount.setText(null);
+                    BillingTable.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyPressed(KeyEvent ke) {
+                            int code = ke.getKeyCode();
+                            DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+                            int selectedRow = BillingTable.getSelectedRow();
+                            if ((code == KeyEvent.VK_DELETE) && (selectedRow != -1)) {
+                                int tot = (int) model.getValueAt(selectedRow, 3);
+                                int temp = Integer.parseInt(txtTotal.getText());
+                                txtTotal.setText(temp - tot + "");
+                                model.removeRow(selectedRow);
+                                rawNo--;
+                            }
+                        }
+                    });
+
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this, "Error occured while the transaction");
                 }
@@ -993,6 +1019,22 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 }
                 ItemSelecter.setSelectedIndex(-1);
                 amount.setText(null);
+                BillingTable.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent ke) {
+                        int code = ke.getKeyCode();
+                        DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+                        int selectedRow = BillingTable.getSelectedRow();
+                        if ((code == KeyEvent.VK_DELETE) && (selectedRow != -1)) {
+                            int tot = (int) model.getValueAt(selectedRow, 3);
+                            int temp = Integer.parseInt(txtTotal.getText());
+                            txtTotal.setText(temp - tot + "");
+                            model.removeRow(selectedRow);
+                            rawNo--;
+                        }
+                    }
+                });
+
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Error occured while the transaction");
             }
@@ -1048,11 +1090,21 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     dbOps.addTransaction_2(billNo, id, quantity);
                     int rslt = dbOps.updateTodayStockByTransactions(id, quantity);
+                    boolean flag = true;
+
                     if (rslt == 11) {
-                        NotificationPopup nw2 = new NotificationPopup();
-                        nw2.main1("Quantity limit reached for " + prdctName);
-                        nw2.b2.setVisible(false);
-                        model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+                        for (int k = 0; k < model2.getRowCount(); k++) {
+                            if (id == (int) model2.getValueAt(k, 2)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag == true) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
+                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
+
+                        }
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -1068,7 +1120,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 b1.recieve.setText(paymenti + "");
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
-                b1.billNo.setText(max1 + 1 + "");
+                b1.billnum.setText(max1 + 1 + "");
                 b1.setSize(350, 500);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
