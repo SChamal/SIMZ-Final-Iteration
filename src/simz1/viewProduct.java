@@ -140,6 +140,11 @@ public class viewProduct extends javax.swing.JFrame {
         txtQty.setEditable(false);
 
         btnSave.setText("Save Changes");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -244,6 +249,7 @@ public class viewProduct extends javax.swing.JFrame {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         txtReceivingPrice.setEditable(true);
         txtSellingPrice.setEditable(true);
+        btnSave.setVisible(true);
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
@@ -276,6 +282,21 @@ public class viewProduct extends javax.swing.JFrame {
     private void btncancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncancelActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btncancelActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        double rPrice= Double.parseDouble(txtReceivingPrice.getText());
+        double sPrice= Double.parseDouble(txtSellingPrice.getText());
+        int id = Integer.parseInt(txtID.getText());
+        boolean result= dbOps.updateProductPrice(rPrice, sPrice, id);
+        if(result==true){
+            JOptionPane.showMessageDialog(this, "Prices updated successfully !");
+            txtReceivingPrice.setEditable(false);
+            txtSellingPrice.setEditable(false);
+            btnSave.setVisible(false);
+        }else{
+            JOptionPane.showMessageDialog(this, "Error occured ! Check the inserted values again !");
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments

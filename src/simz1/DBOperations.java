@@ -818,6 +818,36 @@ public class DBOperations {
             }
         }
     }
+    
+    boolean updateProductPrice(double rPrice, double sPrice, int id) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "UPDATE productdetails SET receivingPrice = ?, sellingPrice = ? WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setDouble(1, rPrice);//add values to the sql query
+            pst.setDouble(2, sPrice);//add values to the sql query
+            pst.setInt(3, id);//add values to the sql query
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
 
     ResultSet searchTodayStock() {
         try {
