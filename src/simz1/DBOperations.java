@@ -711,8 +711,8 @@ public class DBOperations {
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             while (rs.next()) {
-                if (!"".equals(rs.getString(1)) && rs.getInt(3) != 0) {
-
+                if (!(rs.getString(1)==null) && rs.getInt(3) != 0) {
+                    System.out.println(rs.getString(1));
                 } else {
                     String query1 = "DELETE FROM today_stock WHERE productID = ?";
                     pst = (PreparedStatement) con.prepareStatement(query1);
