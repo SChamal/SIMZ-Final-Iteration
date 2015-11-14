@@ -814,7 +814,7 @@
                             <Column editable="false" title="Product Name" type="java.lang.Object"/>
                             <Column editable="false" title="Date" type="java.lang.Object"/>
                             <Column editable="false" title="Time" type="java.lang.Object"/>
-                            <Column editable="true" title="Order Quantity" type="java.lang.Object"/>
+                            <Column editable="true" title="Order Quantity" type="java.lang.String"/>
                           </Table>
                         </Property>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">

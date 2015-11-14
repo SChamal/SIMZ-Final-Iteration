@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import sun.misc.JavaxSecurityAuthKerberosAccess;
 
 /**
  *
@@ -672,14 +673,14 @@ public class DBOperations {
         return null;
     }
 
-    boolean setTodayStock(int id, int date, int totl, int crnt, String dte, int tot) { // getting values changed by me
+    boolean setTodayStock(int id, String date, int totl, int crnt, String dte, int tot) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "INSERT INTO today_stock VALUES(?,?,?,?,?,?)";
             pst = (PreparedStatement) con.prepareStatement(query);
 
             pst.setInt(1, id);
-            pst.setInt(2, date);
+            pst.setString(2, date);
             pst.setInt(3, totl);
             pst.setInt(4, crnt);
             pst.setString(5, dte);
@@ -712,7 +713,7 @@ public class DBOperations {
             rs = pst.executeQuery();
             while (rs.next()) {
                 if (!(rs.getString(1)==null) && rs.getInt(3) != 0) {
-                    System.out.println(rs.getString(1));
+                    //System.out.println(rs.getString(1));
                 } else {
                     String query1 = "DELETE FROM today_stock WHERE productID = ?";
                     pst = (PreparedStatement) con.prepareStatement(query1);
@@ -760,12 +761,12 @@ public class DBOperations {
         return null;
     }
 
-    boolean updateTodayStockQty(int id, int date, int totl, int crnt, String dte, int tot) { // getting values changed by me
+    boolean updateTodayStockQty(int id, String date, int totl, int crnt, String dte, int tot) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "UPDATE today_stock SET currentDate = ?, totalreceivedQuantity = ?,expiryDate = ?, currentQuantity = ?, firstReceivedQty = ? WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
-            pst.setInt(1, date);
+            pst.setString(1, date);
             pst.setInt(2, totl);
             pst.setString(3, dte);
             pst.setInt(4, crnt);
