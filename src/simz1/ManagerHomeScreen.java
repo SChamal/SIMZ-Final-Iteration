@@ -14,12 +14,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,7 +31,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -41,7 +38,6 @@ import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
-//import java.util.Date;
 
 /**
  *
@@ -56,6 +52,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private boolean hide_flag = false;
     JTextField tx, tx2;
     public int rawNo = 0;
+    public static int orderRowNo;
 
     java.util.Date date = new java.util.Date();
     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -973,7 +970,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 true, false, false, false, false, false, true
@@ -1311,19 +1308,32 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            int date = 0;
+            //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
+            //java.util.Date dte = null;
+            String dateCrnt = today;
             String dte = "0000-00-00";
+            //java.sql.Date sqldte = null;
+
+            //sqldateCrnt = new java.sql.Date(dateCrnt.getDate());
+            //dte = new Date(0);
+            //sqldte = new java.sql.Date(dte.getDay());
+            //String dte = "0000-00-00";
             try {
                 //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+                if ("".equals(dte)) {
+                    dte = "0000-00-00";
+                }
+                //sqldte = new java.sql.Date(dte.getDay());
             } catch (NullPointerException ex) {
                 //System.out.println(ex);
             }
-            int crnt = 0,totl = 0;
+
+            int crnt = 0, totl = 0;
             try {
                 crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-                if(totl<0 || crnt<0){
+                if (totl < 0 || crnt < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter only positive numbers in quantity field!!!");
                     return;
                 }
@@ -1335,14 +1345,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 try {
                     crnt = totl + dbOps.getTodayStockQty(id).getInt(1);
 
-                    if ("".equals(dte)) {
+                    if ("0000-00-00".equals(dte)) {
                         dte = dbOps.getTodayStockQty(id).getString(3);
+                        //sqldte = new java.sql.Date(dte.getDay());
                     }
 
                 } catch (SQLException ex) {
                     System.out.println(ex);
                 }
-                boolean c = dbOps.updateTodayStockQty(id, date, totl, crnt, dte, totl);
+
+                boolean c = dbOps.updateTodayStockQty(id, dateCrnt, totl, crnt, dte, totl);
                 model.setValueAt(crnt, j, 5);
                 model.setValueAt(dte, j, 4);
                 model.setValueAt(totl, j, 6);
@@ -1352,7 +1364,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
             } else {
                 crnt = crnt + totl;
-                boolean ans = dbOps.setTodayStock(id, date, totl, crnt, dte, totl);
+                boolean ans = dbOps.setTodayStock(id, dateCrnt, totl, crnt, dte, totl);
                 model.setValueAt(crnt, j, 5);
                 model.setValueAt(totl, j, 6);
                 if (ans == false) {
@@ -1609,8 +1621,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    dbOps.addTransaction(time, today);
-                    int billNo = dbOps.getBillID(time, today);
+                    dbOps.addTransaction(timeLabel.getText(), today);
+                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
@@ -1633,7 +1645,24 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                         if (rslt == 11) {
                             for (int k = 0; k < model2.getRowCount(); k++) {
-                                if (id == (int) model2.getValueAt(k, 2)) {
+                                if (model2.getValueAt(k, 2) == null) {
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    break;
+                                }
+                                int id2 = 0;
+                                try {
+                                    //id2 = Integer.parseInt((String) model2.getValueAt(k, 2));
+                                    id2 = (int) model2.getValueAt(k, 2);
+                                } catch (NullPointerException ex) {
+                                    //flag = true;
+                                    //break;
+                                }/*catch(ClassCastException s){
+                                 flag = false;
+                                 id2 = (int) model2.getValueAt(k, 2);
+                                 }*/
+
+                                if (id == id2) {
                                     flag = false;
                                     break;
                                 }
@@ -1641,8 +1670,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
-                                model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
-
+                                //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                orderRowNo++;
                             }
                         }
 
@@ -1822,8 +1852,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                dbOps.addTransaction(time, today);
-                int billNo = dbOps.getBillID(time, today);
+                dbOps.addTransaction(timeLabel.getText(), today);
+                int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
@@ -1845,9 +1875,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     boolean flag = true;
 
                     if (rslt == 11) {
-
                         for (int k = 0; k < model2.getRowCount(); k++) {
-                            if (id == (int) model2.getValueAt(k, 2)) {
+                            if (model2.getValueAt(k, 2) == null) {
+                                orderRowNo = 0;
+                                flag = true;
+                                break;
+                            }
+                            int id2 = 0;
+                            try {
+                                id2 = (int) model2.getValueAt(k, 2);
+                            } catch (NullPointerException ex) {
+                               
+                            }
+
+                            if (id == id2) {
                                 flag = false;
                                 break;
                             }
@@ -1855,8 +1896,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
-                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
-
+                            //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                            model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                            orderRowNo++;
                         }
                     }
 

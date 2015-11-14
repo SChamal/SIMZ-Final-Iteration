@@ -5,7 +5,6 @@
  */
 package simz1;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -28,9 +27,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
-import static simz1.LoginFrame1.spi;
-import static simz1.ManagerHomeScreen.resizeImageIcon;
 import static simz1.LoginFrame1.mhp;
+import static simz1.LoginFrame1.spi;
+import static simz1.ManagerHomeScreen.orderRowNo;
+import static simz1.ManagerHomeScreen.resizeImageIcon;
 
 /**
  *
@@ -175,7 +175,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jComboBoxSearch.setSelectedIndex(-1);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
         this.ItemSelecter.requestFocusInWindow();
-
 
         this.dateLabel.setText(today);
         this.clocker();
@@ -751,8 +750,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
 
-                    dbOps.addTransaction(time, today);
-                    int billNo = dbOps.getBillID(time, today);
+                    dbOps.addTransaction(timeLabel.getText(), today);
+                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                     DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                     DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
@@ -773,10 +772,20 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         boolean flag = true;
 
                         if (rslt == 11) {
-
-
                             for (int k = 0; k < model2.getRowCount(); k++) {
-                                if (id == (int) model2.getValueAt(k, 2)) {
+                                if (model2.getValueAt(k, 2) == null) {
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    break;
+                                }
+                                int id2 = 0;
+                                try {
+                                    id2 = (int) model2.getValueAt(k, 2);
+                                } catch (NullPointerException ex) {
+
+                                }
+
+                                if (id == id2) {
                                     flag = false;
                                     break;
                                 }
@@ -785,8 +794,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
                                 nw2.b2.setVisible(false);
-                                model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
-
+                                //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                orderRowNo++;
                             }
                         }
 
@@ -1078,8 +1088,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
 
-                dbOps.addTransaction(time, today);
-                int billNo = dbOps.getBillID(time, today);
+                dbOps.addTransaction(timeLabel.getText(), today);
+                int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                 DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
@@ -1101,9 +1111,20 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     if (rslt == 11) {
 
-
                         for (int k = 0; k < model2.getRowCount(); k++) {
-                            if (id == (int) model2.getValueAt(k, 2)) {
+                            if (model2.getValueAt(k, 2) == null) {
+                                orderRowNo = 0;
+                                flag = true;
+                                break;
+                            }
+                            int id2 = 0;
+                            try {
+                                id2 = (int) model2.getValueAt(k, 2);
+                            } catch (NullPointerException ex) {
+
+                            }
+
+                            if (id == id2) {
                                 flag = false;
                                 break;
                             }
@@ -1112,8 +1133,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
                             nw2.b2.setVisible(false);
-                            model2.addRow(new Object[]{false, 01, id, prdctName, today, time, 0, 0});
-
+                            //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                            model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                            orderRowNo++;
                         }
                     }
 
