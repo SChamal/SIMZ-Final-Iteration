@@ -59,7 +59,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     String time = sdf.format(date);
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
     String today = sdf2.format(date);
-
+    
     public void clocker() {
         class Listner implements ActionListener {
 
@@ -350,6 +350,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         txtAmount = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
         btnProfit = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -818,8 +821,24 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jScrollPane5.setViewportView(tblIncome);
 
         btnTotalIncome.setText("Calculate Total Income ");
+        btnTotalIncome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTotalIncomeActionPerformed(evt);
+            }
+        });
 
         btnTotalExpences.setText("Calculate Total Expences");
+        btnTotalExpences.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTotalExpencesActionPerformed(evt);
+            }
+        });
+
+        txtTotalIncome.setEditable(false);
+
+        txtTotalExpences.setEditable(false);
+
+        txtProfit.setEditable(false);
 
         btnGenerateReport.setText("Generate Account Report");
 
@@ -884,6 +903,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         );
 
         btnProfit.setText("Calculate Profit");
+        btnProfit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProfitActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Rs. ");
+
+        jLabel15.setText("Rs. ");
+
+        jLabel16.setText("Rs. ");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -902,7 +932,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     .addComponent(btnTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnTotalExpences, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                                     .addComponent(btnProfit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(38, 38, 38)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel14)
+                                        .addComponent(jLabel15))
+                                    .addComponent(jLabel16))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtTotalExpences)
                                     .addComponent(txtProfit)
@@ -922,15 +958,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addGap(45, 45, 45)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTotalIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnTotalIncome))
+                            .addComponent(btnTotalIncome)
+                            .addComponent(jLabel14))
                         .addGap(14, 14, 14)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnTotalExpences)
-                            .addComponent(txtTotalExpences, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtTotalExpences, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel15))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtProfit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnProfit))
+                            .addComponent(btnProfit)
+                            .addComponent(jLabel16))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnGenerateReport, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -2089,6 +2128,41 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtDescriptionKeyPressed
 
+    private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
+        int rows = tblIncome.getRowCount();
+        int totalIncome=0;
+        for(int i=0;i<rows;i++){
+            
+            if(tblIncome.getValueAt(i, 1)!=null){
+                totalIncome=totalIncome+Integer.parseInt((String) tblIncome.getValueAt(i, 1));
+            }else{
+                totalIncome=totalIncome+0;
+            }
+        }
+        txtTotalIncome.setText(Integer.toString(totalIncome));
+    }//GEN-LAST:event_btnTotalIncomeActionPerformed
+
+    private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
+        int rows = tblIncome.getRowCount();
+        int totalExpences=0;
+        for(int i=0;i<rows;i++){
+            
+            if(tblIncome.getValueAt(i, 2)!=null){                
+                totalExpences=totalExpences+Integer.parseInt(tblIncome.getValueAt(i, 2).toString());
+            }else{
+                totalExpences=totalExpences+0;
+            }
+        }
+        txtTotalExpences.setText(Integer.toString(totalExpences));
+    }//GEN-LAST:event_btnTotalExpencesActionPerformed
+
+    private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
+        int income= Integer.parseInt(txtTotalIncome.getText());
+        int expence= Integer.parseInt(txtTotalExpences.getText());
+        int profit= income-expence;
+        txtProfit.setText(Integer.toString(profit));
+    }//GEN-LAST:event_btnProfitActionPerformed
+
     /**
      * @return the name1
      */
@@ -2188,6 +2262,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
