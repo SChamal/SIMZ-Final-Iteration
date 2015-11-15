@@ -827,7 +827,19 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         jLabel12.setText("Description ");
 
-        jLabel13.setText("Amount (Rs) ");
+        txtDescription.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDescriptionKeyPressed(evt);
+            }
+        });
+
+        jLabel13.setText("Amount (Rs.) ");
+
+        txtAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAmountKeyPressed(evt);
+            }
+        });
 
         btnAdd.setText("Add");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -886,10 +898,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btnTotalExpences)
-                                    .addComponent(btnTotalIncome, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnProfit, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnTotalExpences, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                                    .addComponent(btnProfit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(38, 38, 38)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtTotalExpences)
@@ -2038,13 +2050,44 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnRefillActionPerformed
-
+    IncomeTableModel incomeModel = new IncomeTableModel();
+    
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         
         String description =  txtDescription.getText();
         int amount = Integer.parseInt(txtAmount.getText());
         
+        tblIncome.setModel(incomeModel);       
+        incomeModel.addRow(new Object[]{ description, null, amount});  
+        
+        txtDescription.setText("");
+        txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String description =  txtDescription.getText();
+            int amount = Integer.parseInt(txtAmount.getText());
+
+            tblIncome.setModel(incomeModel);       
+            incomeModel.addRow(new Object[]{ description, null, amount});  
+
+            txtDescription.setText("");
+            txtAmount.setText("");
+            
+            txtDescription.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_txtAmountKeyPressed
+
+    private void txtDescriptionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescriptionKeyPressed
+        int code = evt.getKeyCode();
+        if (code== KeyEvent.VK_ENTER) {
+            txtAmount.requestFocusInWindow();
+        }
+        if (code== KeyEvent.VK_TAB) {
+            txtAmount.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_txtDescriptionKeyPressed
 
     /**
      * @return the name1

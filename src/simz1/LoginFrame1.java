@@ -69,6 +69,11 @@ public class LoginFrame1 extends javax.swing.JFrame {
         getContentPane().add(user);
         user.setBounds(300, 330, 130, 14);
 
+        txtUserName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUserNameActionPerformed(evt);
+            }
+        });
         txtUserName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtUserNameKeyPressed(evt);
@@ -269,6 +274,10 @@ public class LoginFrame1 extends javax.swing.JFrame {
             txtPassword.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtUserNameKeyPressed
+
+    private void txtUserNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUserNameActionPerformed
 
     /**
      * @param args the command line arguments

@@ -677,10 +677,10 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="btnTotalExpences" min="-2" max="-2" attributes="0"/>
-                                          <Component id="btnTotalIncome" min="-2" pref="153" max="-2" attributes="0"/>
-                                          <Component id="btnProfit" min="-2" pref="153" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="btnTotalIncome" alignment="1" max="32767" attributes="0"/>
+                                          <Component id="btnTotalExpences" alignment="1" pref="165" max="32767" attributes="0"/>
+                                          <Component id="btnProfit" alignment="1" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -858,13 +858,19 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtDescription">
+                  <Events>
+                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDescriptionKeyPressed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel13">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Amount (Rs) "/>
+                    <Property name="text" type="java.lang.String" value="Amount (Rs.) "/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtAmount">
+                  <Events>
+                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtAmountKeyPressed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAdd">
                   <Properties>
