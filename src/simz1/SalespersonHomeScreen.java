@@ -141,7 +141,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             tx.setText(str);
                             ViewProductForSP vpSP = new ViewProductForSP(str);
                             vpSP.setVisible(true);
-
+                            vpSP.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                            return;
+                        }else if(str.equals(tx.getText())){
+                            ViewProductForSP vpSP = new ViewProductForSP(str);
+                            vpSP.setVisible(true);
                             vpSP.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
                         }
@@ -230,6 +234,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         timeLabel = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         dateLabel = new javax.swing.JLabel();
+        btnDeletePrdct = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -496,6 +501,13 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         dateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         dateLabel.setText("Date");
 
+        btnDeletePrdct.setText("Delete Product");
+        btnDeletePrdct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletePrdctActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -528,7 +540,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(btnDeletePrdct)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
@@ -563,7 +577,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDeletePrdct))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
@@ -572,7 +588,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBalance)
                     .addComponent(txtBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Transactions  ", jPanel3);
@@ -830,9 +846,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     int max = dbOps.getMaxBillID();
                     this.billno.setText(max + 1 + "");
+                    ItemSelecter.requestFocusInWindow();
                 } else if (result == JOptionPane.NO_OPTION) {
                     txtCash.setText("");
                     txtBalance.setText("");
+                    ItemSelecter.requestFocusInWindow();
                 }
 
             }
@@ -944,6 +962,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                                 model.removeRow(selectedRow);
                                 rawNo--;
                             }
+                            ItemSelecter.requestFocusInWindow();
                         }
                     });
 
@@ -1049,6 +1068,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
                             rawNo--;
                         }
+                        ItemSelecter.requestFocusInWindow();
                     }
                 });
 
@@ -1169,21 +1189,32 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                 int max = dbOps.getMaxBillID();
                 this.billno.setText(max + 1 + "");
+                ItemSelecter.requestFocusInWindow();
             } else if (result == JOptionPane.NO_OPTION) {
                 txtCash.setText("");
                 txtBalance.setText("");
+                ItemSelecter.requestFocusInWindow();
             }
 
         }
     }//GEN-LAST:event_btnBalanceActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
-        int code = evt.getKeyCode();
-
-        if (code == KeyEvent.VK_F2) {
-            txtCash.requestFocusInWindow();
-        }
+        
     }//GEN-LAST:event_ItemSelecterKeyPressed
+
+    private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed
+        DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+        int selectedRow = BillingTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int tot = (int) model.getValueAt(selectedRow, 3);
+            int temp = Integer.parseInt(txtTotal.getText());
+            txtTotal.setText(temp - tot + "");
+            model.removeRow(selectedRow);
+            rawNo--;
+        }
+        ItemSelecter.requestFocusInWindow();
+    }//GEN-LAST:event_btnDeletePrdctActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1227,6 +1258,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     public javax.swing.JTextField amount;
     private javax.swing.JLabel billno;
     private javax.swing.JButton btnBalance;
+    private javax.swing.JButton btnDeletePrdct;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnLogOut1;
     private javax.swing.JButton btnOK;
@@ -1261,7 +1293,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;
-    private javax.swing.JTextField txtCash;
+    public javax.swing.JTextField txtCash;
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }

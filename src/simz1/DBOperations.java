@@ -553,6 +553,35 @@ public class DBOperations {
         }
     }
 
+    boolean promoteUser(String desig, int id) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "UPDATE employeedetails SET designation = ? WHERE emp_id = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setString(1, desig);//add values to the sql query
+            pst.setInt(2, id);//add values to the sql query
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+    
     /*boolean addToUsersTable(){
      try{
      con = (Connection) DriverManager.getConnection(url, username, password);//get the connection

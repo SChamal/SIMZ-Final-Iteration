@@ -5,7 +5,6 @@
  */
 package simz1;
 
-
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -25,13 +24,14 @@ import static simz1.LoginFrame1.spi;
 import sun.util.calendar.CalendarUtils;
 
 class AutoSuggest {
+
     DBOperations dbOps = new DBOperations();
     Vector<String> v = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx;
 
     public void autoSuggest(final JComboBox Search) {
-        
+
         Search.removeAllItems();
         try {
             ResultSet rst = dbOps.getTodayProducts();
@@ -69,13 +69,13 @@ class AutoSuggest {
                         String text = tx.getText();
                         if (text.length() == 0) {
                             Search.hidePopup();
-                            setModel(new DefaultComboBoxModel(v), "",Search);
+                            setModel(new DefaultComboBoxModel(v), "", Search);
                         } else {
                             DefaultComboBoxModel m = getSuggestedModel(v, text);
                             if (m.getSize() == 0) {
                                 Search.hidePopup();
                             } else {
-                                setModel(m, text,Search);
+                                setModel(m, text, Search);
                                 Search.showPopup();
                             }
                         }
@@ -87,6 +87,10 @@ class AutoSuggest {
             public void keyPressed(KeyEvent ke) {
                 String txt = tx.getText();
                 int code = ke.getKeyCode();
+                if (code == KeyEvent.VK_F2) {
+                    mhp.txtCash.requestFocusInWindow();
+                    spi.txtCash.requestFocusInWindow();
+                }
                 if (code == KeyEvent.VK_ESCAPE) {
                     hide_flag = true;
                 } else if (code == KeyEvent.VK_ENTER) {
@@ -97,7 +101,11 @@ class AutoSuggest {
                             mhp.amount.requestFocusInWindow();
                             spi.amount.requestFocusInWindow();
                             return;
-                            
+
+                        } else if (str.equals(tx.getText())) {
+                            mhp.amount.requestFocusInWindow();
+                            spi.amount.requestFocusInWindow();
+                            return;
                         }
                     }
                 }
@@ -106,12 +114,12 @@ class AutoSuggest {
         });
     }
 
-    private void setModel(DefaultComboBoxModel mdl, String str,JComboBox Search) {
+    private void setModel(DefaultComboBoxModel mdl, String str, JComboBox Search) {
         Search.setModel(mdl);
         tx.setText(str);
     }
 
-    private DefaultComboBoxModel getSuggestedModel(List<String> list,String txt) {
+    private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
         DefaultComboBoxModel m = new DefaultComboBoxModel();
         for (String s : list) {
             if (s.toLowerCase().startsWith(txt)) {
@@ -120,6 +128,5 @@ class AutoSuggest {
         }
         return m;
     }
-    
-    
+
 }
