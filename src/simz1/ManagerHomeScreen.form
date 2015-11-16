@@ -675,32 +675,25 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="btnTotalIncome" alignment="1" max="32767" attributes="0"/>
-                                          <Component id="btnTotalExpences" alignment="1" pref="165" max="32767" attributes="0"/>
-                                          <Component id="btnProfit" alignment="1" max="32767" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="txtTotalExpences" max="32767" attributes="0"/>
-                                          <Component id="txtProfit" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="txtTotalIncome" min="-2" pref="235" max="-2" attributes="0"/>
-                                      </Group>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="btnTotalIncome" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="btnTotalExpences" alignment="1" pref="165" max="32767" attributes="0"/>
+                                  <Component id="btnProfit" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="btnGenerateReport" min="-2" pref="176" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="txtTotalExpences" max="32767" attributes="0"/>
+                                  <Component id="txtProfit" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtTotalIncome" pref="235" max="32767" attributes="0"/>
+                                  <Component id="btnGenerateReport" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
