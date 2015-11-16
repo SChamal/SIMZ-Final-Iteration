@@ -20,20 +20,23 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 import static simz1.LoginFrame1.mhp;
@@ -53,6 +56,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     JTextField tx, tx2;
     public int rawNo = 0;
     public static int orderRowNo;
+    JComboBox combodesig = new JComboBox();
 
     java.util.Date date = new java.util.Date();
     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -153,6 +157,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             vw.setVisible(true);
                             vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                             return;
+                        } else if (str.equals(tx.getText())) {
+                            viewProduct vw = new viewProduct(str);
+                            vw.setVisible(true);
+                            vw.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                            return;
                         }
                     }
                 }
@@ -229,11 +238,41 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 ResultSet rst = dbOps.viewStock2(str);
                                 DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
                                 if (rst.next()) {
-                                    model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
+                                    boolean flag2 = true;
+                                    for (int k = 0; k < model.getRowCount(); k++) {
+                                        if (model.getValueAt(k, 2).equals(str)) {
+                                            flag2 = false;
+                                        }
+                                    }
+                                    if (flag2 == true) {
+                                        model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
+                                    }
+                                    //jcomboAddTodaysStock.setSelectedIndex(-1);
                                 }
                                 return;
                             } catch (SQLException ex) {
-                                Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+
+                            }
+                        } else if (str.equals(tx.getText())) {
+                            try {
+                                DefaultTableModel model = (DefaultTableModel) tableProduct.getModel();
+                                ResultSet rst = dbOps.viewStock2(str);
+                                DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+                                if (rst.next()) {
+                                    boolean flag3 = true;
+                                    for (int k = 0; k < model.getRowCount(); k++) {
+                                        if (model.getValueAt(k, 2).equals(str)) {
+                                            flag3 = false;
+                                        }
+                                    }
+                                    if (flag3 == true) {
+                                        model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
+                                    }
+                                    //jcomboAddTodaysStock.setSelectedIndex(-1);
+                                }
+                                return;
+                            } catch (SQLException ex) {
+
                             }
                         }
                     }
@@ -275,8 +314,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
+        /*JTable tblUsers2 = new JTable() {
+         public boolean isCellEditatable(int row, int column) {
+         return column == 4;
+         }
+         };*/
         ResultSet rst = dbOps.viewUser();
         tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+        combodesig.addItem("Manager");
+        combodesig.addItem("Sales Person");
+        tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
+        for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
+            TableCellEditor ce = tblUsers.getDefaultEditor(c);
+            if (ce instanceof DefaultCellEditor) {
+                ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
+            }
+        }
         //this.Search.requestFocusInWindow();
         /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
          "Jordina", "Jorge", "Sergi" });
@@ -334,6 +387,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         timeLabel = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        btnDeletePrdct = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -350,6 +404,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         tblUsers = new javax.swing.JTable();
         btnNewUser = new javax.swing.JButton();
         btnRemoveUser = new javax.swing.JButton();
+        btnSaveUser = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         name = new javax.swing.JLabel();
@@ -672,11 +727,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Time:");
+        jLabel10.setText("Date");
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Date:");
+        jLabel11.setText("Time");
+
+        btnDeletePrdct.setText("Delete Product");
+        btnDeletePrdct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletePrdctActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -710,7 +772,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(btnDeletePrdct)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
@@ -745,7 +809,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDeletePrdct))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
@@ -754,7 +820,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBalance)
                     .addComponent(txtBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Transactions  ", jPanel2);
@@ -954,30 +1020,44 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        btnSaveUser.setText("Save Changes");
+        btnSaveUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveUserActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout usersLayout = new javax.swing.GroupLayout(users);
         users.setLayout(usersLayout);
         usersLayout.setHorizontalGroup(
             usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(usersLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                 .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNewUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRemoveUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(usersLayout.createSequentialGroup()
+                        .addComponent(btnSaveUser)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(usersLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnNewUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRemoveUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         usersLayout.setVerticalGroup(
             usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(usersLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(usersLayout.createSequentialGroup()
                         .addComponent(btnNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
                         .addComponent(btnRemoveUser, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(412, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnSaveUser)
+                .addContainerGap(371, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Users ", users);
@@ -1416,6 +1496,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             model.removeRow(selectedRow);
                             rawNo--;
                         }
+                        ItemSelecter.requestFocusInWindow();
                     }
                 });
 
@@ -1548,9 +1629,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     int max = dbOps.getMaxBillID();
                     this.billno.setText(max + 1 + "");
+                    ItemSelecter.requestFocusInWindow();
                 } else if (result == JOptionPane.NO_OPTION) {
                     txtCash.setText("");
                     txtBalance.setText("");
+                    ItemSelecter.requestFocusInWindow();
                 }
 
             }
@@ -1568,7 +1651,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
                 try {
-                    quantity = Integer.parseInt(amount.getText().toString());
+                    quantity = Integer.parseInt(amount.getText());
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
                     amount.setText("");
@@ -1611,8 +1694,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     BillingTable.setValueAt(b, i, 1);
                                     BillingTable.setValueAt(quantity, i, 2);
                                     txtTotal.setText(String.valueOf(Integer.parseInt(txtTotal.getText()) + a * quantity - (oldQuantity * a)));
+                                    amount.setText("");
                                     ItemSelecter.setSelectedIndex(-1);
-                                    amount.setText(null);
                                     return;
                                 }
                             }
@@ -1639,9 +1722,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         }
 
                     }
+                    amount.setText("");
                     ItemSelecter.setSelectedIndex(-1);
                     ItemSelecter.requestFocusInWindow();
-                    amount.setText(null);
                     BillingTable.addKeyListener(new KeyAdapter() {
                         @Override
                         public void keyPressed(KeyEvent ke) {
@@ -1655,6 +1738,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 model.removeRow(selectedRow);
                                 rawNo--;
                             }
+                            ItemSelecter.requestFocusInWindow();
                         }
                     });
 
@@ -1728,7 +1812,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             try {
                                 id2 = (int) model2.getValueAt(k, 2);
                             } catch (NullPointerException ex) {
-                               
+
                             }
 
                             if (id == id2) {
@@ -1774,9 +1858,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 int max = dbOps.getMaxBillID();
                 this.billno.setText(max + 1 + "");
+                ItemSelecter.requestFocusInWindow();
             } else if (result == JOptionPane.NO_OPTION) {
                 txtCash.setText("");
                 txtBalance.setText("");
+                ItemSelecter.requestFocusInWindow();
             }
 
         }
@@ -1882,6 +1968,33 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRefillActionPerformed
 
+    private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed
+        DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+        int selectedRow = BillingTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int tot = (int) model.getValueAt(selectedRow, 3);
+            int temp = Integer.parseInt(txtTotal.getText());
+            txtTotal.setText(temp - tot + "");
+            model.removeRow(selectedRow);
+            rawNo--;
+        }
+        ItemSelecter.requestFocusInWindow();
+    }//GEN-LAST:event_btnDeletePrdctActionPerformed
+
+    private void btnSaveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUserActionPerformed
+        boolean result = true;
+        for (int i = 0; i < tblUsers.getRowCount(); i++) {
+            String desig = (String) tblUsers.getValueAt(i, 4);
+            int id = (int) tblUsers.getValueAt(i, 0);
+            result = dbOps.promoteUser(desig, id);
+        }
+        if (result == false) {
+            JOptionPane.showMessageDialog(this, "Error occured while changing the designation");
+        } else {
+            JOptionPane.showMessageDialog(this, "User successfully promoted");
+        }
+    }//GEN-LAST:event_btnSaveUserActionPerformed
+
     /**
      * @return the name1
      */
@@ -1960,6 +2073,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnDeletePrdct;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnNewUser;
     private javax.swing.JButton btnOK;
@@ -1968,6 +2082,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnRemoveUser;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSaveChanges;
+    private javax.swing.JButton btnSaveUser;
     private javax.swing.JButton btnSetStock;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JButton jButton1;
@@ -2009,7 +2124,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel total;
     private javax.swing.JTextField txtBalance;
-    private javax.swing.JTextField txtCash;
+    public javax.swing.JTextField txtCash;
     private javax.swing.JTextField txtTotal;
     public javax.swing.JPanel users;
     // End of variables declaration//GEN-END:variables
