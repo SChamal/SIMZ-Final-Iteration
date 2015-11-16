@@ -933,6 +933,19 @@ public class DBOperations {
         }
 
     }
+    ResultSet combineAfternoonStockAndStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT a.productID,p.productName,a.totalreceivedQuantity from afternoon_stock a ,productdetails p where (p.productID=a.productID) ";
+            pst = (PreparedStatement) con.prepareStatement(query);           
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
     
     ResultSet getProducts() {
         try {
