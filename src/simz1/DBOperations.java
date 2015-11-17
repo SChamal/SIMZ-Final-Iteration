@@ -849,15 +849,16 @@ public class DBOperations {
         }
     }
     
-    boolean updateProductPrice(double rPrice, double sPrice, int id) {
+    boolean updateProductPrice(double rPrice, double sPrice,int Qlimit, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
-            String query = "UPDATE productdetails SET receivingPrice = ?, sellingPrice = ? WHERE productID = ?";
+            String query = "UPDATE productdetails SET receivingPrice = ?, sellingPrice = ?,quantityLimit=? WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
 
             pst.setDouble(1, rPrice);//add values to the sql query
             pst.setDouble(2, sPrice);//add values to the sql query
-            pst.setInt(3, id);//add values to the sql query
+            pst.setInt(3, Qlimit);
+            pst.setInt(4, id);//add values to the sql query
 
             pst.executeUpdate();//execute the sql query and insert the values to the db table
             return true;
@@ -933,6 +934,19 @@ public class DBOperations {
         }
 
     }
+    ResultSet combineAfternoonStockAndStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT a.productID,p.productName,a.totalreceivedQuantity from afternoon_stock a ,productdetails p where (p.productID=a.productID) ";
+            pst = (PreparedStatement) con.prepareStatement(query);           
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
     
     ResultSet getProducts() {
         try {
@@ -965,7 +979,7 @@ public class DBOperations {
     ResultSet viewStock2(String productName) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT productID,productType,productName,receivingPrice, sellingPrice,expiryDate FROM productdetails WHERE productName = ?";
+            String query = "SELECT productID,productType,productName,receivingPrice, sellingPrice,expiryDate,quantityLimit FROM productdetails WHERE productName = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setString(1, productName);
             rs = pst.executeQuery();
@@ -1207,5 +1221,49 @@ public class DBOperations {
         }
         return -1;
     }
+    
+    boolean addToIncomeAndExpenditure(int id, String descript,float credit,float debit) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "INSERT INTO income_expenditure  VALUES(?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
 
+            pst.setInt(1, id);//add values to the sql query
+            pst.setString(2, descript);//add values to the sql query
+            pst.setFloat(3, credit);
+            pst.setFloat(4, debit);
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+
+    }
+
+ResultSet getIAndExpences() { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Description,Credit,	Debit FROM income_expenditure ";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
 }

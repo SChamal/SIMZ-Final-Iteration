@@ -45,7 +45,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
-import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.table.DatePickerCellEditor;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
@@ -62,7 +61,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo = 0;
+    public int rawNo,incmRaw = 0;
     public static int orderRowNo;
     JComboBox combodesig = new JComboBox();
 
@@ -311,27 +310,62 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }
 
     public ManagerHomeScreen() {
-        initComponents();
-        this.btnReset.setVisible(false);
-        this.btnSaveChanges.setVisible(false);
-        autoSuggest();
-        autoSuggest2();
-        Search.setSelectedIndex(-1);
-
-        jcomboAddTodaysStock.setSelectedIndex(-1);
-
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
-
-        ResultSet rst = dbOps.viewUser();
-        tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
-        combodesig.addItem("Manager");
-        combodesig.addItem("Sales Person");
-        tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
-        for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
-            TableCellEditor ce = tblUsers.getDefaultEditor(c);
-            if (ce instanceof DefaultCellEditor) {
-                ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
+        try {
+            initComponents();
+            this.btnReset.setVisible(false);
+            this.btnSaveChanges.setVisible(false);
+            autoSuggest();
+            autoSuggest2();
+            Search.setSelectedIndex(-1);
+            
+            // Get income and expenditure data to the table
+            tblIncome.setModel(incomeModel);
+            ResultSet rs=dbOps.getIAndExpences();
+            while(rs.next()){
+                String Descript =rs.getString(1);
+                float Credit =Float.parseFloat(rs.getString(2));
+                float Debit =Float.parseFloat(rs.getString(3));
+                if (Credit==0.0){
+                    incomeModel.addRow(new Object[]{ Descript,null , Debit});
+                }else if(Debit==0.0){
+                    incomeModel.addRow(new Object[]{ Descript,Credit , null});
+                }else
+                    incomeModel.addRow(new Object[]{ Descript,Credit , Debit});
+                
             }
+            
+            jcomboAddTodaysStock.setSelectedIndex(-1);
+            
+            setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
+            
+            
+            /*JTable tblUsers2 = new JTable() {
+            public boolean isCellEditatable(int row, int column) {
+            return column == 4;
+            }
+            };*/
+            ResultSet rst = dbOps.viewUser();
+            tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+            combodesig.addItem("Manager");
+            combodesig.addItem("Sales Person");
+            tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
+            for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
+                TableCellEditor ce = tblUsers.getDefaultEditor(c);
+                if (ce instanceof DefaultCellEditor) {
+                    ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
+                }
+            }
+            //this.Search.requestFocusInWindow();
+            /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
+            "Jordina", "Jorge", "Sergi" });
+            AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
+            setMorningStock();
+            this.dateLabel.setText(today);
+            this.clocker();
+            int max = dbOps.getMaxBillID();
+            this.billno.setText(max + 1 + "");
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
         //this.Search.requestFocusInWindow();
         setMorningStock();
@@ -344,6 +378,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.clocker();
         int max = dbOps.getMaxBillID();
         this.billno.setText(max + 1 + "");
+
     }
 
     /**
@@ -997,26 +1032,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(btnTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnTotalExpences, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                                    .addComponent(btnProfit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel14)
-                                        .addComponent(jLabel15))
-                                    .addComponent(jLabel16))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtTotalExpences)
-                                    .addComponent(txtProfit)
-                                    .addComponent(txtTotalIncome, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(btnGenerateReport, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)))))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTotalExpences, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                            .addComponent(btnProfit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel14)
+                                .addComponent(jLabel15))
+                            .addComponent(jLabel16))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtTotalExpences)
+                            .addComponent(txtProfit)
+                            .addComponent(txtTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                            .addComponent(btnGenerateReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -1563,8 +1594,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 System.out.println(ex);
             }
         }
-        JOptionPane.showMessageDialog(this, "Todays Stock has been created successfully");
-
+        
+        DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
+        ResultSet rst=dbOps.combineAfternoonStockAndStock();
+        int orderTableRows = 0;
+        try {
+            while(rst.next()){
+                modelOrder.insertRow(orderTableRows,new Object[]{false,1,rst.getInt(1),rst.getString(2),today,time,rst.getString(3)});
+                orderTableRows++;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            mhp.jTabbedPane1.setSelectedIndex(2);
+        }
+        else {
+           return;
+        }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -1762,6 +1811,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (result == JOptionPane.YES_OPTION) {
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                    
+                    //add data of the transaction to the income and expenditure
+                    tblIncome.setModel(incomeModel);
+                    String descript = "bill "+ Integer.toString(billNo);
+                    incomeModel.addRow(new Object[]{ descript,amounti , null}); 
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
@@ -1996,6 +2050,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             if (result == JOptionPane.YES_OPTION) {
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                
+                 //add data of the transaction to the income and expenditure table in database and the interface
+                 tblIncome.setModel(incomeModel);
+                 String descript = "bill "+ Integer.toString(billNo); 
+                 int userID = dbOps.getID(name1.getText());
+                 incomeModel.addRow(new Object[]{ descript,amounti , null});
+                 dbOps.addToIncomeAndExpenditure(userID,descript,amounti,0);
 
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
@@ -2038,9 +2099,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
-                            //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                            model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                            orderRowNo++;
+                            boolean checkOrder = true;
+                            for(int k=0;k<=model2.getRowCount();k++){
+                                if(model2.getValueAt(k, 2).equals(id)){
+                                    checkOrder=false;
+                                }
+                            }
+                            if(checkOrder=true){
+                                model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                orderRowNo++;
+                            }
+                           
                         }
                     }
 
@@ -2182,16 +2251,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnRefillActionPerformed
-    IncomeTableModel incomeModel = new IncomeTableModel();
 
+    // set table model for the income and expenditure table
+        IncomeTableModel incomeModel = new IncomeTableModel();
+        
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-
-        String description = txtDescription.getText();
-        int amount = Integer.parseInt(txtAmount.getText());
-
         tblIncome.setModel(incomeModel);
-        incomeModel.addRow(new Object[]{description, null, amount});
-
+        String description =  txtDescription.getText();
+        int amount = Integer.parseInt(txtAmount.getText());       
+        mhp.incomeModel.addRow(new Object[]{ description, null, amount});  
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2223,30 +2291,31 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalIncome = 0;
-        for (int i = 0; i < rows; i++) {
-
-            if (tblIncome.getValueAt(i, 1) != null) {
-                totalIncome = totalIncome + Integer.parseInt((String) tblIncome.getValueAt(i, 1));
-            } else {
-                totalIncome = totalIncome + 0;
+        float totalIncome=0;
+        for(int i=0;i<rows;i++){
+            
+            if(tblIncome.getValueAt(i, 1)!=null){
+                totalIncome=totalIncome+Float.parseFloat((String) tblIncome.getValueAt(i, 1));
+            }else{
+                totalIncome=totalIncome+0;
             }
         }
-        txtTotalIncome.setText(Integer.toString(totalIncome));
+        txtTotalIncome.setText(Float.toString(totalIncome));
     }//GEN-LAST:event_btnTotalIncomeActionPerformed
 
     private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalExpences = 0;
-        for (int i = 0; i < rows; i++) {
 
-            if (tblIncome.getValueAt(i, 2) != null) {
-                totalExpences = totalExpences + Integer.parseInt(tblIncome.getValueAt(i, 2).toString());
-            } else {
-                totalExpences = totalExpences + 0;
+        float totalExpences=0;
+        for(int i=0;i<rows;i++){
+            
+            if(tblIncome.getValueAt(i, 2)!=null){                
+                totalExpences=totalExpences+Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
+            }else{
+                totalExpences=totalExpences+0;
             }
         }
-        txtTotalExpences.setText(Integer.toString(totalExpences));
+        txtTotalExpences.setText(Float.toString(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
@@ -2419,7 +2488,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     public javax.swing.JTable tableProduct;
-    private javax.swing.JTable tblIncome;
+    public javax.swing.JTable tblIncome;
     public javax.swing.JTable tblOrder;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel timeLabel;
