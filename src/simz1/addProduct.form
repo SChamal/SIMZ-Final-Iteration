@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
-  <NonVisualComponents>
-    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker2">
-    </Component>
-  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -48,6 +44,7 @@
                                   <Component id="txtName" alignment="0" pref="177" max="32767" attributes="0"/>
                                   <Component id="txtReceivingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
                                   <Component id="txtSellingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
+                                  <Component id="jXDatePicker1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Component id="btnAddProduct" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -57,19 +54,16 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="btnClear" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                               <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="txtIndicator" alignment="1" max="32767" attributes="0"/>
-                          <Component id="txtQtyLimit" alignment="1" max="32767" attributes="0"/>
-<<<<<<< HEAD
-                          <Component id="jXDatePicker1" alignment="1" min="-2" pref="177" max="-2" attributes="0"/>
-=======
-                          <Component id="jXDatePicker1" alignment="0" max="32767" attributes="0"/>
->>>>>>> 766783f65fcd2e47e23491871630ec32b059b6f4
+                          <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="txtIndicator" alignment="1" pref="177" max="32767" attributes="0"/>
+                              <Component id="txtQtyLimit" alignment="1" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -100,12 +94,12 @@
                   <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtSellingPrice" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jXDatePicker1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtQtyLimit" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -187,6 +181,11 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearActionPerformed"/>
       </Events>
     </Component>
+    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="addProduct_jXDatePicker1"/>
+      </AuxValues>
+    </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Quantity Limit         :"/>
@@ -200,8 +199,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtIndicator">
-    </Component>
-    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker1">
     </Component>
   </SubComponents>
 </Form>

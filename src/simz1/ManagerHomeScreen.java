@@ -17,14 +17,20 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -32,13 +38,15 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.table.DatePickerCellEditor;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
 
@@ -63,7 +71,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     String time = sdf.format(date);
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
     String today = sdf2.format(date);
-    
+
     public void clocker() {
         class Listner implements ActionListener {
 
@@ -314,11 +322,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
-        /*JTable tblUsers2 = new JTable() {
-         public boolean isCellEditatable(int row, int column) {
-         return column == 4;
-         }
-         };*/
         ResultSet rst = dbOps.viewUser();
         tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
         combodesig.addItem("Manager");
@@ -331,10 +334,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
         //this.Search.requestFocusInWindow();
-        /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
-         "Jordina", "Jorge", "Sergi" });
-         AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
         setMorningStock();
+        TableColumn dateColumn = tableProduct.getColumnModel().getColumn(4);
+        dateColumn.setCellEditor(new DatePickerCellEditor());
+        //DateCellRenderer renderer = new DateCellRenderer();
+        //tableProduct.getColumnModel().getColumn(4).setCellEditor(renderer.getFormats());
+        
         this.dateLabel.setText(today);
         this.clocker();
         int max = dbOps.getMaxBillID();
@@ -1450,13 +1455,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             //sqldte = new java.sql.Date(dte.getDay());
             //String dte = "0000-00-00";
             try {
-                //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+                SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
+                //dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+                dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
                 if ("".equals(dte)) {
                     dte = "0000-00-00";
+                }else{
+                    model.setValueAt(dte, j, 4);
                 }
-                //sqldte = new java.sql.Date(dte.getDay());
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException | IllegalArgumentException ex) {
                 //System.out.println(ex);
             }
 
@@ -2176,53 +2183,53 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRefillActionPerformed
     IncomeTableModel incomeModel = new IncomeTableModel();
-    
+
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        
-        String description =  txtDescription.getText();
+
+        String description = txtDescription.getText();
         int amount = Integer.parseInt(txtAmount.getText());
-        
-        tblIncome.setModel(incomeModel);       
-        incomeModel.addRow(new Object[]{ description, null, amount});  
-        
+
+        tblIncome.setModel(incomeModel);
+        incomeModel.addRow(new Object[]{description, null, amount});
+
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String description =  txtDescription.getText();
+            String description = txtDescription.getText();
             int amount = Integer.parseInt(txtAmount.getText());
 
-            tblIncome.setModel(incomeModel);       
-            incomeModel.addRow(new Object[]{ description, null, amount});  
+            tblIncome.setModel(incomeModel);
+            incomeModel.addRow(new Object[]{description, null, amount});
 
             txtDescription.setText("");
             txtAmount.setText("");
-            
+
             txtDescription.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtAmountKeyPressed
 
     private void txtDescriptionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescriptionKeyPressed
         int code = evt.getKeyCode();
-        if (code== KeyEvent.VK_ENTER) {
+        if (code == KeyEvent.VK_ENTER) {
             txtAmount.requestFocusInWindow();
         }
-        if (code== KeyEvent.VK_TAB) {
+        if (code == KeyEvent.VK_TAB) {
             txtAmount.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtDescriptionKeyPressed
 
     private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalIncome=0;
-        for(int i=0;i<rows;i++){
-            
-            if(tblIncome.getValueAt(i, 1)!=null){
-                totalIncome=totalIncome+Integer.parseInt((String) tblIncome.getValueAt(i, 1));
-            }else{
-                totalIncome=totalIncome+0;
+        int totalIncome = 0;
+        for (int i = 0; i < rows; i++) {
+
+            if (tblIncome.getValueAt(i, 1) != null) {
+                totalIncome = totalIncome + Integer.parseInt((String) tblIncome.getValueAt(i, 1));
+            } else {
+                totalIncome = totalIncome + 0;
             }
         }
         txtTotalIncome.setText(Integer.toString(totalIncome));
@@ -2230,22 +2237,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalExpences=0;
-        for(int i=0;i<rows;i++){
-            
-            if(tblIncome.getValueAt(i, 2)!=null){                
-                totalExpences=totalExpences+Integer.parseInt(tblIncome.getValueAt(i, 2).toString());
-            }else{
-                totalExpences=totalExpences+0;
+        int totalExpences = 0;
+        for (int i = 0; i < rows; i++) {
+
+            if (tblIncome.getValueAt(i, 2) != null) {
+                totalExpences = totalExpences + Integer.parseInt(tblIncome.getValueAt(i, 2).toString());
+            } else {
+                totalExpences = totalExpences + 0;
             }
         }
         txtTotalExpences.setText(Integer.toString(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
-        int income= Integer.parseInt(txtTotalIncome.getText());
-        int expence= Integer.parseInt(txtTotalExpences.getText());
-        int profit= income-expence;
+        int income = Integer.parseInt(txtTotalIncome.getText());
+        int expence = Integer.parseInt(txtTotalExpences.getText());
+        int profit = income - expence;
         txtProfit.setText(Integer.toString(profit));
     }//GEN-LAST:event_btnProfitActionPerformed
 
