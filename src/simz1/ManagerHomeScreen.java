@@ -1554,7 +1554,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 System.out.println(ex);
             }
         }
-        JOptionPane.showMessageDialog(this, "Todays Stock has been created successfully");
         
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
         ResultSet rst=dbOps.combineAfternoonStockAndStock();
@@ -1568,6 +1567,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            mhp.jTabbedPane1.setSelectedIndex(2);
+        }
+        else {
+           return;
+        }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
