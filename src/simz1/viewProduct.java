@@ -33,18 +33,12 @@ public class viewProduct extends javax.swing.JFrame {
             ResultSet rs = dbOps.viewStock2(prodictName);
             while (rs.next()) {
                 txtID.setText(rs.getString(1));
-                id = Integer.parseInt(txtID.getText());
                 txtType.setText(rs.getString(2));
                 txtName.setText(rs.getString(3));
                 txtReceivingPrice.setText(rs.getString(4));
                 txtSellingPrice.setText(rs.getString(5));
-                txtExpiryDate.setText(rs.getString(6));
-                //txtQty.setText(rs.getString(7));
-            
-            ResultSet rst = dbOps.getCurrentQandExpiryDate(id);
-            while(rst.next()){
-                txtQty.setText(rst.getString(1));
-            } 
+                txtExpiryDate.setText(rs.getString(6));                
+                txtQty.setText(rs.getString(7));
             }
         } catch (SQLException ex) {
             System.out.println("ex");
@@ -99,7 +93,7 @@ public class viewProduct extends javax.swing.JFrame {
 
         jLabel10.setText("Expiry Date                       :");
 
-        jLabel11.setText("Available Quantity            :");
+        jLabel11.setText("Quantity Limit                   :");
 
         jLabel12.setText("Selling Price                       :");
 
@@ -249,6 +243,7 @@ public class viewProduct extends javax.swing.JFrame {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         txtReceivingPrice.setEditable(true);
         txtSellingPrice.setEditable(true);
+        txtQty.setEditable(true);
         btnSave.setVisible(true);
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -286,12 +281,14 @@ public class viewProduct extends javax.swing.JFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         double rPrice= Double.parseDouble(txtReceivingPrice.getText());
         double sPrice= Double.parseDouble(txtSellingPrice.getText());
+        int Qlimit = Integer.parseInt(txtQty.getText());
         int id = Integer.parseInt(txtID.getText());
-        boolean result= dbOps.updateProductPrice(rPrice, sPrice, id);
+        boolean result= dbOps.updateProductPrice(rPrice, sPrice,Qlimit, id);
         if(result==true){
             JOptionPane.showMessageDialog(this, "Prices updated successfully !");
             txtReceivingPrice.setEditable(false);
             txtSellingPrice.setEditable(false);
+            txtQty.setEditable(false);
             btnSave.setVisible(false);
         }else{
             JOptionPane.showMessageDialog(this, "Error occured ! Check the inserted values again !");

@@ -849,15 +849,16 @@ public class DBOperations {
         }
     }
     
-    boolean updateProductPrice(double rPrice, double sPrice, int id) {
+    boolean updateProductPrice(double rPrice, double sPrice,int Qlimit, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
-            String query = "UPDATE productdetails SET receivingPrice = ?, sellingPrice = ? WHERE productID = ?";
+            String query = "UPDATE productdetails SET receivingPrice = ?, sellingPrice = ?,quantityLimit=? WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
 
             pst.setDouble(1, rPrice);//add values to the sql query
             pst.setDouble(2, sPrice);//add values to the sql query
-            pst.setInt(3, id);//add values to the sql query
+            pst.setInt(3, Qlimit);
+            pst.setInt(4, id);//add values to the sql query
 
             pst.executeUpdate();//execute the sql query and insert the values to the db table
             return true;
@@ -978,7 +979,7 @@ public class DBOperations {
     ResultSet viewStock2(String productName) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT productID,productType,productName,receivingPrice, sellingPrice,expiryDate FROM productdetails WHERE productName = ?";
+            String query = "SELECT productID,productType,productName,receivingPrice, sellingPrice,expiryDate,quantityLimit FROM productdetails WHERE productName = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setString(1, productName);
             rs = pst.executeQuery();
