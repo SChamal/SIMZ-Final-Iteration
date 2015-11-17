@@ -305,43 +305,63 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }
 
     public ManagerHomeScreen() {
-        initComponents();
-        this.btnReset.setVisible(false);
-        this.btnSaveChanges.setVisible(false);
-        autoSuggest();
-        autoSuggest2();
-        Search.setSelectedIndex(-1);
-
-        jcomboAddTodaysStock.setSelectedIndex(-1);
-
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
-        
-        
-        /*JTable tblUsers2 = new JTable() {
-         public boolean isCellEditatable(int row, int column) {
-         return column == 4;
-         }
-         };*/
-        ResultSet rst = dbOps.viewUser();
-        tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
-        combodesig.addItem("Manager");
-        combodesig.addItem("Sales Person");
-        tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
-        for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
-            TableCellEditor ce = tblUsers.getDefaultEditor(c);
-            if (ce instanceof DefaultCellEditor) {
-                ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
+        try {
+            initComponents();
+            this.btnReset.setVisible(false);
+            this.btnSaveChanges.setVisible(false);
+            autoSuggest();
+            autoSuggest2();
+            Search.setSelectedIndex(-1);
+            
+            // Get income and expenditure data to the table
+            tblIncome.setModel(incomeModel);
+            ResultSet rs=dbOps.getIAndExpences();
+            while(rs.next()){
+                String Descript =rs.getString(1);
+                float Credit =Float.parseFloat(rs.getString(2));
+                float Debit =Float.parseFloat(rs.getString(3));
+                if (Credit==0.0){
+                    incomeModel.addRow(new Object[]{ Descript,null , Debit});
+                }else if(Debit==0.0){
+                    incomeModel.addRow(new Object[]{ Descript,Credit , null});
+                }else
+                    incomeModel.addRow(new Object[]{ Descript,Credit , Debit});
+                
             }
+            
+            jcomboAddTodaysStock.setSelectedIndex(-1);
+            
+            setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
+            
+            
+            /*JTable tblUsers2 = new JTable() {
+            public boolean isCellEditatable(int row, int column) {
+            return column == 4;
+            }
+            };*/
+            ResultSet rst = dbOps.viewUser();
+            tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+            combodesig.addItem("Manager");
+            combodesig.addItem("Sales Person");
+            tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
+            for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
+                TableCellEditor ce = tblUsers.getDefaultEditor(c);
+                if (ce instanceof DefaultCellEditor) {
+                    ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
+                }
+            }
+            //this.Search.requestFocusInWindow();
+            /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
+            "Jordina", "Jorge", "Sergi" });
+            AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
+            setMorningStock();
+            this.dateLabel.setText(today);
+            this.clocker();
+            int max = dbOps.getMaxBillID();
+            this.billno.setText(max + 1 + "");
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //this.Search.requestFocusInWindow();
-        /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
-         "Jordina", "Jorge", "Sergi" });
-         AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
-        setMorningStock();
-        this.dateLabel.setText(today);
-        this.clocker();
-        int max = dbOps.getMaxBillID();
-        this.billno.setText(max + 1 + "");
     }
 
     /**

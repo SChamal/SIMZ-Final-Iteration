@@ -1254,4 +1254,16 @@ public class DBOperations {
 
     }
 
+ResultSet getIAndExpences() { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Description,Credit,	Debit FROM income_expenditure ";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
 }
