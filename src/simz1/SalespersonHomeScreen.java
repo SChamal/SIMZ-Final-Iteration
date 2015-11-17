@@ -768,6 +768,12 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                    
+                    //add data of the transaction to the income and expenditure
+                    mhp.tblIncome.setModel(mhp.incomeModel);
+                    String descript = "bill "+ Integer.toString(billNo);
+                    mhp.incomeModel.addRow(new Object[]{ descript,amounti , null});
+                    
 
                     DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                     DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
@@ -1110,6 +1116,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                
+                //add data of the transaction to the income and expenditure
+                mhp.tblIncome.setModel(mhp.incomeModel);
+                String descript = "bill "+ Integer.toString(billNo);
+                mhp.incomeModel.addRow(new Object[]{ descript,amounti , null});
 
                 DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();

@@ -1207,5 +1207,37 @@ public class DBOperations {
         }
         return -1;
     }
+    
+    boolean addToIncomeAndExpenditure(int id, String descript,float credit,float debit) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "INSERT INTO income_expenditure  VALUES(?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setInt(1, id);//add values to the sql query
+            pst.setString(2, descript);//add values to the sql query
+            pst.setFloat(3, credit);
+            pst.setFloat(4, debit);
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+
+    }
 
 }

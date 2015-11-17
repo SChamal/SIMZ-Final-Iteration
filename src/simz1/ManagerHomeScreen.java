@@ -54,7 +54,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo = 0;
+    public int rawNo,incmRaw = 0;
     public static int orderRowNo;
     JComboBox combodesig = new JComboBox();
 
@@ -313,7 +313,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jcomboAddTodaysStock.setSelectedIndex(-1);
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
-
+        
+        
         /*JTable tblUsers2 = new JTable() {
          public boolean isCellEditatable(int row, int column) {
          return column == 4;
@@ -1751,6 +1752,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (result == JOptionPane.YES_OPTION) {
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                    
+                    //add data of the transaction to the income and expenditure
+                    tblIncome.setModel(incomeModel);
+                    String descript = "bill "+ Integer.toString(billNo);
+                    incomeModel.addRow(new Object[]{ descript,amounti , null}); 
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
@@ -1985,6 +1991,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             if (result == JOptionPane.YES_OPTION) {
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                
+                 //add data of the transaction to the income and expenditure table in database and the interface
+                 tblIncome.setModel(incomeModel);
+                 String descript = "bill "+ Integer.toString(billNo); 
+                 int userID = dbOps.getID(name1.getText());
+                 incomeModel.addRow(new Object[]{ descript,amounti , null});
+                 dbOps.addToIncomeAndExpenditure(userID,descript,amounti,0);
 
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
@@ -2171,15 +2184,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnRefillActionPerformed
-    IncomeTableModel incomeModel = new IncomeTableModel();
-    
+    // set table model for the income and expenditure table
+        IncomeTableModel incomeModel = new IncomeTableModel();
+        
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        
+        tblIncome.setModel(incomeModel);
         String description =  txtDescription.getText();
-        int amount = Integer.parseInt(txtAmount.getText());
-        
-        tblIncome.setModel(incomeModel);       
-        incomeModel.addRow(new Object[]{ description, null, amount});  
+        int amount = Integer.parseInt(txtAmount.getText());       
+        mhp.incomeModel.addRow(new Object[]{ description, null, amount});  
         
         txtDescription.setText("");
         txtAmount.setText("");
@@ -2212,30 +2224,30 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalIncome=0;
+        float totalIncome=0;
         for(int i=0;i<rows;i++){
             
             if(tblIncome.getValueAt(i, 1)!=null){
-                totalIncome=totalIncome+Integer.parseInt((String) tblIncome.getValueAt(i, 1));
+                totalIncome=totalIncome+Float.parseFloat((String) tblIncome.getValueAt(i, 1));
             }else{
                 totalIncome=totalIncome+0;
             }
         }
-        txtTotalIncome.setText(Integer.toString(totalIncome));
+        txtTotalIncome.setText(Float.toString(totalIncome));
     }//GEN-LAST:event_btnTotalIncomeActionPerformed
 
     private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
         int rows = tblIncome.getRowCount();
-        int totalExpences=0;
+        float totalExpences=0;
         for(int i=0;i<rows;i++){
             
             if(tblIncome.getValueAt(i, 2)!=null){                
-                totalExpences=totalExpences+Integer.parseInt(tblIncome.getValueAt(i, 2).toString());
+                totalExpences=totalExpences+Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
             }else{
                 totalExpences=totalExpences+0;
             }
         }
-        txtTotalExpences.setText(Integer.toString(totalExpences));
+        txtTotalExpences.setText(Float.toString(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
@@ -2408,7 +2420,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     public javax.swing.JTable tableProduct;
-    private javax.swing.JTable tblIncome;
+    public javax.swing.JTable tblIncome;
     public javax.swing.JTable tblOrder;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel timeLabel;
