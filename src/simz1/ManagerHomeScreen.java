@@ -25,6 +25,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -1553,8 +1555,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 System.out.println(ex);
             }
         }
-        JOptionPane.showMessageDialog(this, "Todays Stock has been created successfully");
-
+        
+        DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
+        ResultSet rst=dbOps.combineAfternoonStockAndStock();
+        int orderTableRows = 0;
+        try {
+            while(rst.next()){
+                modelOrder.insertRow(orderTableRows,new Object[]{false,1,rst.getInt(1),rst.getString(2),today,time,rst.getString(3)});
+                orderTableRows++;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            mhp.jTabbedPane1.setSelectedIndex(2);
+        }
+        else {
+           return;
+        }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -2040,9 +2060,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
-                            //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                            model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                            orderRowNo++;
+                            boolean checkOrder = true;
+                            for(int k=0;k<=model2.getRowCount();k++){
+                                if(model2.getValueAt(k, 2).equals(id)){
+                                    checkOrder=false;
+                                }
+                            }
+                            if(checkOrder=true){
+                                model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                orderRowNo++;
+                            }
+                           
                         }
                     }
 
