@@ -610,14 +610,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(Search, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 457, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 455, Short.MAX_VALUE)
                         .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 910, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(687, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jcomboAddTodaysStock, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
@@ -629,6 +627,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSetStock)
                         .addGap(26, 26, 26))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 910, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -638,9 +640,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(Search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1427,7 +1429,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
-
+        
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
@@ -1591,10 +1593,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
+            txtDescription.requestFocusInWindow();
         }
-        else {
-           return;
-        }
+        btnSetStock.setVisible(false);
+        btnSaveChanges.setVisible(true);
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -2139,25 +2141,34 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
             int lmt = 0;
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
-            int crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
-            int totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-
+            String dte="0000-00-00";
+            int crnt=0,totl=0; 
+            try{
+            dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
+            crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
+            totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+            }catch(NullPointerException np){
+            }
+            catch(NumberFormatException nf){
+            }
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
                     try {
-                        crnt = crnt + totl;
-                        totl = totl + dbOps.getTodayStockQty(id).getInt(2);
-                        /*if ("".equals(dte)) {
-                         dte = dbOps.getTodayStockQty(id).getString(2);
-                         }*/
+                        ResultSet rs = dbOps.getTodayStockQty(id);
+                        crnt = crnt + rs.getInt(1);
+                        totl = totl + rs.getInt(2);
+                        
 
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
+                    
                     boolean c = dbOps.updateTodayStockQty2(id, lmt, totl, crnt, dte);
+                    if(dte=="0000-00-00")
+                        model.setValueAt("", j, 4);
+                    else
+                        model.setValueAt(dte, j, 4);
                     model.setValueAt(crnt, j, 5);
-                    model.setValueAt(dte, j, 4);
                     model.setValueAt(totl, j, 6);
                     if (c == false) {
                         JOptionPane.showMessageDialog(this, "Error occured while updating a product in current Today Stock");
@@ -2276,7 +2287,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         for(int i=0;i<rows;i++){
             
             if(tblIncome.getValueAt(i, 1)!=null){
-                totalIncome=totalIncome+Float.parseFloat((String) tblIncome.getValueAt(i, 1));
+                totalIncome=totalIncome+Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
             }else{
                 totalIncome=totalIncome+0;
             }
