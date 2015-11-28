@@ -17,8 +17,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -365,7 +364,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             int max = dbOps.getMaxBillID();
             this.billno.setText(max + 1 + "");
         } catch (SQLException ex) {
-            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         //this.Search.requestFocusInWindow();
         setMorningStock();
@@ -1557,7 +1556,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (!tmp.contains(id1)) {
                     //System.out.println(id1);
                     try {
-                        ResultSet rs = dbOps.combineTwoTables(id1);
+                        ResultSet rs = dbOps.combineTwoTables(id1,today);
                         while (rs.next()) {
                             String s1 = rs.getString(1);
                             int s2 = rs.getInt(2);
@@ -1606,7 +1605,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 orderTableRows++;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
@@ -1614,6 +1613,27 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             mhp.jTabbedPane1.setSelectedIndex(2);
             txtDescription.requestFocusInWindow();
         }
+
+        
+        ResultSet dtes = dbOps.expireDates();
+        for(int i=0; i<model.getRowCount(); i++){
+            if(model.getValueAt(i, 4) != null){
+                try {
+                    int id = (int) model.getValueAt(i, 1);
+                    while(dtes.next()){
+                        if((dtes.getInt(3) == id) && (dtes.getDate(2).getDate() - dtes.getDate(1).getDate()) <= 3){
+                            System.out.println(dtes.getDate(2).getDate() - dtes.getDate(1).getDate());
+                            break;
+                        }
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex);
+                    
+                }
+            }
+        }
+        
+
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(true);
     }//GEN-LAST:event_btnSetStockActionPerformed
@@ -2146,7 +2166,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
                 b1.billnum.setText(max1 + 1 + "");
-                b1.setSize(350, 500);
+                //b1.setSize(464, 568);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -2287,8 +2307,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         tblIncome.setModel(incomeModel);
         String description =  txtDescription.getText();
-        int amount = Integer.parseInt(txtAmount.getText());       
-        mhp.incomeModel.addRow(new Object[]{ description, null, amount});  
+        DecimalFormat roundValue = new DecimalFormat("###.##"); 
+        float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
+        mhp.incomeModel.addRow(new Object[]{ description, null, paidAmount});  
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2296,10 +2317,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String description = txtDescription.getText();
-            int amount = Integer.parseInt(txtAmount.getText());
-
+            DecimalFormat roundValue = new DecimalFormat("###.##");
+            float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
             tblIncome.setModel(incomeModel);
-            incomeModel.addRow(new Object[]{description, null, amount});
+            incomeModel.addRow(new Object[]{description, null, paidAmount});
 
             txtDescription.setText("");
             txtAmount.setText("");
@@ -2344,14 +2365,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 totalExpences=totalExpences+0;
             }
         }
-        txtTotalExpences.setText(Float.toString(totalExpences));
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        //float profit = Float.valueOf(roundValue.format(totalExpences));
+        txtTotalExpences.setText(roundValue.format(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
-        int income = Integer.parseInt(txtTotalIncome.getText());
-        int expence = Integer.parseInt(txtTotalExpences.getText());
-        int profit = income - expence;
-        txtProfit.setText(Integer.toString(profit));
+        float income = Float.parseFloat(txtTotalIncome.getText());
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        float expence = Float.parseFloat(txtTotalExpences.getText());
+        //roundValue.format returns a string.So it should be converted to float.
+        float profit = Float.valueOf(roundValue.format(income - expence));
+        txtProfit.setText(Float.toString(profit));
     }//GEN-LAST:event_btnProfitActionPerformed
 
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed

@@ -137,7 +137,7 @@ public class NewUserFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel11.setForeground(new java.awt.Color(204, 0, 0));
         jLabel11.setText("* All the text fields are required to be filled");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -266,6 +266,12 @@ public class NewUserFrame extends javax.swing.JFrame {
             txtNIC.setText("");
             return;
             
+        }
+        if(txtPassword.getText().length()<6){
+            JOptionPane.showMessageDialog(this, "Password length should be larger than six!!! ");
+            txtPassword.setText("");
+            txtConfirmPassword.setText("");
+            return;
         }
         String nic = (txtNIC.getText()).substring(1, 9);
         try{
