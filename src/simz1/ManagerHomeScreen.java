@@ -1809,16 +1809,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 int balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
-                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+                int result =JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
+                    String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
+                    if (Integer.parseInt(input) != 0){
+                        int actualBalance = Integer.parseInt(input);
+                        amounti= paymenti - actualBalance;
+                    }
+                    else{
+                        System.out.println("a");
+                        amounti=amounti;
+                    }    
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
                     
                     //add data of the transaction to the income and expenditure
                     tblIncome.setModel(incomeModel);
                     String descript = "bill "+ Integer.toString(billNo);
+                    int userID = dbOps.getID(name1.getText());
                     incomeModel.addRow(new Object[]{ descript,amounti , null}); 
-
+                    dbOps.addToIncomeAndExpenditure(userID,descript,amounti,0);
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
                     DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
@@ -2050,6 +2060,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
+                String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
+                if (Integer.parseInt(input) != 0) {
+                    int actualBalance = Integer.parseInt(input);
+                    amounti = paymenti - actualBalance;
+                } else {
+                    System.out.println("a");
+                    amounti = amounti;
+                }
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
                 
