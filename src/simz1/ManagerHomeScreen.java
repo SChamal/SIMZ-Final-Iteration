@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2258,8 +2259,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         tblIncome.setModel(incomeModel);
         String description =  txtDescription.getText();
-        int amount = Integer.parseInt(txtAmount.getText());       
-        mhp.incomeModel.addRow(new Object[]{ description, null, amount});  
+        DecimalFormat roundValue = new DecimalFormat("###.##"); 
+        float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
+        mhp.incomeModel.addRow(new Object[]{ description, null, paidAmount});  
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2267,10 +2269,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String description = txtDescription.getText();
-            int amount = Integer.parseInt(txtAmount.getText());
-
+            DecimalFormat roundValue = new DecimalFormat("###.##");
+            float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
             tblIncome.setModel(incomeModel);
-            incomeModel.addRow(new Object[]{description, null, amount});
+            incomeModel.addRow(new Object[]{description, null, paidAmount});
 
             txtDescription.setText("");
             txtAmount.setText("");
@@ -2295,7 +2297,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         for(int i=0;i<rows;i++){
             
             if(tblIncome.getValueAt(i, 1)!=null){
-                totalIncome=totalIncome+Float.parseFloat((String) tblIncome.getValueAt(i, 1));
+                totalIncome=totalIncome+Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
             }else{
                 totalIncome=totalIncome+0;
             }
@@ -2315,14 +2317,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 totalExpences=totalExpences+0;
             }
         }
-        txtTotalExpences.setText(Float.toString(totalExpences));
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        //float profit = Float.valueOf(roundValue.format(totalExpences));
+        txtTotalExpences.setText(roundValue.format(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
-        int income = Integer.parseInt(txtTotalIncome.getText());
-        int expence = Integer.parseInt(txtTotalExpences.getText());
-        int profit = income - expence;
-        txtProfit.setText(Integer.toString(profit));
+        float income = Float.parseFloat(txtTotalIncome.getText());
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        float expence = Float.parseFloat(txtTotalExpences.getText());
+        //roundValue.format returns a string.So it should be converted to float.
+        float profit = Float.valueOf(roundValue.format(income - expence));
+        txtProfit.setText(Float.toString(profit));
     }//GEN-LAST:event_btnProfitActionPerformed
 
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed

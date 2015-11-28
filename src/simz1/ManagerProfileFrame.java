@@ -415,7 +415,7 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                     String np = PswrdEncrypt.main2(txtNewP.getText());
                     String cp = PswrdEncrypt.main2(txtCnfrmP.getText());
                     String hnt = txtHint.getText();
-
+                    
                     if (np.equals(cp)) { //new and confirm passwords matched
                         rsPw = dbOp.updatePswrd(np, hnt, id);
                         if (rsPw) { // new password updated successsfully 
