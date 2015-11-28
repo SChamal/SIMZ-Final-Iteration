@@ -17,7 +17,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -365,7 +363,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             int max = dbOps.getMaxBillID();
             this.billno.setText(max + 1 + "");
         } catch (SQLException ex) {
-            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         //this.Search.requestFocusInWindow();
         setMorningStock();
@@ -1555,7 +1553,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (!tmp.contains(id1)) {
                     //System.out.println(id1);
                     try {
-                        ResultSet rs = dbOps.combineTwoTables(id1);
+                        ResultSet rs = dbOps.combineTwoTables(id1,today);
                         while (rs.next()) {
                             String s1 = rs.getString(1);
                             int s2 = rs.getInt(2);
@@ -1604,16 +1602,32 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 orderTableRows++;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
         }
-        else {
-           return;
+        
+        ResultSet dtes = dbOps.expireDates();
+        for(int i=0; i<model.getRowCount(); i++){
+            if(model.getValueAt(i, 4) != null){
+                try {
+                    int id = (int) model.getValueAt(i, 1);
+                    while(dtes.next()){
+                        if((dtes.getInt(3) == id) && (dtes.getDate(2).getDate() - dtes.getDate(1).getDate()) <= 3){
+                            System.out.println(dtes.getDate(2).getDate() - dtes.getDate(1).getDate());
+                            break;
+                        }
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex);
+                    
+                }
+            }
         }
+        
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
