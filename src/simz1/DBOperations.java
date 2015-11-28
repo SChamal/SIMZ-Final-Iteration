@@ -893,9 +893,15 @@ public class DBOperations {
         return null;
     }
 
-    ResultSet combineTwoTables(int id) {
+    ResultSet combineTwoTables(int id, String crnt) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
+            String query2 = "UPDATE today_stock set currentDate = ? WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query2);
+            pst.setString(1, crnt);
+            pst.setInt(2, id);
+            pst.executeUpdate();
+            
             String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity,t.totalreceivedQuantity from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setInt(1, id);
@@ -1266,4 +1272,19 @@ ResultSet getIAndExpences() { // getting values changed by me
         }
         return null;
     }
+
+ResultSet expireDates() { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT currentDate,expiryDate,productID,currentQuantity FROM today_stock WHERE expiryDate <> \"0000-00-00\" AND currentQuantity <> 0";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+
+        } catch (SQLException ex) {
+            //System.out.println(ex);
+            return null;
+        }
+    }
+
 }
