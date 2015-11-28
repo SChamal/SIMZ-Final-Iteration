@@ -2148,7 +2148,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
                 b1.billnum.setText(max1 + 1 + "");
-                b1.setSize(350, 500);
+                //b1.setSize(464, 568);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
