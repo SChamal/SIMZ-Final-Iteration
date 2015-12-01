@@ -1486,19 +1486,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
-            //java.util.Date dte = null;
+            
             String dateCrnt = today;
             String dte = "0000-00-00";
-            //java.sql.Date sqldte = null;
-
-            //sqldateCrnt = new java.sql.Date(dateCrnt.getDate());
-            //dte = new Date(0);
-            //sqldte = new java.sql.Date(dte.getDay());
-            //String dte = "0000-00-00";
             try {
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
-                //dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
                 
                 if ("".equals(dte)) {
@@ -1603,23 +1595,33 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         //this.btnReset.setVisible(false);
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
-
+        
+        //setting the created stock to the salesperson
         tableModelSalesperson tmSPmodel = new tableModelSalesperson();
         spi.SalesPStock.setModel(tmSPmodel);
         for (int k = 0; k < model.getRowCount(); k++) {
             int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+            int exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());
             ResultSet rs = dbOps.combineTwoTablesForSP(Id);
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
+                        if(exp == 0){
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
+                        }else{
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
+                        }
+                        
                     }
                 }
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
         }
+        
+        
 
+        //setting the default order set in orders table
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
         ResultSet rst = dbOps.combineAfternoonStockAndStock();
         int orderTableRows = 0;
@@ -1653,10 +1655,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 } else {
                     setBackground(table.getBackground());
                     setForeground(table.getForeground());
-                }
-        
-            
-
+                }   
+                
                 return this;
             }
 
@@ -2236,32 +2236,24 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             String dte = "0000-00-00";
             int crnt = 0, totl = 0;
             try {
-
-                dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
                 crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-            } catch (NullPointerException | NumberFormatException np) {
-
-                crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
-                totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-                
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
+            } catch (NullPointerException | IllegalArgumentException np) {
+                
             }
             
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
-                    try {
-                        
+                    try {                        
                         ResultSet rs = dbOps.getTodayStockQty(id);
                         crnt = crnt + totl;
                         totl = totl + rs.getInt(2);
 
-
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
-
 
                     boolean c = dbOps.updateTodayStockQty2(id, cdate, totl, crnt, dte);
                     if ("0000-00-00".equals(dte)) {
@@ -2283,11 +2275,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-        if (tableProduct.isColumnSelected(6)) {
-            for (int i = 0; i < tableProduct.getRowCount(); i++) {
-                //tableProduct.setValueAt("mika", i, 5);
-            }
-        }
+        
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
 
