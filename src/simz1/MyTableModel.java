@@ -6,6 +6,9 @@
 
 package simz1;
 
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,9 +17,9 @@ import javax.swing.table.DefaultTableModel;
  * @author CHAM PC
  */
 public class MyTableModel extends DefaultTableModel {
-
+    
     public MyTableModel() {
-      super(new String[]{" ", "Product Code", "Product Name", "Price", "Expiry Date", "Quantity", "Received Qty."}, 0);
+      super(new String[]{" ", "Product Code", "Product Name", "Price", "Expiry Date", "Quantity", "Received Qty.", "If Expired"}, 0);
     }
 
     @Override
@@ -55,6 +58,11 @@ public class MyTableModel extends DefaultTableModel {
       if(column == 6){
         Vector rowData = (Vector)getDataVector().get(row);
         rowData.set(6, aValue);
+        fireTableCellUpdated(row, column);
+      }
+      if(column == 7){
+        Vector rowData = (Vector)getDataVector().get(row);
+        rowData.set(7, aValue);
         fireTableCellUpdated(row, column);
       }
     }

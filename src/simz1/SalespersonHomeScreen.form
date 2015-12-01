@@ -663,7 +663,7 @@
                         <Column editable="true" title="Name" type="java.lang.Object"/>
                         <Column editable="true" title="Price" type="java.lang.Object"/>
                         <Column editable="true" title="Expiry Date" type="java.lang.Object"/>
-                        <Column editable="true" title="Quantity" type="java.lang.Object"/>
+                        <Column editable="true" title="Current Quantity" type="java.lang.Object"/>
                       </Table>
                     </Property>
                     <Property name="gridColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
