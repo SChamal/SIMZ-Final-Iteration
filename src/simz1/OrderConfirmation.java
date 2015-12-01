@@ -7,6 +7,7 @@ package simz1;
 
 import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *
@@ -24,9 +25,9 @@ public class OrderConfirmation extends javax.swing.JFrame {
         lblDate.setText(sdf.format(date));
         //DefaultTableModel model1 = (DefaultTableModel) mhs.tblOrder.getModel();
         for (int i = 0; i < 10; i++){                  //change 10 into accceptable value
-            int id = Integer.parseInt(mhs.tblOrder.getValueAt(i, 0).toString());
-            String prdctName = mhs.tblOrder.getValueAt(i, 1).toString();
-            int quantity = Integer.parseInt(mhs.tblOrder.getValueAt(i, 2).toString());
+            int id = Integer.parseInt(mhp.tblOrder.getValueAt(i, 2).toString());
+            String prdctName = mhp.tblOrder.getValueAt(i, 3).toString();
+            int quantity = Integer.parseInt(mhp.tblOrder.getValueAt(i, 6).toString());
             //System.out.println("id");
             //model2.addRow(new Object[]{id,prdctName,quantity});
             tblOrderConfirm.setValueAt(id, i, 0);

@@ -632,7 +632,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Product Code", "Name", "Price", "Expiry Date", "Quantity"
+                "Product Code", "Name", "Price", "Expiry Date", "Current Quantity"
             }
         ));
         SalesPStock.setGridColor(new java.awt.Color(51, 51, 51));

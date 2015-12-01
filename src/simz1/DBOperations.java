@@ -902,7 +902,7 @@ public class DBOperations {
             pst.setInt(2, id);
             pst.executeUpdate();
             
-            String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity,t.totalreceivedQuantity from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
+            String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity,t.totalreceivedQuantity,t.currentDate from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setInt(1, id);
             rs = pst.executeQuery();
