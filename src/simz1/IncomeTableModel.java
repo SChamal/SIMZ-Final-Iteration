@@ -16,12 +16,12 @@ public class IncomeTableModel extends DefaultTableModel {
         case 0:
             clazz = String.class;
             break;
-        case 1:
-            clazz= Integer.class;
+        /*case 1:
+            clazz= Float.class;
             break;
         case 2:
-            clazz= Integer.class;
-            break;
+            clazz= Float.class;
+            break;*/
       }
       return clazz;
     }

@@ -21,7 +21,7 @@ public class ViewProductForSP extends javax.swing.JFrame {
      * Creates new form ViewProductForSP
      */
     public ViewProductForSP(String productName) {
-        initComponents();
+        //initComponents();
         try {
             initComponents();
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));

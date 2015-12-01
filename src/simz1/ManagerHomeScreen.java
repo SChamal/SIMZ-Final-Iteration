@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1511,7 +1512,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     }else{
                         model.setValueAt(dte, j, 4);
                     }
-                    
+
                 }
             } catch (NullPointerException | IllegalArgumentException | ParseException  ex) {
                 //System.out.println(ex);
@@ -1653,9 +1654,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     setBackground(table.getBackground());
                     setForeground(table.getForeground());
                 }
+        
+            
 
                 return this;
             }
+
         });
 
         btnSetStock.setVisible(false);
@@ -1670,6 +1674,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
     //Set default morning stock to the tableProduct table
+
     private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
         //MyTableModel model = new MyTableModel();
@@ -1856,13 +1861,27 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
+                    String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
+                    if (Integer.parseInt(input) != 0) {
+                        int actualBalance = Integer.parseInt(input);
+                        amounti = paymenti - actualBalance;
+                    } else {
+                        System.out.println("a");
+                        amounti = amounti;
+                    }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                     //add data of the transaction to the income and expenditure
                     tblIncome.setModel(incomeModel);
                     String descript = "bill " + Integer.toString(billNo);
+
                     incomeModel.addRow(new Object[]{descript, amounti, null});
+
+
+                    int userID = dbOps.getID(name1.getText());
+                    incomeModel.addRow(new Object[]{descript, amounti, null});
+                    dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
@@ -2095,6 +2114,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
+                String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
+                if (Integer.parseInt(input) != 0) {
+                    int actualBalance = Integer.parseInt(input);
+                    amounti = paymenti - actualBalance;
+                } else {
+                    System.out.println("a");
+                    amounti = amounti;
+                }
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
@@ -2173,7 +2200,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
                 b1.billnum.setText(max1 + 1 + "");
-                b1.setSize(350, 500);
+                //b1.setSize(464, 568);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -2201,6 +2228,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
+        String cdate = today;
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
             int lmt = 0;
@@ -2208,31 +2236,43 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             String dte = "0000-00-00";
             int crnt = 0, totl = 0;
             try {
+
                 dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
                 crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
             } catch (NullPointerException | NumberFormatException np) {
 
+                crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
+                totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+                
+                SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
+                dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
             }
+            
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
                     try {
+                        
                         ResultSet rs = dbOps.getTodayStockQty(id);
-                        crnt = crnt + rs.getInt(1);
+                        crnt = crnt + totl;
                         totl = totl + rs.getInt(2);
+
 
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
 
-                    boolean c = dbOps.updateTodayStockQty2(id, lmt, totl, crnt, dte);
+
+                    boolean c = dbOps.updateTodayStockQty2(id, cdate, totl, crnt, dte);
                     if ("0000-00-00".equals(dte)) {
                         model.setValueAt("", j, 4);
+                        model.setValueAt(crnt, j, 5);
+                        model.setValueAt(totl, j, 6);
                     } else {
                         model.setValueAt(dte, j, 4);
+                        model.setValueAt(crnt, j, 5);
+                        model.setValueAt(totl, j, 6);
                     }
-                    model.setValueAt(crnt, j, 5);
-                    model.setValueAt(totl, j, 6);
                     if (c == false) {
                         JOptionPane.showMessageDialog(this, "Error occured while updating a product in current Today Stock");
                         return;
@@ -2313,8 +2353,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         tblIncome.setModel(incomeModel);
         String description = txtDescription.getText();
-        int amount = Integer.parseInt(txtAmount.getText());
-        mhp.incomeModel.addRow(new Object[]{description, null, amount});
+
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        float paidAmount = Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
+        mhp.incomeModel.addRow(new Object[]{description, null, paidAmount});
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2322,10 +2364,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String description = txtDescription.getText();
-            int amount = Integer.parseInt(txtAmount.getText());
-
+            DecimalFormat roundValue = new DecimalFormat("###.##");
+            float paidAmount = Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
             tblIncome.setModel(incomeModel);
-            incomeModel.addRow(new Object[]{description, null, amount});
+            incomeModel.addRow(new Object[]{description, null, paidAmount});
 
             txtDescription.setText("");
             txtAmount.setText("");
@@ -2370,14 +2412,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 totalExpences = totalExpences + 0;
             }
         }
-        txtTotalExpences.setText(Float.toString(totalExpences));
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        //float profit = Float.valueOf(roundValue.format(totalExpences));
+        txtTotalExpences.setText(roundValue.format(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
     private void btnProfitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfitActionPerformed
-        int income = Integer.parseInt(txtTotalIncome.getText());
-        int expence = Integer.parseInt(txtTotalExpences.getText());
-        int profit = income - expence;
-        txtProfit.setText(Integer.toString(profit));
+        float income = Float.parseFloat(txtTotalIncome.getText());
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        float expence = Float.parseFloat(txtTotalExpences.getText());
+        //roundValue.format returns a string.So it should be converted to float.
+        float profit = Float.valueOf(roundValue.format(income - expence));
+        txtProfit.setText(Float.toString(profit));
     }//GEN-LAST:event_btnProfitActionPerformed
 
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed

@@ -820,12 +820,12 @@ public class DBOperations {
         }
     }
     
-    boolean updateTodayStockQty2(int id, int date, int totl, int crnt, String dte) { // getting values changed by me
+    boolean updateTodayStockQty2(int id, String date, int totl, int crnt, String dte) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "UPDATE today_stock SET currentDate = ?, totalreceivedQuantity = ?,expiryDate = ?, currentQuantity = ? WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
-            pst.setInt(1, date);
+            pst.setString(1, date);
             pst.setInt(2, totl);
             pst.setString(3, dte);
             pst.setInt(4, crnt);
