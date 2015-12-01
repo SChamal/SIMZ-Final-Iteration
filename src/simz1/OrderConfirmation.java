@@ -5,33 +5,42 @@
  */
 package simz1;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
+import static simz1.LoginFrame1.mhp;
 /**
  *
  * @author DELL
  */
 public class OrderConfirmation extends javax.swing.JFrame {
-    ManagerHomeScreen mhs = new ManagerHomeScreen();
+    DBOperations dbOps = new DBOperations();
     /**
      * Creates new form OrderConfirmation
      */
     public OrderConfirmation() {
         initComponents();
         java.util.Date date = new java.util.Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd");
         lblDate.setText(sdf.format(date));
-        //DefaultTableModel model1 = (DefaultTableModel) mhs.tblOrder.getModel();
-        for (int i = 0; i < 10; i++){                  //change 10 into accceptable value
-            int id = Integer.parseInt(mhs.tblOrder.getValueAt(i, 0).toString());
-            String prdctName = mhs.tblOrder.getValueAt(i, 1).toString();
-            int quantity = Integer.parseInt(mhs.tblOrder.getValueAt(i, 2).toString());
-            //System.out.println("id");
-            //model2.addRow(new Object[]{id,prdctName,quantity});
-            tblOrderConfirm.setValueAt(id, i, 0);
-            tblOrderConfirm.setValueAt(prdctName, i, 1);
-            tblOrderConfirm.setValueAt(quantity, i, 2);
+        DefaultTableModel modelOrder = (DefaultTableModel) mhp.tblOrder.getModel();
+        lblOrderNo.setText(modelOrder.getValueAt(1, 1).toString());
+        int rowCount = mhp.tblOrder.getRowCount();
+
+        int row =0 ; //to fill the order confirmation table
+        for (int i = 0; i<=rowCount-1; i++){                  
+            boolean valid = Boolean.parseBoolean(mhp.tblOrder.getValueAt(i, 0).toString());
+            if(valid){
+                int id = Integer.parseInt(mhp.tblOrder.getValueAt(i, 2).toString());
+                String prdctName = mhp.tblOrder.getValueAt(i, 3).toString();
+                int quantity = Integer.parseInt(mhp.tblOrder.getValueAt(i, 6).toString());
+            
+                tblOrderConfirm.setValueAt(id, row, 0);
+                tblOrderConfirm.setValueAt(prdctName, row, 1);
+                tblOrderConfirm.setValueAt(quantity, row, 2);
+                row++;
+            }        
         }
     }
 
@@ -47,12 +56,12 @@ public class OrderConfirmation extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtOrderNo = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblOrderConfirm = new javax.swing.JTable();
         btnConfirmOrder = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         lblDate = new javax.swing.JLabel();
+        lblOrderNo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,6 +71,13 @@ public class OrderConfirmation extends javax.swing.JFrame {
 
         tblOrderConfirm.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
                 {null, null, null},
                 {null, null, null},
                 {null, null, null},
@@ -93,6 +109,11 @@ public class OrderConfirmation extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblOrderConfirm);
 
         btnConfirmOrder.setText("Confirm Order");
+        btnConfirmOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmOrderActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -102,6 +123,8 @@ public class OrderConfirmation extends javax.swing.JFrame {
         });
 
         lblDate.setText("Label");
+
+        lblOrderNo.setText("jLabel3");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -120,19 +143,19 @@ public class OrderConfirmation extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtOrderNo, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-                            .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                            .addComponent(lblOrderNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1)
-                    .addComponent(txtOrderNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(lblOrderNo, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(lblDate))
@@ -142,7 +165,7 @@ public class OrderConfirmation extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnConfirmOrder)
                     .addComponent(btnCancel))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -167,6 +190,29 @@ public class OrderConfirmation extends javax.swing.JFrame {
 
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnConfirmOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmOrderActionPerformed
+        java.util.Date date = new java.util.Date();
+        DateFormat df = new SimpleDateFormat("hh:mm:ss");
+        String time = df.format(date);
+        String Date = lblDate.getText();
+        int rowCount = tblOrderConfirm.getRowCount();
+        //to get only the filled no of rows
+        int validRows =0;
+        for(int i=0;i<rowCount;i++){
+            if(tblOrderConfirm.getValueAt(i, 0)!=null){
+                validRows=validRows+1;
+            }
+        }
+        dbOps.addOrdersToDB(time, Date);
+        for(int i=0;i<validRows-1;i++){
+            int id = Integer.parseInt(tblOrderConfirm.getValueAt(i, 0).toString());
+            int quantity = Integer.parseInt(tblOrderConfirm.getValueAt(i, 2).toString());
+            dbOps.addOrder_2(Integer.parseInt(mhp.tblOrder.getValueAt(i, 1).toString()), id, quantity);
+        }
+        JOptionPane.showMessageDialog(this, "Order placed successfully!!!");
+        this.setVisible(false);
+    }//GEN-LAST:event_btnConfirmOrderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,7 +257,7 @@ public class OrderConfirmation extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDate;
+    private javax.swing.JLabel lblOrderNo;
     private javax.swing.JTable tblOrderConfirm;
-    private javax.swing.JTextField txtOrderNo;
     // End of variables declaration//GEN-END:variables
 }

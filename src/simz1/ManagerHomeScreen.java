@@ -709,7 +709,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jScrollPane3.setViewportView(BillingTable);
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Cash");
+        jLabel7.setText("Cash (Rs.)");
 
         txtTotal.setEditable(false);
         txtTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -759,7 +759,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText(" Quantity");
 
-        btnBalance.setText("Balance");
+        btnBalance.setText("Balance (Rs.)");
         btnBalance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBalanceActionPerformed(evt);
@@ -767,7 +767,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         });
 
         total.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        total.setText("Total");
+        total.setText("Total (Rs.)");
 
         dateLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         dateLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1098,26 +1098,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         tblOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity"
@@ -1599,9 +1580,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
         ResultSet rst=dbOps.combineAfternoonStockAndStock();
         int orderTableRows = 0;
+        int max = dbOps.getMaxOrderID();
         try {
             while(rst.next()){
-                modelOrder.insertRow(orderTableRows,new Object[]{false,1,rst.getInt(1),rst.getString(2),today,time,rst.getString(3)});
+                modelOrder.insertRow(orderTableRows,new Object[]{true,max+1,rst.getInt(1),rst.getString(2),today,time,rst.getString(3)});
                 orderTableRows++;
             }
         } catch (SQLException ex) {
@@ -2233,8 +2215,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
-        OrderConfirmation oc = new OrderConfirmation();
+        OrderConfirmation oc= new OrderConfirmation();
         oc.setVisible(true);
+        oc.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }//GEN-LAST:event_btnProcessOrderActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
