@@ -60,7 +60,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo,incmRaw = 0;
+    public int rawNo, incmRaw = 0;
     public static int orderRowNo;
     JComboBox combodesig = new JComboBox();
 
@@ -316,33 +316,33 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             autoSuggest();
             autoSuggest2();
             Search.setSelectedIndex(-1);
-            
+
             // Get income and expenditure data to the table
             tblIncome.setModel(incomeModel);
-            ResultSet rs=dbOps.getIAndExpences();
-            while(rs.next()){
-                String Descript =rs.getString(1);
-                float Credit =Float.parseFloat(rs.getString(2));
-                float Debit =Float.parseFloat(rs.getString(3));
-                if (Credit==0.0){
-                    incomeModel.addRow(new Object[]{ Descript,null , Debit});
-                }else if(Debit==0.0){
-                    incomeModel.addRow(new Object[]{ Descript,Credit , null});
-                }else
-                    incomeModel.addRow(new Object[]{ Descript,Credit , Debit});
-                
+            ResultSet rs = dbOps.getIAndExpences();
+            while (rs.next()) {
+                String Descript = rs.getString(1);
+                float Credit = Float.parseFloat(rs.getString(2));
+                float Debit = Float.parseFloat(rs.getString(3));
+                if (Credit == 0.0) {
+                    incomeModel.addRow(new Object[]{Descript, null, Debit});
+                } else if (Debit == 0.0) {
+                    incomeModel.addRow(new Object[]{Descript, Credit, null});
+                } else {
+                    incomeModel.addRow(new Object[]{Descript, Credit, Debit});
+                }
+
             }
-            
+
             jcomboAddTodaysStock.setSelectedIndex(-1);
-            
+
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
-            
-            
+
             /*JTable tblUsers2 = new JTable() {
-            public boolean isCellEditatable(int row, int column) {
-            return column == 4;
-            }
-            };*/
+             public boolean isCellEditatable(int row, int column) {
+             return column == 4;
+             }
+             };*/
             ResultSet rst = dbOps.viewUser();
             tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
             combodesig.addItem("Manager");
@@ -356,15 +356,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
             //this.Search.requestFocusInWindow();
             /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
-            "Jordina", "Jorge", "Sergi" });
-            AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
+             "Jordina", "Jorge", "Sergi" });
+             AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
             setMorningStock();
             this.dateLabel.setText(today);
             this.clocker();
             int max = dbOps.getMaxBillID();
             this.billno.setText(max + 1 + "");
         } catch (SQLException ex) {
-            
+
         }
         //this.Search.requestFocusInWindow();
         setMorningStock();
@@ -372,7 +372,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         dateColumn.setCellEditor(new DatePickerCellEditor());
         //DateCellRenderer renderer = new DateCellRenderer();
         //tableProduct.getColumnModel().getColumn(4).setCellEditor(renderer.getFormats());
-        
+
         this.dateLabel.setText(today);
         this.clocker();
         int max = dbOps.getMaxBillID();
@@ -1445,7 +1445,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
-        
+
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
@@ -1492,7 +1492,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
                 if ("".equals(dte)) {
                     dte = "0000-00-00";
-                }else{
+                } else {
                     model.setValueAt(dte, j, 4);
                 }
             } catch (NullPointerException | IllegalArgumentException ex) {
@@ -1556,7 +1556,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (!tmp.contains(id1)) {
                     //System.out.println(id1);
                     try {
-                        ResultSet rs = dbOps.combineTwoTables(id1,today);
+                        ResultSet rs = dbOps.combineTwoTables(id1, today);
                         while (rs.next()) {
                             String s1 = rs.getString(1);
                             int s2 = rs.getInt(2);
@@ -1595,44 +1595,42 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 System.out.println(ex);
             }
         }
-        
+
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
-        ResultSet rst=dbOps.combineAfternoonStockAndStock();
+        ResultSet rst = dbOps.combineAfternoonStockAndStock();
         int orderTableRows = 0;
         try {
-            while(rst.next()){
-                modelOrder.insertRow(orderTableRows,new Object[]{false,1,rst.getInt(1),rst.getString(2),today,time,rst.getString(3)});
+            while (rst.next()) {
+                modelOrder.insertRow(orderTableRows, new Object[]{false, 1, rst.getInt(1), rst.getString(2), today, time, rst.getString(3)});
                 orderTableRows++;
             }
         } catch (SQLException ex) {
-            
+
         }
-        
+
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
             txtDescription.requestFocusInWindow();
         }
 
-        
         ResultSet dtes = dbOps.expireDates();
-        for(int i=0; i<model.getRowCount(); i++){
-            if(model.getValueAt(i, 4) != null){
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 4) != null) {
                 try {
                     int id = (int) model.getValueAt(i, 1);
-                    while(dtes.next()){
-                        if((dtes.getInt(3) == id) && (dtes.getDate(2).getDate() - dtes.getDate(1).getDate()) <= 3){
+                    while (dtes.next()) {
+                        if ((dtes.getInt(3) == id) && (dtes.getDate(2).getDate() - dtes.getDate(1).getDate()) <= 3) {
                             System.out.println(dtes.getDate(2).getDate() - dtes.getDate(1).getDate());
                             break;
                         }
                     }
                 } catch (SQLException ex) {
                     System.out.println(ex);
-                    
+
                 }
             }
         }
-        
 
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(true);
@@ -1646,6 +1644,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
     //Set default morning stock to the tableProduct table
+
     private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
         MyTableModel model = new MyTableModel();
@@ -1829,26 +1828,25 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 int balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
-                int result =JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
-                    if (Integer.parseInt(input) != 0){
+                    if (Integer.parseInt(input) != 0) {
                         int actualBalance = Integer.parseInt(input);
-                        amounti= paymenti - actualBalance;
-                    }
-                    else{
+                        amounti = paymenti - actualBalance;
+                    } else {
                         System.out.println("a");
-                        amounti=amounti;
-                    }    
+                        amounti = amounti;
+                    }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
-                    
+
                     //add data of the transaction to the income and expenditure
                     tblIncome.setModel(incomeModel);
-                    String descript = "bill "+ Integer.toString(billNo);
+                    String descript = "bill " + Integer.toString(billNo);
                     int userID = dbOps.getID(name1.getText());
-                    incomeModel.addRow(new Object[]{ descript,amounti , null}); 
-                    dbOps.addToIncomeAndExpenditure(userID,descript,amounti,0);
+                    incomeModel.addRow(new Object[]{descript, amounti, null});
+                    dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                     //from transactions(here we get the table model of the stock table)
                     DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
@@ -2090,13 +2088,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
-                
-                 //add data of the transaction to the income and expenditure table in database and the interface
-                 tblIncome.setModel(incomeModel);
-                 String descript = "bill "+ Integer.toString(billNo); 
-                 int userID = dbOps.getID(name1.getText());
-                 incomeModel.addRow(new Object[]{ descript,amounti , null});
-                 dbOps.addToIncomeAndExpenditure(userID,descript,amounti,0);
+
+                //add data of the transaction to the income and expenditure table in database and the interface
+                tblIncome.setModel(incomeModel);
+                String descript = "bill " + Integer.toString(billNo);
+                int userID = dbOps.getID(name1.getText());
+                incomeModel.addRow(new Object[]{descript, amounti, null});
+                dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
 
                 DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
                 //from transactions(here we get the table model of the stock table)
@@ -2140,16 +2138,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
                             boolean checkOrder = true;
-                            for(int k=0;k<=model2.getRowCount();k++){
-                                if(model2.getValueAt(k, 2).equals(id)){
-                                    checkOrder=false;
+                            for (int k = 0; k <= model2.getRowCount(); k++) {
+                                if (model2.getValueAt(k, 2).equals(id)) {
+                                    checkOrder = false;
                                 }
                             }
-                            if(checkOrder=true){
+                            if (checkOrder = true) {
                                 model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
                                 orderRowNo++;
                             }
-                           
+
                         }
                     }
 
@@ -2194,39 +2192,45 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
+        String cdate = today;
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
             int lmt = 0;
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            String dte="0000-00-00";
-            int crnt=0,totl=0; 
-            try{
-            dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
-            crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
-            totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-            }catch(NullPointerException np){
+            String dte = "0000-00-00";
+            int crnt = 0, totl = 0;
+            try {
+                crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
+                totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+                
+                SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
+                dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
+            } catch (NullPointerException | IllegalArgumentException np) {
+                System.out.println(np);
             }
-            catch(NumberFormatException nf){
-            }
+            
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
                     try {
-                        ResultSet rs = dbOps.getTodayStockQty(id);
-                        crnt = crnt + rs.getInt(1);
-                        totl = totl + rs.getInt(2);
                         
-
+                        ResultSet rs = dbOps.getTodayStockQty(id);
+                        crnt = crnt + totl;
+                        totl = totl + rs.getInt(2);
+                        System.out.println(totl);
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
-                    
-                    boolean c = dbOps.updateTodayStockQty2(id, lmt, totl, crnt, dte);
-                    if(dte=="0000-00-00")
+
+                    boolean c = dbOps.updateTodayStockQty2(id, cdate, totl, crnt, dte);
+                    if ("0000-00-00".equals(dte)) {
                         model.setValueAt("", j, 4);
-                    else
+                        model.setValueAt(crnt, j, 5);
+                        model.setValueAt(totl, j, 6);
+                    } else {
                         model.setValueAt(dte, j, 4);
-                    model.setValueAt(crnt, j, 5);
-                    model.setValueAt(totl, j, 6);
+                        model.setValueAt(crnt, j, 5);
+                        model.setValueAt(totl, j, 6);
+                    }
                     if (c == false) {
                         JOptionPane.showMessageDialog(this, "Error occured while updating a product in current Today Stock");
                         return;
@@ -2302,14 +2306,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefillActionPerformed
 
     // set table model for the income and expenditure table
-        IncomeTableModel incomeModel = new IncomeTableModel();
-        
+    IncomeTableModel incomeModel = new IncomeTableModel();
+
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         tblIncome.setModel(incomeModel);
-        String description =  txtDescription.getText();
-        DecimalFormat roundValue = new DecimalFormat("###.##"); 
-        float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
-        mhp.incomeModel.addRow(new Object[]{ description, null, paidAmount});  
+        String description = txtDescription.getText();
+        DecimalFormat roundValue = new DecimalFormat("###.##");
+        float paidAmount = Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
+        mhp.incomeModel.addRow(new Object[]{description, null, paidAmount});
         txtDescription.setText("");
         txtAmount.setText("");
     }//GEN-LAST:event_btnAddActionPerformed
@@ -2318,7 +2322,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String description = txtDescription.getText();
             DecimalFormat roundValue = new DecimalFormat("###.##");
-            float paidAmount= Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
+            float paidAmount = Float.valueOf(roundValue.format(Float.parseFloat(txtAmount.getText())));
             tblIncome.setModel(incomeModel);
             incomeModel.addRow(new Object[]{description, null, paidAmount});
 
@@ -2341,13 +2345,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
         int rows = tblIncome.getRowCount();
-        float totalIncome=0;
-        for(int i=0;i<rows;i++){
-            
-            if(tblIncome.getValueAt(i, 1)!=null){
-                totalIncome=totalIncome+Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
-            }else{
-                totalIncome=totalIncome+0;
+        float totalIncome = 0;
+        for (int i = 0; i < rows; i++) {
+
+            if (tblIncome.getValueAt(i, 1) != null) {
+                totalIncome = totalIncome + Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
+            } else {
+                totalIncome = totalIncome + 0;
             }
         }
         txtTotalIncome.setText(Float.toString(totalIncome));
@@ -2356,13 +2360,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
         int rows = tblIncome.getRowCount();
 
-        float totalExpences=0;
-        for(int i=0;i<rows;i++){
-            
-            if(tblIncome.getValueAt(i, 2)!=null){                
-                totalExpences=totalExpences+Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
-            }else{
-                totalExpences=totalExpences+0;
+        float totalExpences = 0;
+        for (int i = 0; i < rows; i++) {
+
+            if (tblIncome.getValueAt(i, 2) != null) {
+                totalExpences = totalExpences + Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
+            } else {
+                totalExpences = totalExpences + 0;
             }
         }
         DecimalFormat roundValue = new DecimalFormat("###.##");
