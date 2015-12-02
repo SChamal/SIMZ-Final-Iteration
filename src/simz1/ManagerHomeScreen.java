@@ -1618,7 +1618,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 4) != null) {
                 try {
-                    int id = (int) model.getValueAt(i, 1);
+                    int id = Integer.parseInt(model.getValueAt(i, 1).toString()) ;
+                            
                     while (dtes.next()) {
                         if ((dtes.getInt(3) == id) && (dtes.getDate(2).getDate() - dtes.getDate(1).getDate()) <= 3) {
                             System.out.println(dtes.getDate(2).getDate() - dtes.getDate(1).getDate());
@@ -1830,13 +1831,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
-                    if (Integer.parseInt(input) != 0) {
-                        int actualBalance = Integer.parseInt(input);
-                        amounti = paymenti - actualBalance;
-                    } else {
-                        System.out.println("a");
-                        amounti = amounti;
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        if (input == null) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            int actualBalance = Integer.parseInt(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
                     }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
@@ -2195,7 +2201,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         String cdate = today;
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            int lmt = 0;
+            
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String dte = "0000-00-00";
             int crnt = 0, totl = 0;
@@ -2206,7 +2212,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
             } catch (NullPointerException | IllegalArgumentException np) {
-                System.out.println(np);
+                
             }
             
             try {
@@ -2216,7 +2222,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         ResultSet rs = dbOps.getTodayStockQty(id);
                         crnt = crnt + totl;
                         totl = totl + rs.getInt(2);
-                        System.out.println(totl);
+                        
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
@@ -2241,11 +2247,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-        if (tableProduct.isColumnSelected(6)) {
+        /*if (tableProduct.isColumnSelected(6)) {
             for (int i = 0; i < tableProduct.getRowCount(); i++) {
                 //tableProduct.setValueAt("mika", i, 5);
             }
-        }
+        }*/
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
 
