@@ -902,7 +902,7 @@ public class DBOperations {
             pst.setInt(2, id);
             pst.executeUpdate();
             
-            String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity,t.totalreceivedQuantity from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
+            String query = "SELECT p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity,t.totalreceivedQuantity,t.currentDate from today_stock t ,productdetails p where (p.productID=t.productID) and p.productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setInt(1, id);
             rs = pst.executeQuery();
@@ -1287,4 +1287,94 @@ ResultSet expireDates() { // getting values changed by me
         }
     }
 
+//Process order - Order confirmation
+    boolean addOrdersToDB(String orderPlacedTime, String orderPlacedDate) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "INSERT INTO order_main  VALUES(?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setInt(1, 0);//add values to the sql query
+            pst.setString(2, orderPlacedTime);
+            pst.setString(3, orderPlacedDate);
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+
+    }
+    boolean addOrder_2(int orderID, int productID, int quantity) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "INSERT INTO order_2  VALUES(?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setInt(1, orderID);//add values to the sql query
+            pst.setInt(2, productID);
+            pst.setInt(3, quantity);
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+
+    }
+    //get the last orderID in the database
+    int getMaxOrderID() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "SELECT max(Order_No) FROM order_main";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();//execute the sql query and get the result
+            while (rs.next()) {
+                int orderID = rs.getInt(1);
+                return orderID;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return -1;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return -1;
+    }    
 }
