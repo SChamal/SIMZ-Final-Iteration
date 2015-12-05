@@ -1376,5 +1376,19 @@ ResultSet expireDates() { // getting values changed by me
             }
         }
         return -1;
-    }    
+    }
+    
+    ResultSet getTodayStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT t.productID,p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity from today_stock t,productdetails p where (t.productID=p.productID)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
 }

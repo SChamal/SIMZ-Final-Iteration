@@ -33,6 +33,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
+import static simz1.ManagerHomeScreen.model1;
 import static simz1.ManagerHomeScreen.orderRowNo;
 import static simz1.ManagerHomeScreen.resizeImageIcon;
 
@@ -42,6 +43,7 @@ import static simz1.ManagerHomeScreen.resizeImageIcon;
  */
 public class SalespersonHomeScreen extends javax.swing.JFrame {
 
+    public static MyTableModel model;
     DBOperations dbOps = new DBOperations();
     AutoSuggest as = new AutoSuggest();
     Vector<String> v = new Stack<String>();
@@ -188,6 +190,12 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         this.clocker();
         int max = dbOps.getMaxBillID();
         this.billno.setText(max + 1 + "");
+        try{
+            setStock();
+        }catch(Exception e){
+        
+        }
+        
         
         SalesPStock.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -196,7 +204,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
-                int tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 5).toString());
+                int tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 4).toString());
                 if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
@@ -796,11 +804,26 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        
+                        if (input == null) {
+                            amounti = amounti;
+                            
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            int actualBalance = Integer.parseInt(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
+                    }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
+
                     
-                     //add data of the transaction to the income and expenditure table in database and the interface
+                    //add data of the transaction to the income and expenditure table in database and the interface
                     mhp.tblIncome.setModel(mhp.incomeModel);
                     String descript = "bill "+ Integer.toString(billNo); 
                     int userID = dbOps.getID(name1.getText());
@@ -1143,12 +1166,24 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 return;
             }
             int balance = paymenti - amounti;
-            txtBalance.setText(String.valueOf(balance));
-            int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-
-                dbOps.addTransaction(timeLabel.getText(), today);
-                int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                txtBalance.setText(String.valueOf(balance));
+                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        if (input == null) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            int actualBalance = Integer.parseInt(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
+                    }
+                    dbOps.addTransaction(timeLabel.getText(), today);
+                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
                 
                 //add data of the transaction to the income and expenditure table in database and the interface
                 mhp.tblIncome.setModel(mhp.incomeModel);
@@ -1261,7 +1296,19 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         }
         ItemSelecter.requestFocusInWindow();
     }//GEN-LAST:event_btnDeletePrdctActionPerformed
-
+    
+    private void setStock() {
+        model1 = new MyTableModel();
+        SalesPStock.setModel(model1);
+        ResultSet rst = dbOps.getTodayStock();
+        try{
+            while (rst.next()) {
+                model.addRow(new Object[]{rst.getString(1), rst.getString(2), rst.getString(3), rst.getDate(4), rst.getString(5),0});
+            }
+        }catch(SQLException e){ 
+        
+        }
+    }
     /**
      * @param args the command line arguments
      */

@@ -2078,10 +2078,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No text feild should be empty");
         } else {
             String payment = txtCash.getText();
-            int paymenti = 0;
-            int amounti = Integer.parseInt(amount);
+            float paymenti = 0;
+            float amounti = Float.parseFloat(amount);
             try {
-                paymenti = Integer.parseInt(payment);
+                paymenti = Float.parseFloat(payment);
                 if (paymenti < 0) {
                     JOptionPane.showMessageDialog(this, "Only positive numbers are allowed");
                     txtCash.setText("");
@@ -2098,20 +2098,25 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 return;
             }
 
-            int balance = paymenti - amounti;
-            txtBalance.setText(String.valueOf(balance));
-            int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
-                if (Integer.parseInt(input) != 0) {
-                    int actualBalance = Integer.parseInt(input);
-                    amounti = paymenti - actualBalance;
-                } else {
-                    System.out.println("a");
-                    amounti = amounti;
-                }
-                dbOps.addTransaction(timeLabel.getText(), today);
-                int billNo = dbOps.getBillID(timeLabel.getText(), today);
+            float balance = paymenti - amounti;
+                txtBalance.setText(String.valueOf(balance));
+                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        if (input == null) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            float actualBalance = Float.parseFloat(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
+                    }
+                    dbOps.addTransaction(timeLabel.getText(), today);
+                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                 //add data of the transaction to the income and expenditure table in database and the interface
                 tblIncome.setModel(incomeModel);
