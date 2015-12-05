@@ -425,7 +425,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jScrollPane4.setViewportView(BillingTable);
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("Cash");
+        jLabel7.setText("Cash (Rs.)");
 
         txtTotal.setEditable(false);
         txtTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -471,7 +471,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel14.setText(" Quantity");
 
-        btnBalance.setText("Balance");
+        btnBalance.setText("Balance (Rs.)");
         btnBalance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBalanceActionPerformed(evt);
@@ -479,7 +479,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         });
 
         total.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        total.setText("Total");
+        total.setText("Total (Rs.)");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -819,7 +819,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                                 nw2.main1("Quantity limit reached for " + prdctName);
                                 nw2.b2.setVisible(false);
                                 //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                                int max = dbOps.getMaxOrderID();
+                                model2.insertRow(orderRowNo, new Object[]{true, max+1, id, prdctName, today, timeLabel.getText(), 0, 0});
                                 orderRowNo++;
                             }
                         }
@@ -1169,7 +1170,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             nw2.main1("Quantity limit reached for " + prdctName);
                             nw2.b2.setVisible(false);
                             //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                            model2.insertRow(orderRowNo, new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
+                            int max = dbOps.getMaxOrderID();
+                            model2.insertRow(orderRowNo, new Object[]{true, max+1, id, prdctName, today, timeLabel.getText(), 0, 0});
                             orderRowNo++;
                         }
                     }

@@ -457,7 +457,7 @@
             <Component class="javax.swing.JLabel" name="jLabel7">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Cash"/>
+                <Property name="text" type="java.lang.String" value="Cash (Rs.)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtTotal">
@@ -517,7 +517,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnBalance">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Balance"/>
+                <Property name="text" type="java.lang.String" value="Balance (Rs.)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBalanceActionPerformed"/>
@@ -528,7 +528,7 @@
             <Component class="javax.swing.JLabel" name="total">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Total"/>
+                <Property name="text" type="java.lang.String" value="Total (Rs.)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel9">
