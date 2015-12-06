@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 public class tableModelSalesperson extends DefaultTableModel {
 
     public tableModelSalesperson() {
-      super(new String[]{ "Product Code", "Product Name", "Price", "Expiry Date", "Quantity"}, 0);
+      super(new String[]{ "Product Code", "Product Name", "Price", "Expiry Date", "Quantity", "If Expired"}, 0);
     }
 
    // @Override
@@ -50,6 +50,11 @@ public class tableModelSalesperson extends DefaultTableModel {
       if(column == 5){
         Vector rowData = (Vector)getDataVector().get(row);
         rowData.set(5, aValue);
+        fireTableCellUpdated(row, column);
+      }
+      if(column == 6){
+        Vector rowData = (Vector)getDataVector().get(row);
+        rowData.set(6, aValue);
         fireTableCellUpdated(row, column);
       }
     }

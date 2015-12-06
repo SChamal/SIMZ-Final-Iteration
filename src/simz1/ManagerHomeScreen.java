@@ -1491,19 +1491,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
-            //java.util.Date dte = null;
+            
             String dateCrnt = today;
             String dte = "0000-00-00";
-            //java.sql.Date sqldte = null;
-
-            //sqldateCrnt = new java.sql.Date(dateCrnt.getDate());
-            //dte = new Date(0);
-            //sqldte = new java.sql.Date(dte.getDay());
-            //String dte = "0000-00-00";
             try {
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
-                //dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
                 
                 if ("".equals(dte)) {
@@ -1608,23 +1600,33 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         //this.btnReset.setVisible(false);
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
-
+        
+        //setting the created stock to the salesperson
         tableModelSalesperson tmSPmodel = new tableModelSalesperson();
         spi.SalesPStock.setModel(tmSPmodel);
         for (int k = 0; k < model.getRowCount(); k++) {
             int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+            int exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());
             ResultSet rs = dbOps.combineTwoTablesForSP(Id);
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
+                        if(exp == 0){
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
+                        }else{
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
+                        }
+                        
                     }
                 }
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
         }
+        
+        
 
+        //setting the default order set in orders table
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
         ResultSet rst = dbOps.combineAfternoonStockAndStock();
         int orderTableRows = 0;
@@ -1644,11 +1646,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtDescription.requestFocusInWindow();
         }
 
-        ////////////////////
+    
         tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
 
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
@@ -1659,10 +1662,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 } else {
                     setBackground(table.getBackground());
                     setForeground(table.getForeground());
-                }
-        
-            
-
+                }   
+                
                 return this;
             }
 
@@ -1672,7 +1673,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(true);
     }//GEN-LAST:event_btnSetStockActionPerformed
-
+            
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
 
     }//GEN-LAST:event_SearchKeyPressed
@@ -1868,13 +1869,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
-                    if (Integer.parseInt(input) != 0) {
-                        int actualBalance = Integer.parseInt(input);
-                        amounti = paymenti - actualBalance;
-                    } else {
-                        System.out.println("a");
-                        amounti = amounti;
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        if (input == null) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            int actualBalance = Integer.parseInt(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
                     }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
@@ -2098,10 +2104,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No text feild should be empty");
         } else {
             String payment = txtCash.getText();
-            int paymenti = 0;
-            int amounti = Integer.parseInt(amount);
+            float paymenti = 0;
+            float amounti = Float.parseFloat(amount);
             try {
-                paymenti = Integer.parseInt(payment);
+                paymenti = Float.parseFloat(payment);
                 if (paymenti < 0) {
                     JOptionPane.showMessageDialog(this, "Only positive numbers are allowed");
                     txtCash.setText("");
@@ -2118,20 +2124,25 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 return;
             }
 
-            int balance = paymenti - amounti;
-            txtBalance.setText(String.valueOf(balance));
-            int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION) {
-                String input = JOptionPane.showInputDialog(null, "If can't pay balance exactly enter correct one or press enter", "0");
-                if (Integer.parseInt(input) != 0) {
-                    int actualBalance = Integer.parseInt(input);
-                    amounti = paymenti - actualBalance;
-                } else {
-                    System.out.println("a");
-                    amounti = amounti;
-                }
-                dbOps.addTransaction(timeLabel.getText(), today);
-                int billNo = dbOps.getBillID(timeLabel.getText(), today);
+            float balance = paymenti - amounti;
+                txtBalance.setText(String.valueOf(balance));
+                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    try{
+                        if (input == null) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) == 0) {
+                            amounti = amounti;
+                        } else if (Integer.parseInt(input) > 0) {
+                            float actualBalance = Float.parseFloat(input);
+                            amounti = paymenti - actualBalance;
+                        }
+                    }catch(NumberFormatException e){
+                    
+                    }
+                    dbOps.addTransaction(timeLabel.getText(), today);
+                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                 //add data of the transaction to the income and expenditure table in database and the interface
                 tblIncome.setModel(incomeModel);
@@ -2240,37 +2251,29 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         String cdate = today;
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            int lmt = 0;
+            
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String dte = "0000-00-00";
             int crnt = 0, totl = 0;
             try {
-
-                dte = (tableProduct.getModel().getValueAt(j, 4)).toString();
                 crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-            } catch (NullPointerException | NumberFormatException np) {
-
-                crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
-                totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
-                
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
+            } catch (NullPointerException | IllegalArgumentException np) {
+                
             }
             
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
-                    try {
-                        
+                    try {                        
                         ResultSet rs = dbOps.getTodayStockQty(id);
                         crnt = crnt + totl;
                         totl = totl + rs.getInt(2);
 
-
                     } catch (SQLException ex) {
                         System.out.println(ex);
                     }
-
 
                     boolean c = dbOps.updateTodayStockQty2(id, cdate, totl, crnt, dte);
                     if ("0000-00-00".equals(dte)) {
@@ -2292,11 +2295,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-        if (tableProduct.isColumnSelected(6)) {
+
+        /*if (tableProduct.isColumnSelected(6)) {
             for (int i = 0; i < tableProduct.getRowCount(); i++) {
                 //tableProduct.setValueAt("mika", i, 5);
             }
-        }
+        }*/
+
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
 

@@ -1376,8 +1376,21 @@ ResultSet expireDates() { // getting values changed by me
             }
         }
         return -1;
+
     }   
-    
+    ResultSet getTodayStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT t.productID,p.productName,p.sellingPrice,t.expiryDate,t.currentQuantity from today_stock t,productdetails p where (t.productID=p.productID)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
     //get order ID from order_main table
     ResultSet getOrderIDs(){
          try {
@@ -1400,6 +1413,7 @@ ResultSet expireDates() { // getting values changed by me
             String query = "SELECT o.productID,o.quantity,p.productName from order_2 o ,productdetails p where (Order_No = ? )and (o.productID=p.productID) ";
             pst = (PreparedStatement) con.prepareStatement(query);  
             pst.setInt(1,order_No);
+
             rs = pst.executeQuery();
             return rs;
         } catch (SQLException ex) {
