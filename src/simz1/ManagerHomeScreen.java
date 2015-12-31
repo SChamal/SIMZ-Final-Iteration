@@ -1571,9 +1571,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-        //this.btnSaveChanges.setVisible(true);
-        //this.btnSetStock.setVisible(false);
-        //this.btnReset.setVisible(false);
+        
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
         
@@ -1582,7 +1580,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         spi.SalesPStock.setModel(tmSPmodel);
         for (int k = 0; k < model.getRowCount(); k++) {
             int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-            int exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());
+            int exp = 0;
+            try{
+              exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());  
+            }catch(NullPointerException x){
+                
+            }
+            
             ResultSet rs = dbOps.combineTwoTablesForSP(Id);
             try {
                 while (rs.next()) {
@@ -1629,8 +1633,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
-                int tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                int tmpEx = 0;
+                try{
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                }catch(NullPointerException s){
+                    
+                }
+                
 
                 if (tmpEx == 1) {
                     setBackground(Color.RED);
@@ -1655,8 +1664,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
-    //Set default morning stock to the tableProduct table
-
+    
+//Set default morning stock to the tableProduct table
     private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
         //MyTableModel model = new MyTableModel();
@@ -2308,8 +2317,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 try {
                     current = rst.getInt(1);
                     regular = rst.getInt(4);
-                } catch (SQLException ex) {
-
+                } catch (SQLException | NullPointerException ex) {
+                    
                 }
 
                 model2.setValueAt((regular - current), i, 6);
