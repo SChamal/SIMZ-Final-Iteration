@@ -1123,14 +1123,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity"
+                "", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity", "Alert"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, true
+                true, false, false, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1376,8 +1376,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -1641,7 +1640,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
 
         }
-
+        
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
@@ -1925,19 +1924,23 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     flag = true;
                                     break;
                                 }
-                                int id2 = 0;
+                                
+                                int id2 = 0,id3 = 0;
                                 try {
-                                    //id2 = Integer.parseInt((String) model2.getValueAt(k, 2));
                                     id2 = (int) model2.getValueAt(k, 2);
+                                    id3 = (int) model2.getValueAt(k, 7);
                                 } catch (NullPointerException ex) {
-                                    //flag = true;
-                                    //break;
-                                }/*catch(ClassCastException s){
-                                 flag = false;
-                                 id2 = (int) model2.getValueAt(k, 2);
-                                 }*/
-
-                                if (id == id2) {
+                                    
+                                }
+                                
+                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    model2.setValueAt(1, k, 7);
+                                    break;
+                                }
+                                
+                                if ((id == id2) && (id3 == 1)) {
                                     flag = false;
                                     break;
                                 }
@@ -1945,10 +1948,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
-                                int max = dbOps.getMaxOrderID();
-                                //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                orderRowNo++;
+                                boolean checkOrder = true;
+                                for (int k = 0; k < model2.getRowCount(); k++) {
+                                    if (model2.getValueAt(k, 2).equals(id)) {
+                                        checkOrder = false;
+                                    }
+                                }
+                                if (checkOrder == true) {
+                                    int max = dbOps.getMaxOrderID();
+                                    model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
+                                    orderRowNo++;
+                                }
                             }
                         }
 
@@ -2175,39 +2185,47 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     if (rslt == 11) {
                         for (int k = 0; k < model2.getRowCount(); k++) {
-                            if (model2.getValueAt(k, 2) == null) {
-                                orderRowNo = 0;
-                                flag = true;
-                                break;
-                            }
-                            int id2 = 0;
-                            try {
-                                id2 = (int) model2.getValueAt(k, 2);
-                            } catch (NullPointerException ex) {
-
-                            }
-
-                            if (id == id2) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag == true) {
-                            NotificationPopup nw2 = new NotificationPopup();
-                            nw2.main1("Quantity limit reached for " + prdctName);
-                            boolean checkOrder = true;
-                            for (int k = 0; k <= model2.getRowCount(); k++) {
-                                if (model2.getValueAt(k, 2).equals(id)) {
-                                    checkOrder = false;
+                                if (model2.getValueAt(k, 2) == null) {
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    break;
+                                }
+                                
+                                int id2 = 0,id3 = 0;
+                                try {
+                                    id2 = (int) model2.getValueAt(k, 2);
+                                    id3 = (int) model2.getValueAt(k, 7);
+                                } catch (NullPointerException ex) {
+                                    
+                                }
+                                
+                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    model2.setValueAt(1, k, 7);
+                                    break;
+                                }
+                                
+                                if ((id == id2) && (id3 == 1)) {
+                                    flag = false;
+                                    break;
                                 }
                             }
-                            if (checkOrder = true) {
-                                int max = dbOps.getMaxOrderID();
-                                model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                orderRowNo++;
+                            if (flag == true) {
+                                NotificationPopup nw2 = new NotificationPopup();
+                                nw2.main1("Quantity limit reached for " + prdctName);
+                                boolean checkOrder = true;
+                                for (int k = 0; k < model2.getRowCount(); k++) {
+                                    if (model2.getValueAt(k, 2).equals(id)) {
+                                        checkOrder = false;
+                                    }
+                                }
+                                if (checkOrder == true) {
+                                    int max = dbOps.getMaxOrderID();
+                                    model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
+                                    orderRowNo++;
+                                }
                             }
-
-                        }
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {

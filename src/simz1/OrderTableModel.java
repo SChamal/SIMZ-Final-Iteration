@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class OrderTableModel extends DefaultTableModel {
     public OrderTableModel() {
-      super(new String[]{" ", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity"}, 0);
+      super(new String[]{" ", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity", "Alert"}, 0);
     }
     
     @Override
