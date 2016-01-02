@@ -36,12 +36,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -49,15 +46,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
@@ -396,7 +390,69 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.clocker();
         int max = dbOps.getMaxBillID();
         this.billno.setText(max + 1 + "");
+        
+        /////// Setting quantities to the stock table at the start ///////
+        DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
+        try {
+            ResultSet rst = dbOps.searchTodayStock();
+            ArrayList<Integer> tmp1 = new ArrayList<>();
+            for (int k = 0; k < modell.getRowCount(); k++) {
+                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+                tmp1.add(Id);
+            }
+            while (rst.next()) {
+                int id1 = rst.getInt(1);
+                if (!tmp1.contains(id1)) {
+                    try {
+                        ResultSet rs = dbOps.combineTwoTables(id1, today);
+                        while (rs.next()) {
+                            String s1 = rs.getString(1);
+                            int s2 = rs.getInt(2);
+                            String s3 = rs.getString(3);
+                            int s4 = rs.getInt(4);
+                            int s5 = rs.getInt(5);
+                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+                            } else {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+                            }
 
+                        }
+
+                    } catch (SQLException e) {
+                        
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            
+        }
+        
+        tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                int tmpEx = 0;
+                try {
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                } catch (NullPointerException s) {
+
+                }
+
+                if (tmpEx == 1) {
+                    setBackground(Color.RED);
+                } else {
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+
+                return this;
+            }
+
+        });
+        ////// End of setting ///////
     }
 
     /**
@@ -555,7 +611,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "", "Product Code", "Name", "Price", "Expiry Date", "Current Quantity", "Total Received Qty.", "If Expired"
+                "", "Product Code", "Name", "Price", "Expiry Date", "Available Stock", "Received Stock", "If Expired"
             }
         ) {
             Class[] types = new Class [] {
@@ -1137,14 +1193,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity"
+                "", "Order No", "Product ID", "Product Name", "Date", "Time", "Order Quantity", "Alert"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, true
+                true, false, false, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1390,8 +1446,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -1478,7 +1533,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
-
+        
         int num = 0;
         for (int i = 0; i < count; i++) {
             if ((boolean) tableProduct.getModel().getValueAt(i, 0) == false) {
@@ -1505,27 +1560,27 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            
+
             String dateCrnt = today;
             String dte = "0000-00-00";
             try {
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
-                
+
                 if ("".equals(dte)) {
                     dte = "0000-00-00";
                 } else {
                     Date x = javadate.parse(dte);
-                    if((x.getDate() - date.getDate()) <= 0){
+                    if ((x.getDate() - date.getDate()) <= 0) {
                         JOptionPane.showMessageDialog(this, "Please enter a reasonable expire date");
                         model.setValueAt(null, j, 4);
                         return;
-                    }else{
+                    } else {
                         model.setValueAt(dte, j, 4);
                     }
 
                 }
-            } catch (NullPointerException | IllegalArgumentException | ParseException  ex) {
+            } catch (NullPointerException | IllegalArgumentException | ParseException ex) {
                 //System.out.println(ex);
             }
 
@@ -1609,36 +1664,38 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-        //this.btnSaveChanges.setVisible(true);
-        //this.btnSetStock.setVisible(false);
-        //this.btnReset.setVisible(false);
+
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
-        
+
         //setting the created stock to the salesperson
         tableModelSalesperson tmSPmodel = new tableModelSalesperson();
         spi.SalesPStock.setModel(tmSPmodel);
         for (int k = 0; k < model.getRowCount(); k++) {
             int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-            int exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());
+            int exp = 0;
+            try {
+                exp = Integer.parseInt(tableProduct.getModel().getValueAt(k, 7).toString());
+            } catch (NullPointerException x) {
+
+            }
+
             ResultSet rs = dbOps.combineTwoTablesForSP(Id);
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        if(exp == 0){
+                        if (exp == 0) {
                             tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
-                        }else{
+                        } else {
                             tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
                         }
-                        
+
                     }
                 }
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
         }
-        
-        
 
         //setting the default order set in orders table
         DefaultTableModel modelOrder = (DefaultTableModel) this.tblOrder.getModel();
@@ -1647,37 +1704,39 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         int max = dbOps.getMaxOrderID();
         try {
             while (rst.next()) {
-                modelOrder.insertRow(orderTableRows, new Object[]{true, max+1, rst.getInt(1), rst.getString(2), today, time, rst.getString(3)});
+                modelOrder.insertRow(orderTableRows, new Object[]{true, max + 1, rst.getInt(1), rst.getString(2), today, time, rst.getString(3)});
                 orderTableRows++;
             }
         } catch (SQLException ex) {
 
         }
-
+        
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
             txtDescription.requestFocusInWindow();
         }
 
-    
         tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                int tmpEx = 0;
+                try {
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                } catch (NullPointerException s) {
 
-                int tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                }
 
                 if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
                     setBackground(table.getBackground());
                     setForeground(table.getForeground());
-                }   
-                
+                }
+
                 return this;
             }
 
@@ -1687,7 +1746,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(true);
     }//GEN-LAST:event_btnSetStockActionPerformed
-            
+
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
 
     }//GEN-LAST:event_SearchKeyPressed
@@ -1695,8 +1754,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SearchActionPerformed
-    //Set default morning stock to the tableProduct table
 
+//Set default morning stock to the tableProduct table
     private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
         //MyTableModel model = new MyTableModel();
@@ -1884,7 +1943,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
-                    try{
+                    try {
                         if (input == null) {
                             amounti = amounti;
                         } else if (Integer.parseInt(input) == 0) {
@@ -1893,8 +1952,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             int actualBalance = Integer.parseInt(input);
                             amounti = paymenti - actualBalance;
                         }
-                    }catch(NumberFormatException e){
-                    
+                    } catch (NumberFormatException e) {
+
                     }
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
@@ -1904,7 +1963,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     String descript = "bill " + Integer.toString(billNo);
 
                     incomeModel.addRow(new Object[]{descript, amounti, null});
-
 
                     int userID = dbOps.getID(name1.getText());
                     incomeModel.addRow(new Object[]{descript, amounti, null});
@@ -1936,19 +1994,23 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     flag = true;
                                     break;
                                 }
-                                int id2 = 0;
+                                
+                                int id2 = 0,id3 = 0;
                                 try {
-                                    //id2 = Integer.parseInt((String) model2.getValueAt(k, 2));
                                     id2 = (int) model2.getValueAt(k, 2);
+                                    id3 = (int) model2.getValueAt(k, 7);
                                 } catch (NullPointerException ex) {
-                                    //flag = true;
-                                    //break;
-                                }/*catch(ClassCastException s){
-                                 flag = false;
-                                 id2 = (int) model2.getValueAt(k, 2);
-                                 }*/
-
-                                if (id == id2) {
+                                    
+                                }
+                                
+                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    model2.setValueAt(1, k, 7);
+                                    break;
+                                }
+                                
+                                if ((id == id2) && (id3 == 1)) {
                                     flag = false;
                                     break;
                                 }
@@ -1956,10 +2018,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
-                                int max = dbOps.getMaxOrderID();
-                                //model2.addRow(new Object[]{false, 01, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                model2.insertRow(orderRowNo, new Object[]{true, max+1, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                orderRowNo++;
+                                boolean checkOrder = true;
+                                for (int k = 0; k < model2.getRowCount(); k++) {
+                                    if (model2.getValueAt(k, 2).equals(id)) {
+                                        checkOrder = false;
+                                    }
+                                }
+                                if (checkOrder == true) {
+                                    int max = dbOps.getMaxOrderID();
+                                    model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
+                                    orderRowNo++;
+                                }
                             }
                         }
 
@@ -2139,24 +2208,24 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
 
             float balance = paymenti - amounti;
-                txtBalance.setText(String.valueOf(balance));
-                int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
-                    try{
-                        if (input == null) {
-                            amounti = amounti;
-                        } else if (Integer.parseInt(input) == 0) {
-                            amounti = amounti;
-                        } else if (Integer.parseInt(input) > 0) {
-                            float actualBalance = Float.parseFloat(input);
-                            amounti = paymenti - actualBalance;
-                        }
-                    }catch(NumberFormatException e){
-                    
+            txtBalance.setText(String.valueOf(balance));
+            int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                try {
+                    if (input == null) {
+                        amounti = amounti;
+                    } else if (Integer.parseInt(input) == 0) {
+                        amounti = amounti;
+                    } else if (Integer.parseInt(input) > 0) {
+                        float actualBalance = Float.parseFloat(input);
+                        amounti = paymenti - actualBalance;
                     }
-                    dbOps.addTransaction(timeLabel.getText(), today);
-                    int billNo = dbOps.getBillID(timeLabel.getText(), today);
+                } catch (NumberFormatException e) {
+
+                }
+                dbOps.addTransaction(timeLabel.getText(), today);
+                int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
                 //add data of the transaction to the income and expenditure table in database and the interface
                 tblIncome.setModel(incomeModel);
@@ -2186,39 +2255,47 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     if (rslt == 11) {
                         for (int k = 0; k < model2.getRowCount(); k++) {
-                            if (model2.getValueAt(k, 2) == null) {
-                                orderRowNo = 0;
-                                flag = true;
-                                break;
-                            }
-                            int id2 = 0;
-                            try {
-                                id2 = (int) model2.getValueAt(k, 2);
-                            } catch (NullPointerException ex) {
-
-                            }
-
-                            if (id == id2) {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag == true) {
-                            NotificationPopup nw2 = new NotificationPopup();
-                            nw2.main1("Quantity limit reached for " + prdctName);
-                            boolean checkOrder = true;
-                            for (int k = 0; k <= model2.getRowCount(); k++) {
-                                if (model2.getValueAt(k, 2).equals(id)) {
-                                    checkOrder = false;
+                                if (model2.getValueAt(k, 2) == null) {
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    break;
+                                }
+                                
+                                int id2 = 0,id3 = 0;
+                                try {
+                                    id2 = (int) model2.getValueAt(k, 2);
+                                    id3 = (int) model2.getValueAt(k, 7);
+                                } catch (NullPointerException ex) {
+                                    
+                                }
+                                
+                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
+                                    orderRowNo = 0;
+                                    flag = true;
+                                    model2.setValueAt(1, k, 7);
+                                    break;
+                                }
+                                
+                                if ((id == id2) && (id3 == 1)) {
+                                    flag = false;
+                                    break;
                                 }
                             }
-                            if (checkOrder = true) {
-                                int max = dbOps.getMaxOrderID();
-                                model2.insertRow(orderRowNo, new Object[]{true, max+1, id, prdctName, today, timeLabel.getText(), 0, 0});
-                                orderRowNo++;
+                            if (flag == true) {
+                                NotificationPopup nw2 = new NotificationPopup();
+                                nw2.main1("Quantity limit reached for " + prdctName);
+                                boolean checkOrder = true;
+                                for (int k = 0; k < model2.getRowCount(); k++) {
+                                    if (model2.getValueAt(k, 2).equals(id)) {
+                                        checkOrder = false;
+                                    }
+                                }
+                                if (checkOrder == true) {
+                                    int max = dbOps.getMaxOrderID();
+                                    model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
+                                    orderRowNo++;
+                                }
                             }
-
-                        }
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -2265,7 +2342,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         String cdate = today;
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
-            
+
             //SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String dte = "0000-00-00";
             int crnt = 0, totl = 0;
@@ -2275,12 +2352,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd");
                 dte = javadate.format(tableProduct.getModel().getValueAt(j, 4));
             } catch (NullPointerException | IllegalArgumentException np) {
-                
+
             }
-            
+
             try {
                 if (dbOps.getTodayStockQty(id).getInt(2) != totl) {
-                    try {                        
+                    try {
                         ResultSet rs = dbOps.getTodayStockQty(id);
                         crnt = crnt + totl;
                         totl = totl + rs.getInt(2);
@@ -2311,10 +2388,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
 
         /*if (tableProduct.isColumnSelected(6)) {
-            for (int i = 0; i < tableProduct.getRowCount(); i++) {
-                //tableProduct.setValueAt("mika", i, 5);
-            }
-        }*/
+         for (int i = 0; i < tableProduct.getRowCount(); i++) {
+         //tableProduct.setValueAt("mika", i, 5);
+         }
+         }*/
 
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
@@ -2325,7 +2402,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
-        OrderConfirmation oc= new OrderConfirmation();
+        OrderConfirmation oc = new OrderConfirmation();
         oc.setVisible(true);
         oc.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }//GEN-LAST:event_btnProcessOrderActionPerformed
@@ -2356,34 +2433,34 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnRefillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefillActionPerformed
         DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
         int rowCount = model2.getRowCount();
-        int current=0 , regular=0;
+        int current = 0, regular = 0;
         for (int i = 0; i < rowCount; i++) {
             if (model2.getValueAt(i, 2) == null) {
                 break;
             } else {
                 int id = Integer.parseInt(model2.getValueAt(i, 2).toString());
+
                 ResultSet result = dbOps.searchTodayStock();
-                try {                   
-                    while(result.next()){
+                try {
+                    while (result.next()) {
                         int ID = result.getInt(1);
-                    if(id ==ID){
-                        ResultSet rst = dbOps.getTodayStockQty(id);
-                        //while(rst.next()){
+                        if (id == ID) {
+                            ResultSet rst = dbOps.getTodayStockQty(id);
+                            //while(rst.next()){
                             current = rst.getInt(1);
                             regular = rst.getInt(4);
                             System.out.println(current);
                             //model2.setValueAt((regular - current), i, 6);
-                        //}
-                        System.out.println(current);
-                        //System.out.println(regular);
-                        model2.setValueAt((regular - current), i, 6);
+                            //}
+                            System.out.println(current);
+                            //System.out.println(regular);
+                            model2.setValueAt((regular - current), i, 6);
+                        }
                     }
-                    }
-                }
-                catch (SQLException ex) {
+                } catch (SQLException ex) {
 
-                }                
-                
+                }
+
             }
 
         }
