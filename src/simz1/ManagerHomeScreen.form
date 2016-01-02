@@ -231,8 +231,8 @@
                         <Column editable="false" title="Name" type="java.lang.Object"/>
                         <Column editable="false" title="Price" type="java.lang.Object"/>
                         <Column editable="true" title="Expiry Date" type="java.lang.Object"/>
-                        <Column editable="false" title="Current Quantity" type="java.lang.Object"/>
-                        <Column editable="true" title="Total Received Qty." type="java.lang.Integer"/>
+                        <Column editable="false" title="Available Stock" type="java.lang.Object"/>
+                        <Column editable="true" title="Received Stock" type="java.lang.Integer"/>
                         <Column editable="false" title="If Expired" type="java.lang.Integer"/>
                       </Table>
                     </Property>

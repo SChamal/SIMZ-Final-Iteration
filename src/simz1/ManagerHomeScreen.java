@@ -27,12 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -40,15 +37,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
@@ -387,7 +381,69 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.clocker();
         int max = dbOps.getMaxBillID();
         this.billno.setText(max + 1 + "");
+        
+        /////// Setting quantities to the stock table at the start ///////
+        DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
+        try {
+            ResultSet rst = dbOps.searchTodayStock();
+            ArrayList<Integer> tmp1 = new ArrayList<>();
+            for (int k = 0; k < modell.getRowCount(); k++) {
+                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+                tmp1.add(Id);
+            }
+            while (rst.next()) {
+                int id1 = rst.getInt(1);
+                if (!tmp1.contains(id1)) {
+                    try {
+                        ResultSet rs = dbOps.combineTwoTables(id1, today);
+                        while (rs.next()) {
+                            String s1 = rs.getString(1);
+                            int s2 = rs.getInt(2);
+                            String s3 = rs.getString(3);
+                            int s4 = rs.getInt(4);
+                            int s5 = rs.getInt(5);
+                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+                            } else {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+                            }
 
+                        }
+
+                    } catch (SQLException e) {
+                        
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            
+        }
+        
+        tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                int tmpEx = 0;
+                try {
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                } catch (NullPointerException s) {
+
+                }
+
+                if (tmpEx == 1) {
+                    setBackground(Color.RED);
+                } else {
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+
+                return this;
+            }
+
+        });
+        ////// End of setting ///////
     }
 
     /**
@@ -546,7 +602,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "", "Product Code", "Name", "Price", "Expiry Date", "Current Quantity", "Total Received Qty.", "If Expired"
+                "", "Product Code", "Name", "Price", "Expiry Date", "Available Stock", "Received Stock", "If Expired"
             }
         ) {
             Class[] types = new Class [] {
@@ -1463,7 +1519,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
-
+        
         int num = 0;
         for (int i = 0; i < count; i++) {
             if ((boolean) tableProduct.getModel().getValueAt(i, 0) == false) {
