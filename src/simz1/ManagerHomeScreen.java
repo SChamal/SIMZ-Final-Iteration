@@ -5,6 +5,14 @@
  */
 package simz1;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -17,6 +25,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -970,6 +979,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         txtProfit.setEditable(false);
 
         btnGenerateReport.setText("Generate Account Report");
+        btnGenerateReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerateReportActionPerformed(evt);
+            }
+        });
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Other Expences"));
 
@@ -2485,6 +2499,80 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         viewOrders view = new viewOrders();
         view.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
+        int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Accounts Report now?", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+        try{
+            String date = today.replace(":", "_");
+            //New PDF File will be created as ACCReport2016_01_01 //today's date
+            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport"+date+""+".pdf"));
+            document.open();
+            Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n");
+            document.add(paragraph1);
+            paragraph1 = new Paragraph("Account Report - "+today+"",FontFactory.getFont(FontFactory.HELVETICA, 18));
+            document.add(paragraph1);
+            //adding a table
+            PdfPTable t = new PdfPTable(3);
+            t.setSpacingBefore(25);      
+            t.setSpacingAfter(25);
+            int k=9000;
+            t.addCell(new PdfPCell(new Phrase("Description")));          
+            t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));     
+            t.addCell(new PdfPCell(new Phrase("Debit(Rs.)"))); 
+            int rows = tblIncome.getRowCount();
+            System.out.println(rows);
+            for (int i = 0; i < rows; i++){
+                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
+                if(tblIncome.getValueAt(i, 1)== null){
+                    t.addCell(new PdfPCell(new Phrase("-")));
+                }else{
+                    t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
+                }
+                if(tblIncome.getValueAt(i, 2)== null) {
+                    t.addCell(new PdfPCell(new Phrase("-")));
+                }else{
+                    t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));
+                }/*
+                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
+                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
+                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));*/
+            }
+            document.add(t);
+            float totalIncome = 0;
+            for (int i = 0; i < rows; i++) {
+                if (tblIncome.getValueAt(i, 1) != null) {
+                    totalIncome = totalIncome + Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
+                } else {
+                    totalIncome = totalIncome + 0;
+                }
+            }
+            paragraph1 = new Paragraph("Total Income (Rs.) : "+totalIncome+"");
+            document.add(paragraph1);
+            float totalExpences = 0;
+            for (int i = 0; i < rows; i++) {
+                if (tblIncome.getValueAt(i, 2) != null) {
+                    totalExpences = totalExpences + Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
+                } else {
+                    totalExpences = totalExpences + 0;
+                }
+            }
+            DecimalFormat roundValue = new DecimalFormat("###.##");
+            float expense = Float.parseFloat(roundValue.format(totalExpences));
+            paragraph1 = new Paragraph("Total Expence (Rs.) : "+expense+"");
+            document.add(paragraph1);
+            float profit=0;
+            profit = totalIncome-expense;
+            paragraph1 = new Paragraph("Total Profit (Rs.) : "+profit+"");
+            document.add(paragraph1);
+        }catch(Exception ex){
+            System.out.println(ex);        
+        }
+        document.close();
+        }
+    }//GEN-LAST:event_btnGenerateReportActionPerformed
 
     /**
      * @return the name1

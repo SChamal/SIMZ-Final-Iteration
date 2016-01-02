@@ -52,7 +52,7 @@ public class viewOrders extends javax.swing.JFrame {
             tblViewOrders.setModel((TableModel) model);
             try {
                 while(rs.next()){
-                    model.addRow(new Object[]{rs.getInt(1), rs.getString(2), rs.getString(3)});
+                    model.addRow(new Object[]{rs.getInt(1), rs.getString(3), rs.getString(2)});
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(viewOrders.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,7 +84,7 @@ public class viewOrders extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(listOrderIDs);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Order ID");
 
         tblViewOrders.setModel(new javax.swing.table.DefaultTableModel(
@@ -105,7 +105,7 @@ public class viewOrders extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tblViewOrders);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("Order Details");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
