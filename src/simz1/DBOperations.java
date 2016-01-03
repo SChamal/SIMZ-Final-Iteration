@@ -1422,4 +1422,20 @@ ResultSet expireDates() { // getting values changed by me
         }
 
     }
+    
+    //Reports 
+    //To view details in the reports table (tblReports)
+    ResultSet combineProductDetailsAndTodaysStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT p.productName,t.totalreceivedQuantity,t.currentQuantity from today_stock t ,productdetails p where (t.productID=p.productID) ";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
 }
