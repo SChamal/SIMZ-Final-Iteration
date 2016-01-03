@@ -16,7 +16,9 @@ import static simz1.LoginFrame1.mhp;
  * @author DELL
  */
 public class addProduct extends javax.swing.JFrame {
-    DBOperations dbOps =new DBOperations();
+
+    DBOperations dbOps = new DBOperations();
+
     /**
      * Creates new form addProduct
      */
@@ -60,6 +62,7 @@ public class addProduct extends javax.swing.JFrame {
         jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("New Product");
 
         jLabel2.setText("Product Type          :");
 
@@ -240,35 +243,66 @@ public class addProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        clearFields();  
+        clearFields();
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
-        
+
         if (txtType.getText().isEmpty() || txtName.getText().isEmpty() || txtReceivingPrice.getText().isEmpty() || txtSellingPrice.getText().isEmpty() || txtQtyLimit.getText().isEmpty() || txtIndicator.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
             return;
         } else {
             ProductDetails pd = new ProductDetails();
-
+            Double receive = 0.0, sell = 0.0;
+            int lmt = 0, x = 0, y = 0, z = 0;
             pd.setProductID(0);
             pd.setProductType(txtType.getText());
             pd.setProductName(txtName.getText());
             try {
-                Double receive = Double.parseDouble(txtReceivingPrice.getText());
+                receive = Double.parseDouble(txtReceivingPrice.getText());
                 pd.setReceivingPrice(receive);
-                Double sell = Double.parseDouble(txtSellingPrice.getText());
-                pd.setSellingPrice(sell);
-                int lmt = Integer.parseInt(txtQtyLimit.getText());
-                pd.setQtyLimit(lmt);
-                if (receive < 0 || sell < 0 || lmt < 0) {
-                    JOptionPane.showMessageDialog(this, "Please enter only positive numbers!!!");
-                    return;
-                }
             } catch (NumberFormatException ex) {
-
+                x = 1;
+            }
+            try {
+                sell = Double.parseDouble(txtSellingPrice.getText());
+                pd.setSellingPrice(sell);
+            } catch (NumberFormatException ex) {
+                y = 1;
+            }
+            try {
+                lmt = Integer.parseInt(txtQtyLimit.getText());
+                pd.setQtyLimit(lmt);
+            } catch (NumberFormatException ex) {
+                z = 1;
+            }
+            if (x == 1 || y == 1 || z == 1) {
+                JOptionPane.showMessageDialog(this, "Only numbers are allowed in Selling, Receiving price and Quantity limit field!!!");
+                if (x == 1) {
+                    txtReceivingPrice.setText("");
+                }
+                if (y == 1) {
+                    txtSellingPrice.setText("");
+                }
+                if (z == 1) {
+                    txtQtyLimit.setText("");
+                }
                 return;
             }
+            if (receive < 0 || sell < 0 || lmt < 0) {
+                JOptionPane.showMessageDialog(this, "Please enter only positive numbers!!!");
+                if (receive < 0) {
+                    txtReceivingPrice.setText("");
+                }
+                if (sell < 0) {
+                    txtSellingPrice.setText("");
+                }
+                if (lmt < 0) {
+                    txtQtyLimit.setText("");
+                }
+                return;
+            }
+
             SimpleDateFormat javadate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             try {
                 String dte = javadate.format(jXDatePicker1.getDate());
@@ -303,11 +337,11 @@ public class addProduct extends javax.swing.JFrame {
          }else{
         
          }*/
-        
+
     }//GEN-LAST:event_btnAddProductActionPerformed
 
-    void clearFields(){
-        
+    void clearFields() {
+
         txtType.setText("");
         txtName.setText("");
         txtReceivingPrice.setText("");
@@ -316,6 +350,7 @@ public class addProduct extends javax.swing.JFrame {
         txtQtyLimit.setText("");
         txtIndicator.setText("");
     }
+
     /**
      * @param args the command line arguments
      */

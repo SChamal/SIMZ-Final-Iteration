@@ -126,8 +126,10 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jcomboAddTodaysStock" min="-2" pref="168" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnAddOrderToStock" min="-2" pref="118" max="-2" attributes="0"/>
+                              <Component id="addProductbtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnAddOrderToStock" min="-2" pref="118" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnReset" min="-2" pref="140" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnSaveChanges" min="-2" pref="140" max="-2" attributes="0"/>
@@ -192,6 +194,7 @@
                           <Component id="btnSetStock" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnSaveChanges" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                           <Component id="btnReset" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                          <Component id="addProductbtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   </Group>
@@ -381,6 +384,14 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblStockStatus">
+            </Component>
+            <Component class="javax.swing.JButton" name="addProductbtn">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Add Product"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addProductbtnActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

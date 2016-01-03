@@ -145,8 +145,24 @@ public class LoginFrame1 extends javax.swing.JFrame {
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
 
         String s1 = getTxtUserName().getText();
-        String encrypt = PswrdEncrypt.main2(txtPassword.getText());
         //String s2 = txtPassword.getText();
+
+        if ("".equals(s1) && "".equals(txtPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "please enter your username and password!!!");
+            return;
+        }
+
+        if (!"".equals(s1) && "".equals(txtPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "please enter your password!!!");
+            return;
+        }
+
+        if ("".equals(s1) && !"".equals(txtPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "please enter your username!!!");
+            return;
+        }
+
+        String encrypt = PswrdEncrypt.main2(txtPassword.getText());
         int x = dbOps.checkLogin(s1, encrypt);
 
         if (x == 11) {
@@ -155,7 +171,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
             spi.name3.setText(s1);
             spi.SalesPStock.getColumnModel().getColumn(5).setMinWidth(0);
             spi.SalesPStock.getColumnModel().getColumn(5).setMaxWidth(0);
-            
+
             String rst = dbOps.getPropic(s1);
 
             if (rst != null) {
@@ -216,8 +232,24 @@ public class LoginFrame1 extends javax.swing.JFrame {
     private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String s1 = getTxtUserName().getText();
-            String encrypt = PswrdEncrypt.main2(txtPassword.getText());
             //String s2 = txtPassword.getText();
+
+            if ("".equals(s1) && "".equals(txtPassword.getText())) {
+                JOptionPane.showMessageDialog(this, "please enter your username and password!!!");
+                return;
+            }
+
+            if (!"".equals(s1) && "".equals(txtPassword.getText())) {
+                JOptionPane.showMessageDialog(this, "please enter your password!!!");
+                return;
+            }
+
+            if ("".equals(s1) && !"".equals(txtPassword.getText())) {
+                JOptionPane.showMessageDialog(this, "please enter your username!!!");
+                return;
+            }
+
+            String encrypt = PswrdEncrypt.main2(txtPassword.getText());
             int x = dbOps.checkLogin(s1, encrypt);
 
             if (x == 11) {
@@ -272,17 +304,17 @@ public class LoginFrame1 extends javax.swing.JFrame {
                 return;
             }
         }
-        if (evt.getKeyCode()== KeyEvent.VK_TAB) {
+        if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             txtUserName.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
 
     private void txtUserNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserNameKeyPressed
         int code = evt.getKeyCode();
-        if (code== KeyEvent.VK_ENTER) {
+        if (code == KeyEvent.VK_ENTER) {
             txtPassword.requestFocusInWindow();
         }
-        if (code== KeyEvent.VK_TAB) {
+        if (code == KeyEvent.VK_TAB) {
             txtPassword.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtUserNameKeyPressed
@@ -300,13 +332,13 @@ public class LoginFrame1 extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        
+
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
                 try {
                     UIManager.setLookAndFeel(new HiFiLookAndFeel());
 
@@ -319,7 +351,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
+    public javax.swing.JButton btnCancel;
     public javax.swing.JButton btnHint;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel1;

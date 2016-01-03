@@ -267,6 +267,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                         model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                                     }
                                     //jcomboAddTodaysStock.setSelectedIndex(-1);
+                                }else{
+                                    JOptionPane.
                                 }
                                 return;
                             } catch (SQLException ex) {
@@ -390,72 +392,72 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.clocker();
         int max = dbOps.getMaxBillID();
         this.billno.setText(max + 1 + "");
-        
+
         /////// Setting quantities to the stock table at the start ///////
-        DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
-        try {
-            ResultSet rst = dbOps.searchTodayStock();
-            ArrayList<Integer> tmp1 = new ArrayList<>();
-            for (int k = 0; k < modell.getRowCount(); k++) {
-                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-                tmp1.add(Id);
-            }
-            while (rst.next()) {
-                int id1 = rst.getInt(1);
-                if (!tmp1.contains(id1)) {
-                    try {
-                        ResultSet rs = dbOps.combineTwoTables(id1, today);
-                        while (rs.next()) {
-                            String s1 = rs.getString(1);
-                            int s2 = rs.getInt(2);
-                            String s3 = rs.getString(3);
-                            int s4 = rs.getInt(4);
-                            int s5 = rs.getInt(5);
-                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
-                            } else {
-                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
-                            }
+        /*DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
+         try {
+         ResultSet rst = dbOps.searchTodayStock();
+         ArrayList<Integer> tmp1 = new ArrayList<>();
+         for (int k = 0; k < modell.getRowCount(); k++) {
+         int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+         tmp1.add(Id);
+         }
+         while (rst.next()) {
+         int id1 = rst.getInt(1);
+         if (!tmp1.contains(id1)) {
+         try {
+         ResultSet rs = dbOps.combineTwoTables(id1, today);
+         while (rs.next()) {
+         String s1 = rs.getString(1);
+         int s2 = rs.getInt(2);
+         String s3 = rs.getString(3);
+         int s4 = rs.getInt(4);
+         int s5 = rs.getInt(5);
+         if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+         modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+         } else {
+         modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+         }
 
-                        }
+         }
 
-                    } catch (SQLException e) {
+         } catch (SQLException e) {
                         
-                    }
-                }
-            }
-        } catch (SQLException ex) {
+         }
+         }
+         }
+         } catch (SQLException ex) {
             
-        }
+         }
         
-        tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+         tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+         @Override
+         public Component getTableCellRendererComponent(JTable table,
+         Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                int tmpEx = 0;
-                try {
-                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
-                } catch (NullPointerException s) {
+         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+         int tmpEx = 0;
+         try {
+         tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+         } catch (NullPointerException s) {
 
-                }
+         }
 
-                if (tmpEx == 1) {
-                    setBackground(Color.RED);
-                } else {
-                    setBackground(table.getBackground());
-                    setForeground(table.getForeground());
-                }
+         if (tmpEx == 1) {
+         setBackground(Color.RED);
+         } else {
+         setBackground(table.getBackground());
+         setForeground(table.getForeground());
+         }
 
-                return this;
-            }
+         return this;
+         }
 
-        });
-        
+         });
+         */
         //Reports tab
         lblDate.setText(today);
-        
+
         ////// End of setting ///////
     }
 
@@ -488,6 +490,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         btnAddOrderToStock = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         lblStockStatus = new javax.swing.JLabel();
+        addProductbtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         BillingTable = new javax.swing.JTable();
@@ -704,6 +707,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel17.setText("Stock Status :");
 
+        addProductbtn.setText("Add Product");
+        addProductbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addProductbtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -714,8 +724,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jcomboAddTodaysStock, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnAddOrderToStock, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addProductbtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAddOrderToStock, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -733,7 +745,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     .addComponent(Search, 0, 200, Short.MAX_VALUE))
                                 .addGap(451, 451, 451)
                                 .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 29, Short.MAX_VALUE))
+                        .addGap(0, 7, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -765,7 +777,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(btnAddOrderToStock)
                     .addComponent(btnSetStock)
                     .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addProductbtn))
                 .addGap(30, 30, 30))
         );
 
@@ -901,7 +914,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 938, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 916, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(ItemSelecter, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -1149,7 +1162,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             .addComponent(txtProfit)
                             .addComponent(txtTotalIncome, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                             .addComponent(btnGenerateReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1237,7 +1250,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(545, Short.MAX_VALUE)
+                .addContainerGap(523, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel19)
@@ -1366,7 +1379,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 960, Short.MAX_VALUE)
+            .addGap(0, 949, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -1441,7 +1454,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(usersLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 725, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                         .addGroup(usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnNewUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnRemoveUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -1605,7 +1618,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
-        
+
         int num = 0;
         for (int i = 0; i < count; i++) {
             if ((boolean) tableProduct.getModel().getValueAt(i, 0) == false) {
@@ -1782,7 +1795,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
 
         }
-        
+
         int reply = JOptionPane.showConfirmDialog(null, "Todays Stock has been created successfully \n Do you wish to pay now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             mhp.jTabbedPane1.setSelectedIndex(2);
@@ -2066,22 +2079,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     flag = true;
                                     break;
                                 }
-                                
-                                int id2 = 0,id3 = 0;
+
+                                int id2 = 0, id3 = 0;
                                 try {
                                     id2 = (int) model2.getValueAt(k, 2);
                                     id3 = (int) model2.getValueAt(k, 7);
                                 } catch (NullPointerException ex) {
-                                    
+
                                 }
-                                
-                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
+
+                                if ((id == id2) && (model2.getValueAt(k, 7) == null)) {
                                     orderRowNo = 0;
                                     flag = true;
                                     model2.setValueAt(1, k, 7);
                                     break;
                                 }
-                                
+
                                 if ((id == id2) && (id3 == 1)) {
                                     flag = false;
                                     break;
@@ -2327,47 +2340,47 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                     if (rslt == 11) {
                         for (int k = 0; k < model2.getRowCount(); k++) {
-                                if (model2.getValueAt(k, 2) == null) {
-                                    orderRowNo = 0;
-                                    flag = true;
-                                    break;
-                                }
-                                
-                                int id2 = 0,id3 = 0;
-                                try {
-                                    id2 = (int) model2.getValueAt(k, 2);
-                                    id3 = (int) model2.getValueAt(k, 7);
-                                } catch (NullPointerException ex) {
-                                    
-                                }
-                                
-                                if((id == id2) && (model2.getValueAt(k, 7) == null)){
-                                    orderRowNo = 0;
-                                    flag = true;
-                                    model2.setValueAt(1, k, 7);
-                                    break;
-                                }
-                                
-                                if ((id == id2) && (id3 == 1)) {
-                                    flag = false;
-                                    break;
+                            if (model2.getValueAt(k, 2) == null) {
+                                orderRowNo = 0;
+                                flag = true;
+                                break;
+                            }
+
+                            int id2 = 0, id3 = 0;
+                            try {
+                                id2 = (int) model2.getValueAt(k, 2);
+                                id3 = (int) model2.getValueAt(k, 7);
+                            } catch (NullPointerException ex) {
+
+                            }
+
+                            if ((id == id2) && (model2.getValueAt(k, 7) == null)) {
+                                orderRowNo = 0;
+                                flag = true;
+                                model2.setValueAt(1, k, 7);
+                                break;
+                            }
+
+                            if ((id == id2) && (id3 == 1)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag == true) {
+                            NotificationPopup nw2 = new NotificationPopup();
+                            nw2.main1("Quantity limit reached for " + prdctName);
+                            boolean checkOrder = true;
+                            for (int k = 0; k < model2.getRowCount(); k++) {
+                                if (model2.getValueAt(k, 2).equals(id)) {
+                                    checkOrder = false;
                                 }
                             }
-                            if (flag == true) {
-                                NotificationPopup nw2 = new NotificationPopup();
-                                nw2.main1("Quantity limit reached for " + prdctName);
-                                boolean checkOrder = true;
-                                for (int k = 0; k < model2.getRowCount(); k++) {
-                                    if (model2.getValueAt(k, 2).equals(id)) {
-                                        checkOrder = false;
-                                    }
-                                }
-                                if (checkOrder == true) {
-                                    int max = dbOps.getMaxOrderID();
-                                    model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
-                                    orderRowNo++;
-                                }
+                            if (checkOrder == true) {
+                                int max = dbOps.getMaxOrderID();
+                                model2.insertRow(orderRowNo, new Object[]{true, max + 1, id, prdctName, today, timeLabel.getText(), 0, 1, 0});
+                                orderRowNo++;
                             }
+                        }
                     }
 
                     for (int j = 0; j < model.getRowCount(); j++) {
@@ -2652,76 +2665,101 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Accounts Report now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
-            
-        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-        try{
-            String date = today.replace(":", "_");
-            //New PDF File will be created as ACCReport2016_01_01 //today's date
-            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport"+date+""+".pdf"));
-            document.open();
-            Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n");
-            document.add(paragraph1);
-            paragraph1 = new Paragraph("Account Report - "+today+"",FontFactory.getFont(FontFactory.HELVETICA, 18));
-            document.add(paragraph1);
-            //adding a table
-            PdfPTable t = new PdfPTable(3);
-            t.setSpacingBefore(25);      
-            t.setSpacingAfter(25);
-            int k=9000;
-            t.addCell(new PdfPCell(new Phrase("Description")));          
-            t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));     
-            t.addCell(new PdfPCell(new Phrase("Debit(Rs.)"))); 
-            int rows = tblIncome.getRowCount();
-            System.out.println(rows);
-            for (int i = 0; i < rows; i++){
-                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
-                if(tblIncome.getValueAt(i, 1)== null){
-                    t.addCell(new PdfPCell(new Phrase("-")));
-                }else{
-                    t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
+
+            Document document = new Document(PageSize.A4, 50, 50, 50, 50);
+            try {
+                String date = today.replace(":", "_");
+                //New PDF File will be created as ACCReport2016_01_01 //today's date
+                PdfWriter.getInstance(document, new FileOutputStream("F:\\University\\Second Year\\Semester 1\\Group Project\\Acc. Reports" + date + "" + ".pdf"));
+                document.open();
+                Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n");
+                document.add(paragraph1);
+                paragraph1 = new Paragraph("Account Report - " + today + "", FontFactory.getFont(FontFactory.HELVETICA, 18));
+                document.add(paragraph1);
+                //adding a table
+                PdfPTable t = new PdfPTable(3);
+                t.setSpacingBefore(25);
+                t.setSpacingAfter(25);
+                int k = 9000;
+                t.addCell(new PdfPCell(new Phrase("Description")));
+                t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
+                t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
+                int rows = tblIncome.getRowCount();
+                System.out.println(rows);
+                for (int i = 0; i < rows; i++) {
+                    t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0) + "")));
+                    if (tblIncome.getValueAt(i, 1) == null) {
+                        t.addCell(new PdfPCell(new Phrase("-")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1) + "")));
+                    }
+                    if (tblIncome.getValueAt(i, 2) == null) {
+                        t.addCell(new PdfPCell(new Phrase("-")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2) + "")));
+                    }/*
+                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
+                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
+                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));*/
+
                 }
-                if(tblIncome.getValueAt(i, 2)== null) {
-                    t.addCell(new PdfPCell(new Phrase("-")));
-                }else{
-                    t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));
-                }/*
-                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
-                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
-                t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));*/
-            }
-            document.add(t);
-            float totalIncome = 0;
-            for (int i = 0; i < rows; i++) {
-                if (tblIncome.getValueAt(i, 1) != null) {
-                    totalIncome = totalIncome + Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
-                } else {
-                    totalIncome = totalIncome + 0;
+                document.add(t);
+                float totalIncome = 0;
+                for (int i = 0; i < rows; i++) {
+                    if (tblIncome.getValueAt(i, 1) != null) {
+                        totalIncome = totalIncome + Float.parseFloat(tblIncome.getValueAt(i, 1).toString());
+                    } else {
+                        totalIncome = totalIncome + 0;
+                    }
                 }
-            }
-            paragraph1 = new Paragraph("Total Income (Rs.) : "+totalIncome+"");
-            document.add(paragraph1);
-            float totalExpences = 0;
-            for (int i = 0; i < rows; i++) {
-                if (tblIncome.getValueAt(i, 2) != null) {
-                    totalExpences = totalExpences + Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
-                } else {
-                    totalExpences = totalExpences + 0;
+                paragraph1 = new Paragraph("Total Income (Rs.) : " + totalIncome + "");
+                document.add(paragraph1);
+                float totalExpences = 0;
+                for (int i = 0; i < rows; i++) {
+                    if (tblIncome.getValueAt(i, 2) != null) {
+                        totalExpences = totalExpences + Float.parseFloat(tblIncome.getValueAt(i, 2).toString());
+                    } else {
+                        totalExpences = totalExpences + 0;
+                    }
                 }
+                DecimalFormat roundValue = new DecimalFormat("###.##");
+                float expense = Float.parseFloat(roundValue.format(totalExpences));
+                paragraph1 = new Paragraph("Total Expence (Rs.) : " + expense + "");
+                document.add(paragraph1);
+                float profit = 0;
+                profit = totalIncome - expense;
+                paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + "");
+                document.add(paragraph1);
+            } catch (Exception ex) {
+                System.out.println(ex);
             }
-            DecimalFormat roundValue = new DecimalFormat("###.##");
-            float expense = Float.parseFloat(roundValue.format(totalExpences));
-            paragraph1 = new Paragraph("Total Expence (Rs.) : "+expense+"");
-            document.add(paragraph1);
-            float profit=0;
-            profit = totalIncome-expense;
-            paragraph1 = new Paragraph("Total Profit (Rs.) : "+profit+"");
-            document.add(paragraph1);
-        }catch(Exception ex){
-            System.out.println(ex);        
-        }
-        document.close();
+            document.close();
         }
     }//GEN-LAST:event_btnGenerateReportActionPerformed
+
+    private void addProductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductbtnActionPerformed
+        try {
+            JTextField st = (JTextField) jcomboAddTodaysStock.getEditor().getEditorComponent();
+            String str = st.getText();
+            DefaultTableModel model = (DefaultTableModel) tableProduct.getModel();
+            ResultSet rst = dbOps.viewStock2(str);
+            if (rst.next()) {
+                boolean flag = true;
+                for (int k = 0; k < model.getRowCount(); k++) {
+                    if (model.getValueAt(k, 2).equals(str)) {
+                        flag = false;
+                    }
+                }
+                if (flag == true) {
+                    model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "No such product in the Database!!!");
+            }
+        } catch (SQLException ex) {
+
+        }
+    }//GEN-LAST:event_addProductbtnActionPerformed
 
     /**
      * @return the name1
@@ -2794,6 +2832,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JTable BillingTable;
     private javax.swing.JComboBox ItemSelecter;
     public javax.swing.JComboBox Search;
+    private javax.swing.JButton addProductbtn;
     public javax.swing.JTextField amount;
     private javax.swing.JLabel billLabel;
     private javax.swing.JLabel billno;
