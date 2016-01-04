@@ -286,14 +286,13 @@
     <Component class="javax.swing.JComboBox" name="txtType">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="7">
+          <StringArray count="6">
             <StringItem index="0" value="Bakery"/>
             <StringItem index="1" value="Bread"/>
             <StringItem index="2" value="Cake"/>
             <StringItem index="3" value="Drinks"/>
-            <StringItem index="4" value="Pizza"/>
-            <StringItem index="5" value="Shorteats"/>
-            <StringItem index="6" value="Sweet Items"/>
+            <StringItem index="4" value="Shorteats"/>
+            <StringItem index="5" value="Sweet Items"/>
           </StringArray>
         </Property>
         <Property name="selectedIndex" type="int" value="-1"/>

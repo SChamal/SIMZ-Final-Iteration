@@ -126,7 +126,7 @@ public class addProduct extends javax.swing.JFrame {
         jLabel14.setForeground(new java.awt.Color(204, 0, 0));
         jLabel14.setText("*");
 
-        txtType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bakery", "Bread", "Cake", "Drinks", "Pizza", "Shorteats", "Sweet Items" }));
+        txtType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bakery", "Bread", "Cake", "Drinks", "Shorteats", "Sweet Items" }));
         txtType.setSelectedIndex(-1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

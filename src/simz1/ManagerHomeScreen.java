@@ -66,6 +66,8 @@ import static simz1.LoginFrame1.spi;
 public class ManagerHomeScreen extends javax.swing.JFrame {
 
     public static MyTableModel model1;
+    // set table model for the income and expenditure table
+    IncomeTableModel incomeModel = new IncomeTableModel();
 
     AutoSuggest as = new AutoSuggest();
     DBOperations dbOps = new DBOperations();
@@ -392,67 +394,67 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         this.billno.setText(max + 1 + "");
 
         /////// Setting quantities to the stock table at the start ///////
-        /*DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
-         try {
-         ResultSet rst = dbOps.searchTodayStock();
-         ArrayList<Integer> tmp1 = new ArrayList<>();
-         for (int k = 0; k < modell.getRowCount(); k++) {
-         int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-         tmp1.add(Id);
-         }
-         while (rst.next()) {
-         int id1 = rst.getInt(1);
-         if (!tmp1.contains(id1)) {
-         try {
-         ResultSet rs = dbOps.combineTwoTables(id1, today);
-         while (rs.next()) {
-         String s1 = rs.getString(1);
-         int s2 = rs.getInt(2);
-         String s3 = rs.getString(3);
-         int s4 = rs.getInt(4);
-         int s5 = rs.getInt(5);
-         if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-         modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
-         } else {
-         modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
-         }
+        DefaultTableModel modell = (DefaultTableModel) this.tableProduct.getModel();
+        try {
+            ResultSet rst = dbOps.searchTodayStock();
+            ArrayList<Integer> tmp1 = new ArrayList<>();
+            for (int k = 0; k < modell.getRowCount(); k++) {
+                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+                tmp1.add(Id);
+            }
+            while (rst.next()) {
+                int id1 = rst.getInt(1);
+                if (!tmp1.contains(id1)) {
+                    try {
+                        ResultSet rs = dbOps.combineTwoTables(id1, today);
+                        while (rs.next()) {
+                            String s1 = rs.getString(1);
+                            int s2 = rs.getInt(2);
+                            String s3 = rs.getString(3);
+                            int s4 = rs.getInt(4);
+                            int s5 = rs.getInt(5);
+                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+                            } else {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+                            }
 
-         }
+                        }
 
-         } catch (SQLException e) {
-                        
-         }
-         }
-         }
-         } catch (SQLException ex) {
-            
-         }
-        
-         tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-         @Override
-         public Component getTableCellRendererComponent(JTable table,
-         Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+                    } catch (SQLException e) {
 
-         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-         int tmpEx = 0;
-         try {
-         tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
-         } catch (NullPointerException s) {
+                    }
+                }
+            }
+        } catch (SQLException ex) {
 
-         }
+        }
 
-         if (tmpEx == 1) {
-         setBackground(Color.RED);
-         } else {
-         setBackground(table.getBackground());
-         setForeground(table.getForeground());
-         }
+        tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-         return this;
-         }
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                int tmpEx = 0;
+                try {
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+                } catch (NullPointerException s) {
 
-         });
-         */
+                }
+
+                if (tmpEx == 1) {
+                    setBackground(Color.RED);
+                } else {
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+
+                return this;
+            }
+
+        });
+
         //Reports tab
         lblDate.setText(today);
 
@@ -803,7 +805,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1891,9 +1893,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         int quantity = 0;
         if (amount.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "First you should select an item");
+            JOptionPane.showMessageDialog(this, "Please enter the quantity");
         } else if (ItemSelecter.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
+            JOptionPane.showMessageDialog(this, "First you should select an item");
         } else {
             int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
             try {
@@ -1969,6 +1971,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
                 ItemSelecter.setSelectedIndex(-1);
                 amount.setText(null);
+
                 BillingTable.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyPressed(KeyEvent ke) {
@@ -1976,13 +1979,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
                         int selectedRow = BillingTable.getSelectedRow();
                         if ((code == KeyEvent.VK_DELETE) && (selectedRow != -1)) {
-                            int tot = (int) model.getValueAt(selectedRow, 3);
-                            int temp = Integer.parseInt(txtTotal.getText());
-                            txtTotal.setText(temp - tot + "");
-                            model.removeRow(selectedRow);
-                            rawNo--;
+                            int result = JOptionPane.showConfirmDialog(null, "Confirm removing the product from the transaction?", null, JOptionPane.YES_NO_OPTION);
+                            if (result == JOptionPane.YES_OPTION) {
+                                int tot = (int) model.getValueAt(selectedRow, 3);
+                                int temp = Integer.parseInt(txtTotal.getText());
+                                txtTotal.setText(temp - tot + "");
+                                model.removeRow(selectedRow);
+                                rawNo--;
+                            }
+                            ItemSelecter.requestFocusInWindow();
                         }
-                        ItemSelecter.requestFocusInWindow();
                     }
                 });
 
@@ -2004,13 +2010,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String amount = txtTotal.getText();
             if (txtCash.getText().equals("") || txtTotal.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "No text feild should be empty");
+                JOptionPane.showMessageDialog(this, "Please enter the cash first!");
             } else {
                 String payment = txtCash.getText();
-                int paymenti = 0;
-                int amounti = Integer.parseInt(amount);
+                float paymenti = 0;
+                float amounti = Float.parseFloat(amount);
                 try {
-                    paymenti = Integer.parseInt(payment);
+                    paymenti = Float.parseFloat(payment);
                     if (paymenti < 0) {
                         JOptionPane.showMessageDialog(this, "Only positive numbers are allowed");
                         txtCash.setText("");
@@ -2027,7 +2033,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     return;
                 }
 
-                int balance = paymenti - amounti;
+                float balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
@@ -2047,11 +2053,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     dbOps.addTransaction(timeLabel.getText(), today);
                     int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
-                    //add data of the transaction to the income and expenditure
-                    tblIncome.setModel(incomeModel);
                     String descript = "bill " + Integer.toString(billNo);
-
-                    incomeModel.addRow(new Object[]{descript, amounti, null});
 
                     int userID = dbOps.getID(name1.getText());
                     incomeModel.addRow(new Object[]{descript, amounti, null});
@@ -2133,7 +2135,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     b1.recieve.setText(paymenti + "");
                     b1.balance.setText(balance + "");
                     int max1 = dbOps.getMaxBillID();
-                    b1.billnum.setText(max1 + 1 + "");
+                    b1.billnum.setText(max1 + "");
                     b1.setSize(350, 500);
                     b1.setVisible(true);
                     b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -2165,7 +2167,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
             if (amount.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
+                JOptionPane.showMessageDialog(this, "Please enter the quantity");
             } else if (ItemSelecter.getSelectedIndex() == -1) {
                 JOptionPane.showMessageDialog(this, "First you should select an item");
             } else {
@@ -2273,7 +2275,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBalanceActionPerformed
         String amount = txtTotal.getText();
         if (txtCash.getText().equals("") || txtTotal.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "No text feild should be empty");
+            JOptionPane.showMessageDialog(this, "Please enter the cash first!");
         } else {
             String payment = txtCash.getText();
             float paymenti = 0;
@@ -2316,8 +2318,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
 
-                //add data of the transaction to the income and expenditure table in database and the interface
-                tblIncome.setModel(incomeModel);
                 String descript = "bill " + Integer.toString(billNo);
                 int userID = dbOps.getID(name1.getText());
                 incomeModel.addRow(new Object[]{descript, amounti, null});
@@ -2399,7 +2399,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.recieve.setText(paymenti + "");
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
-                b1.billnum.setText(max1 + 1 + "");
+                b1.billnum.setText(max1 + "");
                 //b1.setSize(464, 568);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -2556,10 +2556,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefillActionPerformed
 
     // set table model for the income and expenditure table
-    IncomeTableModel incomeModel = new IncomeTableModel();
+    //IncomeTableModel incomeModel = new IncomeTableModel();
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        tblIncome.setModel(incomeModel);
+        //tblIncome.setModel(incomeModel);
         String description = txtDescription.getText();
 
         DecimalFormat roundValue = new DecimalFormat("###.##");
@@ -2638,17 +2638,26 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
         int selectedRow = BillingTable.getSelectedRow();
         if (selectedRow != -1) {
-            int tot = (int) model.getValueAt(selectedRow, 3);
-            int temp = Integer.parseInt(txtTotal.getText());
-            txtTotal.setText(temp - tot + "");
-            model.removeRow(selectedRow);
-            rawNo--;
+            int result = JOptionPane.showConfirmDialog(null, "Confirm removing the product from the transaction?", null, JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                int tot = (int) model.getValueAt(selectedRow, 3);
+                int temp = Integer.parseInt(txtTotal.getText());
+                txtTotal.setText(temp - tot + "");
+                model.removeRow(selectedRow);
+                rawNo--;
+            }
+            ItemSelecter.requestFocusInWindow();
         }
-        ItemSelecter.requestFocusInWindow();
     }//GEN-LAST:event_btnDeletePrdctActionPerformed
 
     private void btnSaveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUserActionPerformed
         boolean result = true;
+        int selectedCol = tblUsers.getSelectedColumn();
+        if (selectedCol != 4) {
+            JOptionPane.showMessageDialog(this, "No changes have been done");
+            return;
+        }
+
         for (int i = 0; i < tblUsers.getRowCount(); i++) {
             String desig = (String) tblUsers.getValueAt(i, 4);
             int id = (int) tblUsers.getValueAt(i, 0);
@@ -2757,7 +2766,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if (flag == true) {
                     model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "No such product in the Database!!!");
             }
         } catch (SQLException ex) {
