@@ -41,7 +41,6 @@ public class addProduct extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtType = new javax.swing.JTextField();
         txtName = new javax.swing.JTextField();
         txtReceivingPrice = new javax.swing.JTextField();
         txtSellingPrice = new javax.swing.JTextField();
@@ -60,6 +59,7 @@ public class addProduct extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
+        txtType = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("New Product");
@@ -126,6 +126,9 @@ public class addProduct extends javax.swing.JFrame {
         jLabel14.setForeground(new java.awt.Color(204, 0, 0));
         jLabel14.setText("*");
 
+        txtType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bakery", "Bread", "Cake", "Drinks", "Pizza", "Shorteats", "Sweet Items" }));
+        txtType.setSelectedIndex(-1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -156,11 +159,11 @@ public class addProduct extends javax.swing.JFrame {
                                 .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtType, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                             .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                             .addComponent(txtReceivingPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                             .addComponent(txtSellingPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-                            .addComponent(jXDatePicker1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jXDatePicker1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 74, Short.MAX_VALUE)
@@ -191,8 +194,8 @@ public class addProduct extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel9)
+                    .addComponent(txtType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -248,7 +251,7 @@ public class addProduct extends javax.swing.JFrame {
 
     private void btnAddProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProductActionPerformed
 
-        if (txtType.getText().isEmpty() || txtName.getText().isEmpty() || txtReceivingPrice.getText().isEmpty() || txtSellingPrice.getText().isEmpty() || txtQtyLimit.getText().isEmpty() || txtIndicator.getText().isEmpty()) {
+        if (txtType.getSelectedIndex() == -1 || txtName.getText().isEmpty() || txtReceivingPrice.getText().isEmpty() || txtSellingPrice.getText().isEmpty() || txtQtyLimit.getText().isEmpty() || txtIndicator.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
             return;
         } else {
@@ -256,7 +259,7 @@ public class addProduct extends javax.swing.JFrame {
             Double receive = 0.0, sell = 0.0;
             int lmt = 0, x = 0, y = 0, z = 0;
             pd.setProductID(0);
-            pd.setProductType(txtType.getText());
+            pd.setProductType(txtType.getSelectedItem().toString());
             pd.setProductName(txtName.getText());
             try {
                 receive = Double.parseDouble(txtReceivingPrice.getText());
@@ -342,7 +345,7 @@ public class addProduct extends javax.swing.JFrame {
 
     void clearFields() {
 
-        txtType.setText("");
+        txtType.setSelectedIndex(-1);
         txtName.setText("");
         txtReceivingPrice.setText("");
         txtSellingPrice.setText("");
@@ -410,6 +413,6 @@ public class addProduct extends javax.swing.JFrame {
     private javax.swing.JTextField txtQtyLimit;
     private javax.swing.JTextField txtReceivingPrice;
     private javax.swing.JTextField txtSellingPrice;
-    private javax.swing.JTextField txtType;
+    private javax.swing.JComboBox txtType;
     // End of variables declaration//GEN-END:variables
 }

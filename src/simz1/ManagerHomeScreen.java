@@ -267,8 +267,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                         model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                                     }
                                     //jcomboAddTodaysStock.setSelectedIndex(-1);
-                                }else{
-                                    JOptionPane.
                                 }
                                 return;
                             } catch (SQLException ex) {
@@ -743,7 +741,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lblStockStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(Search, 0, 200, Short.MAX_VALUE))
-                                .addGap(451, 451, 451)
+                                .addGap(448, 448, 448)
                                 .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 7, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -1829,7 +1827,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         lblStockStatus.setText("Morning Stock is set");
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
-        btnSaveChanges.setVisible(true);
+        btnSaveChanges.setVisible(false);
+        tableProduct.getColumnModel().getColumn(0).setMinWidth(0);
+        tableProduct.getColumnModel().getColumn(0).setMaxWidth(0);
+        tableProduct.setEnabled(false);
+        addProductbtn.setVisible(false);
+        jcomboAddTodaysStock.setVisible(false);
+        jLabel9.setVisible(false);
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -2670,7 +2674,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ACCReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("F:\\University\\Second Year\\Semester 1\\Group Project\\Acc. Reports" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("F:\\University\\Second Year\\Semester 1\\Group Project\\Acc. Reports\\ACCReport" + date + "" + ".pdf"));
                 document.open();
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n");
                 document.add(paragraph1);
