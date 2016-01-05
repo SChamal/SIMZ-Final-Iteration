@@ -1530,4 +1530,19 @@ ResultSet expireDates() { // getting values changed by me
             return false;
         }
     }
+    
+    ResultSet getGraphData(String dte) { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Date,Shorteats,Cake,BreadItem,Drinks, SweetItems from graphdata where Date = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, dte);
+            rs = pst.executeQuery();
+            return rs;
+
+        } catch (SQLException ex) {
+            //System.out.println(ex);
+            return null;
+        }
+    }
 }
