@@ -5,14 +5,23 @@
  */
 package simz1;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author DELL
  */
 public class AddOrderToStock extends javax.swing.JFrame {
-
+    DBOperations dbOps = new DBOperations();
     /**
      * Creates new form AddOrderToStock
      */
@@ -21,8 +30,37 @@ public class AddOrderToStock extends javax.swing.JFrame {
         java.util.Date date = new java.util.Date();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         lblTime.setText(sdf.format(date));
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         lblDate.setText(sdf2.format(date));
+        ResultSet rst = dbOps.getOrderIDList(sdf2.format(date)+"");
+
+        try {
+            while(rst.next()){
+                dropDownMenu.addItem("Order "+rst.getInt(1)+"");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        dropDownMenu.addItemListener(new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent ie) {
+                            if (ie.getStateChange() == ItemEvent.SELECTED) {
+                                String name = dropDownMenu.getSelectedItem().toString();
+                                int number =Integer.parseInt(name.substring(6));
+                                ResultSet rst =dbOps.combineProductDetailsAndOrder_2(number);
+                                addOrdersTableModel model= new addOrdersTableModel();
+                                tblAddOrder.setModel((TableModel) model);
+                                try {
+                                    while(rst.next()){
+                                        model.addRow(new Object[]{true,rst.getInt(1), rst.getString(3), rst.getString(2)});
+                                    }
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(viewOrders.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    });
+        
     }
 
     /**
@@ -38,7 +76,6 @@ public class AddOrderToStock extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtOrderID = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -47,6 +84,7 @@ public class AddOrderToStock extends javax.swing.JFrame {
         btnCancel = new javax.swing.JButton();
         lblDate = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
+        dropDownMenu = new javax.swing.JComboBox();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -147,9 +185,9 @@ public class AddOrderToStock extends javax.swing.JFrame {
                                     .addComponent(jLabel3))
                                 .addGap(75, 75, 75)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtOrderID)
                                     .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                                    .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(lblTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dropDownMenu, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -162,7 +200,7 @@ public class AddOrderToStock extends javax.swing.JFrame {
                 .addGap(39, 39, 39)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtOrderID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dropDownMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -238,6 +276,7 @@ public class AddOrderToStock extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnTakeOrder;
+    public static javax.swing.JComboBox dropDownMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -248,6 +287,5 @@ public class AddOrderToStock extends javax.swing.JFrame {
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblTime;
     private javax.swing.JTable tblAddOrder;
-    private javax.swing.JTextField txtOrderID;
     // End of variables declaration//GEN-END:variables
 }
