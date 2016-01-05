@@ -42,10 +42,14 @@ public class NotificationPopup extends JDialog {
                 - getHeight());
 
         // background paint
-        lpg = new LinearGradientPaint(0, 0, 0, getHeight() / 2, new float[]{0f,
+        /*lpg = new LinearGradientPaint(0, 0, 0, getHeight() / 2, new float[]{0f,
             0.3f, 1f}, new Color[]{new Color(0.8f, 0.8f, 1f),
-            new Color(0.7f, 0.7f, 1f), new Color(0.6f, 0.6f, 1f)});
-
+            new Color(0.7f, 0.7f, 1f), new Color(0.6f, 0.6f, 1f)});*/
+        
+        lpg = new LinearGradientPaint(0, 0, 0, getHeight() / 2, new float[]{0f,
+            0.3f, 1f}, new Color[]{new Color(255, 136, 28),
+            new Color(255, 136, 28), new Color(255, 136, 28)});
+        
         // blue background panel
         setContentPane(new BackgroundPanel());
     }
