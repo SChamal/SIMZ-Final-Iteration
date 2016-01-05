@@ -1545,4 +1545,36 @@ ResultSet expireDates() { // getting values changed by me
             return null;
         }
     }
+    
+        boolean addToGraphData(String dte, int se, int cke,int bi,int dr,int si) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "INSERT INTO graphdata VALUES(?,?,?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setString(1, dte);
+            pst.setInt(2, se);
+            pst.setInt(3, cke);
+            pst.setInt(4, bi);
+            pst.setInt(5, dr);
+            pst.setInt(6, si);
+
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+    }
 }
