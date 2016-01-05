@@ -416,9 +416,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             int s4 = rs.getInt(4);
                             int s5 = rs.getInt(5);
                             if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 1});
                             } else {
-                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 0});
                             }
 
                         }
@@ -513,6 +513,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         btnDeletePrdct = new javax.swing.JButton();
+        jLabel20 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblIncome = new javax.swing.JTable();
@@ -910,6 +911,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel20.setText("Product");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -917,50 +921,56 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 916, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(ItemSelecter, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(amount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnOK)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 916, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ItemSelecter, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(amount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnOK)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(billLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel11)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(jLabel10)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnDeletePrdct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(billLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(billno, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                            .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(timeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(273, 273, 273)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnDeletePrdct)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBalance, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                    .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txtTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                    .addComponent(txtCash)
-                    .addComponent(txtBalance))
-                .addGap(31, 31, 31))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                            .addComponent(txtCash)
+                            .addComponent(txtBalance))
+                        .addGap(31, 31, 31))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ItemSelecter, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1686,13 +1696,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //System.out.println(ex);
             }
 
-            int crnt = 0, totl = 0;
+            int crnt = 0, totl = 0, avl = 0;
             try {
                 crnt = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
+                avl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 if (totl <= 0) {
-                    JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in quantity field!!!");
-                    return;
+                    if (avl > 0) {
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in Received Stock field!!!");
+                        return;
+                    }
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter only numbers in quantity field!!!");
@@ -1731,42 +1746,41 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-        try {
-            ResultSet rst = dbOps.searchTodayStock();
-            ArrayList<Integer> tmp = new ArrayList<>();
-            for (int k = 0; k < model.getRowCount(); k++) {
-                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-                tmp.add(Id);
-            }
-            while (rst.next()) {
-                int id1 = rst.getInt(1);
-                if (!tmp.contains(id1)) {
-                    //System.out.println(id1);
-                    try {
-                        ResultSet rs = dbOps.combineTwoTables(id1, today);
-                        while (rs.next()) {
-                            String s1 = rs.getString(1);
-                            int s2 = rs.getInt(2);
-                            String s3 = rs.getString(3);
-                            int s4 = rs.getInt(4);
-                            int s5 = rs.getInt(5);
-                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-                                model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
-                            } else {
-                                model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
-                            }
+        /*try {
+         ResultSet rst = dbOps.searchTodayStock();
+         ArrayList<Integer> tmp = new ArrayList<>();
+         for (int k = 0; k < model.getRowCount(); k++) {
+         int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+         tmp.add(Id);
+         }
+         while (rst.next()) {
+         int id1 = rst.getInt(1);
+         if (!tmp.contains(id1)) {
+         //System.out.println(id1);
+         try {
+         ResultSet rs = dbOps.combineTwoTables(id1, today);
+         while (rs.next()) {
+         String s1 = rs.getString(1);
+         int s2 = rs.getInt(2);
+         String s3 = rs.getString(3);
+         int s4 = rs.getInt(4);
+         int s5 = rs.getInt(5);
+         if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+         } else {
+         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+         }
 
-                        }
+         }
 
-                    } catch (SQLException e) {
-                        System.out.println(e);
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-
+         } catch (SQLException e) {
+         System.out.println(e);
+         }
+         }
+         }
+         } catch (SQLException ex) {
+         System.out.println(ex);
+         }*/
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
 
@@ -1819,30 +1833,30 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtDescription.requestFocusInWindow();
         }
 
-        tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+        /*tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+         @Override
+         public Component getTableCellRendererComponent(JTable table,
+         Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                int tmpEx = 0;
-                try {
-                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
-                } catch (NullPointerException s) {
+         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+         int tmpEx = 0;
+         try {
+         tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+         } catch (NullPointerException s) {
 
-                }
+         }
 
-                if (tmpEx == 1) {
-                    setBackground(Color.RED);
-                } else {
-                    setBackground(table.getBackground());
-                    setForeground(table.getForeground());
-                }
+         if (tmpEx == 1) {
+         setBackground(Color.RED);
+         } else {
+         setBackground(table.getBackground());
+         setForeground(table.getForeground());
+         }
 
-                return this;
-            }
+         return this;
+         }
 
-        });
+         });*/
         lblStockStatus.setText("Morning Stock is set");
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
@@ -1853,17 +1867,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         addProductbtn.setVisible(false);
         jcomboAddTodaysStock.setVisible(false);
         jLabel9.setVisible(false);
-        
+
         //Set Data in the reports tab
         lblDate.setText(today);
         ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
         ReportsTableModel modelReports = new ReportsTableModel();
         tblReports.setModel((TableModel) modelReports);
         try {
-            while(rs.next()){
-                modelReports.addRow(new Object[]{rs.getString(1),rs.getString(2),rs.getString(3)});
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
             }
-            
+
         } catch (SQLException ex) {
             System.out.println(ex);
         }
@@ -2068,7 +2082,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-                    String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                    String input = JOptionPane.showInputDialog(null, "Don't have change?\nEnter the exact amount you pay or if not just press enter", "0");
                     try {
                         if (input == null) {
                             amounti = amounti;
@@ -2196,8 +2210,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             ReportsTableModel modelReports = new ReportsTableModel();
             tblReports.setModel((TableModel) modelReports);
             try {
-                while(rs.next()){
-                    modelReports.addRow(new Object[]{rs.getString(1),rs.getString(2),rs.getString(3)});
+                while (rs.next()) {
+                    modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
                 }
 
             } catch (SQLException ex) {
@@ -2345,7 +2359,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
-                String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
+                String input = JOptionPane.showInputDialog(null, "Don't have change?\nEnter the exact amount you pay or if not just press enter", "0");
                 try {
                     if (input == null) {
                         amounti = amounti;
@@ -2471,10 +2485,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         ReportsTableModel modelReports = new ReportsTableModel();
         tblReports.setModel((TableModel) modelReports);
         try {
-            while(rs.next()){
-                modelReports.addRow(new Object[]{rs.getString(1),rs.getString(2),rs.getString(3)});
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
             }
-            
+
         } catch (SQLException ex) {
             System.out.println(ex);
         }
@@ -2545,6 +2559,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
+        for (int i = 0; i < tblOrder.getRowCount(); i++) {
+            try {
+                int qty = Integer.parseInt(tblOrder.getValueAt(i, 6).toString());
+                if (qty <= 0) {
+                    JOptionPane.showMessageDialog(this, "Please enter only positive numbers for qty in the row number " + i + "!!!");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter only numbers for qty in the row number " + i + "!!!");
+                return;
+            }
+        }
         OrderConfirmation oc = new OrderConfirmation();
         oc.setVisible(true);
         oc.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -2750,10 +2776,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 PdfPTable t = new PdfPTable(3);
                 t.setSpacingBefore(25);
                 t.setSpacingAfter(25);
+
                 t.addCell(new PdfPCell(new Phrase("Description")));
                 t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
                 t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
                 int rows = tblIncome.getRowCount();
+                
                 for (int i = 0; i < rows; i++) {
                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0) + "")));
                     if (tblIncome.getValueAt(i, 1) == null) {
@@ -2792,28 +2820,28 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 document.add(paragraph1);
                 float profit = 0;
                 profit = totalIncome - expense;
-                paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + ""+"\n\n");
+                paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + "" + "\n\n");
                 document.add(paragraph1);
-                String name=dbOps.getName(name1.getText());
-                paragraph1 = new Paragraph("Report Generated By : "+name);
+                String name = dbOps.getName(name1.getText());
+                paragraph1 = new Paragraph("Report Generated By : " + name);
                 document.add(paragraph1);
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Accounts Report named ACCReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
-                if (reply1 == JOptionPane.YES_OPTION){
+                if (reply1 == JOptionPane.YES_OPTION) {
                     if ((new File("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf")).exists()) {
 
-			Process p = Runtime
-			   .getRuntime()
-			   .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
-			p.waitFor();				
-		}
+                        Process p = Runtime
+                                .getRuntime()
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
+                        p.waitFor();
+                    }
                 }
             } catch (Exception ex) {
                 System.out.println(ex);
                 JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
             document.close();
-        }      
+        }
     }//GEN-LAST:event_btnGenerateReportActionPerformed
 
     private void addProductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductbtnActionPerformed
@@ -2844,17 +2872,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Products Report now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             Document document = new Document(PageSize.A4);
-            try{
+            try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ProReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport"+date+""+".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf"));
                 document.open();
                 Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
                 //Following blank space is for the alignment of the topic
-                paragraph1 = new Paragraph("                Finalized Products Report - "+today+"",FontFactory.getFont(FontFactory.HELVETICA, 18));
+                paragraph1 = new Paragraph("                Finalized Products Report - " + today + "", FontFactory.getFont(FontFactory.HELVETICA, 18));
                 document.add(paragraph1);
                 //adding a table
                 PdfPTable t = new PdfPTable(3);
@@ -2864,17 +2892,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 t.addCell(new PdfPCell(new Phrase("Received Quantity")));
                 t.addCell(new PdfPCell(new Phrase("Remained Quantity")));
                 int rows = tblReports.getRowCount();
-                for (int i = 0; i < rows; i++){
-                    t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 0)+"")));
-                    if(tblReports.getValueAt(i, 1)== null){
+                for (int i = 0; i < rows; i++) {
+                    t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 0) + "")));
+                    if (tblReports.getValueAt(i, 1) == null) {
                         t.addCell(new PdfPCell(new Phrase("-")));
-                    }else{
-                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 1)+"")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 1) + "")));
                     }
-                    if(tblReports.getValueAt(i, 2)== null) {
+                    if (tblReports.getValueAt(i, 2) == null) {
                         t.addCell(new PdfPCell(new Phrase("-")));
-                    }else{
-                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 2)+"")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 2) + "")));
                     }
                 }
                 document.add(t);
@@ -2886,27 +2914,27 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 t2.addCell(new PdfPCell(new Phrase("Product Name")));
                 t2.addCell(new PdfPCell(new Phrase("Remained Quantity")));
                 String dateToday = today.replace(":", "-");
-                ResultSet rs =dbOps.getExpiredItemList(dateToday);
-                while(rs.next()){
+                ResultSet rs = dbOps.getExpiredItemList(dateToday);
+                while (rs.next()) {
                     t2.addCell(new PdfPCell(new Phrase(rs.getString(1))));
                     t2.addCell(new PdfPCell(new Phrase(rs.getString(3))));
                 }
                 document.add(t2);
-                String user=dbOps.getName(name1.getText());
-                paragraph1 = new Paragraph("Report Generated By : "+user);
+                String user = dbOps.getName(name1.getText());
+                paragraph1 = new Paragraph("Report Generated By : " + user);
                 document.add(paragraph1);
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Products Report named ProReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
-                if (reply1 == JOptionPane.YES_OPTION){
+                if (reply1 == JOptionPane.YES_OPTION) {
                     if ((new File("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf")).exists()) {
 
-			Process p = Runtime
-			   .getRuntime()
-			   .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
-			p.waitFor();				
-		}
+                        Process p = Runtime
+                                .getRuntime()
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
+                        p.waitFor();
+                    }
                 }
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 System.out.println(ex);
                 JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
@@ -3024,6 +3052,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

@@ -65,6 +65,7 @@ public class ViewProductForSP extends javax.swing.JFrame {
         txtQty = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("View Product");
         setAlwaysOnTop(true);
         setPreferredSize(new java.awt.Dimension(500, 380));
 

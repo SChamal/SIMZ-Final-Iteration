@@ -937,14 +937,14 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
             if (amount.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
+                JOptionPane.showMessageDialog(this, "Please enter the quantity");
             } else if (ItemSelecter.getSelectedIndex() == -1) {
                 JOptionPane.showMessageDialog(this, "First you should select an item");
             } else {
                 int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
                 try {
-                    quantity = Integer.parseInt(amount.getText().toString());
+                    quantity = Integer.parseInt(amount.getText());
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
                     amount.setText("");
@@ -1044,9 +1044,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         int quantity = 0;
         if (amount.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "First you should select an item");
+            JOptionPane.showMessageDialog(this, "Please enter the quantity");
         } else if (ItemSelecter.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "Quantity field cannot be null");
+            JOptionPane.showMessageDialog(this, "First you should select an item");
         } else {
             int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
@@ -1306,16 +1306,19 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterKeyPressed
 
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed
-        DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
+        DefaultTableModel model2 = (DefaultTableModel) BillingTable.getModel();
         int selectedRow = BillingTable.getSelectedRow();
         if (selectedRow != -1) {
-            int tot = (int) model.getValueAt(selectedRow, 3);
-            int temp = Integer.parseInt(txtTotal.getText());
-            txtTotal.setText(temp - tot + "");
-            model.removeRow(selectedRow);
-            rawNo--;
-        }
-        ItemSelecter.requestFocusInWindow();
+            int result = JOptionPane.showConfirmDialog(null, "Confirm removing the product from the transaction?", null, JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                int tot = (int) model2.getValueAt(selectedRow, 3);
+                int temp = Integer.parseInt(txtTotal.getText());
+                txtTotal.setText(temp - tot + "");
+                model2.removeRow(selectedRow);
+                rawNo--;
+            }
+            ItemSelecter.requestFocusInWindow();
+        }        
     }//GEN-LAST:event_btnDeletePrdctActionPerformed
 
     private void setStock() {

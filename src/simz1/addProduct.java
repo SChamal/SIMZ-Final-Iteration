@@ -6,6 +6,8 @@
 package simz1;
 
 import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.swing.JOptionPane;
@@ -18,6 +20,7 @@ import static simz1.LoginFrame1.mhp;
 public class addProduct extends javax.swing.JFrame {
 
     DBOperations dbOps = new DBOperations();
+    String[] colours = {"Yellow", "Green", "Blue", "Purple", "Orange"};
 
     /**
      * Creates new form addProduct
@@ -25,6 +28,20 @@ public class addProduct extends javax.swing.JFrame {
     public addProduct() {
         initComponents();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
+
+        try {
+            txtType.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent ie) {
+                    //String str = (String)txtType.getSelectedItem();               
+                    txtIndicator.setText(colours[txtType.getSelectedIndex()]);
+                    //txtIndicator.setText(str);
+                }
+            });
+        }catch(ArrayIndexOutOfBoundsException e){
+        
+        }
+
     }
 
     /**
@@ -105,6 +122,8 @@ public class addProduct extends javax.swing.JFrame {
 
         jLabel7.setText("Product Indicator   :");
 
+        txtIndicator.setEditable(false);
+
         jLabel8.setForeground(new java.awt.Color(204, 0, 0));
         jLabel8.setText("* Required Field");
 
@@ -126,8 +145,13 @@ public class addProduct extends javax.swing.JFrame {
         jLabel14.setForeground(new java.awt.Color(204, 0, 0));
         jLabel14.setText("*");
 
-        txtType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bakery", "Bread", "Cake", "Drinks", "Shorteats", "Sweet Items" }));
+        txtType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bread Items", "Cake", "Drinks", "Shorteats", "Sweet Items" }));
         txtType.setSelectedIndex(-1);
+        txtType.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtTypeMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -342,6 +366,10 @@ public class addProduct extends javax.swing.JFrame {
          }*/
 
     }//GEN-LAST:event_btnAddProductActionPerformed
+
+    private void txtTypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTypeMouseClicked
+        
+    }//GEN-LAST:event_txtTypeMouseClicked
 
     void clearFields() {
 
