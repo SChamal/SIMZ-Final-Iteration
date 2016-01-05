@@ -1453,4 +1453,52 @@ ResultSet expireDates() { // getting values changed by me
             return null;
         }
     }
+    
+    //Delete expired items
+    boolean deleteExpired(int id) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "DELETE from today_stock WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            pst.setInt(1,id);
+            rs = pst.executeQuery();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    
+    //Delete income and expenditure table content
+    boolean delIncomeAndExpen() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "DELETE * FROM income_expenditure";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    
+    //Insert petty cash to income_expenditure
+    boolean insertIncomeAndExpen(int id, String des, float credit, float debit) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "INSERT INTO income_expenditure VALUES(?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);
+            pst.setString(2, des);
+            pst.setFloat(3, credit);
+            pst.setFloat(4, debit);
+            
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
 }
