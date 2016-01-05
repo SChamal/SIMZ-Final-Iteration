@@ -1422,6 +1422,35 @@ ResultSet expireDates() { // getting values changed by me
         }
 
     }
+    ResultSet getOrderPlacedDetails(int order_No) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Time,Date from order_main where Order_No = ? ";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            pst.setInt(1,order_No);
+
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
+    ResultSet getOrderIDList(String date) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Order_No from order_main where Date = ? ";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            pst.setString(1,date);
+
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
     
     //Reports 
     //To view details in the reports table (tblReports)

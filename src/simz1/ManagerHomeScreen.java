@@ -2622,6 +2622,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         AddOrderToStock order = new AddOrderToStock();
         order.setVisible(true);
         order.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        AddOrderToStock.dropDownMenu.setSelectedIndex(-1);
     }//GEN-LAST:event_btnAddOrderToStockActionPerformed
 
     private void btnRefillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefillActionPerformed
