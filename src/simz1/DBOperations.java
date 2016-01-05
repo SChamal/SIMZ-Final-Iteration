@@ -1438,4 +1438,19 @@ ResultSet expireDates() { // getting values changed by me
             return null;
         }
     }
+
+    //Get expired item list
+    ResultSet getExpiredItemList(String date) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT p.productName,t.productID,t.currentQuantity from today_stock t,productdetails p where (t.expiryDate=?) and (t.productID=p.productID)";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            pst.setString(1,date);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+    }
 }

@@ -7,6 +7,7 @@ package simz1;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -25,6 +26,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -536,6 +538,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         tblReports = new javax.swing.JTable();
         jLabel19 = new javax.swing.JLabel();
         lblDate = new javax.swing.JLabel();
+        btnFinalReport = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -1255,19 +1258,31 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         lblDate.setText("//");
 
+        btnFinalReport.setText("Generate Finalized Report");
+        btnFinalReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap(523, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel19)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblDate))
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblDate))
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnFinalReport)
+                        .addGap(127, 127, 127))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1278,7 +1293,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     .addComponent(lblDate))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnFinalReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Reports  ", jPanel4);
@@ -1685,12 +1702,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 totl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 6).toString());
                 avl = Integer.parseInt(tableProduct.getModel().getValueAt(j, 5).toString());
                 if (totl <= 0) {
-                    if(avl > 0){
-                        
-                    }else{
-                       JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in Received Stock field!!!");
-                        return; 
-                    }           
+                    if (avl > 0) {
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in Received Stock field!!!");
+                        return;
+                    }
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter only numbers in quantity field!!!");
@@ -1730,41 +1747,40 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
 
         /*try {
-            ResultSet rst = dbOps.searchTodayStock();
-            ArrayList<Integer> tmp = new ArrayList<>();
-            for (int k = 0; k < model.getRowCount(); k++) {
-                int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-                tmp.add(Id);
-            }
-            while (rst.next()) {
-                int id1 = rst.getInt(1);
-                if (!tmp.contains(id1)) {
-                    //System.out.println(id1);
-                    try {
-                        ResultSet rs = dbOps.combineTwoTables(id1, today);
-                        while (rs.next()) {
-                            String s1 = rs.getString(1);
-                            int s2 = rs.getInt(2);
-                            String s3 = rs.getString(3);
-                            int s4 = rs.getInt(4);
-                            int s5 = rs.getInt(5);
-                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-                                model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
-                            } else {
-                                model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
-                            }
+         ResultSet rst = dbOps.searchTodayStock();
+         ArrayList<Integer> tmp = new ArrayList<>();
+         for (int k = 0; k < model.getRowCount(); k++) {
+         int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
+         tmp.add(Id);
+         }
+         while (rst.next()) {
+         int id1 = rst.getInt(1);
+         if (!tmp.contains(id1)) {
+         //System.out.println(id1);
+         try {
+         ResultSet rs = dbOps.combineTwoTables(id1, today);
+         while (rs.next()) {
+         String s1 = rs.getString(1);
+         int s2 = rs.getInt(2);
+         String s3 = rs.getString(3);
+         int s4 = rs.getInt(4);
+         int s5 = rs.getInt(5);
+         if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
+         } else {
+         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
+         }
 
-                        }
+         }
 
-                    } catch (SQLException e) {
-                        System.out.println(e);
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }*/
-
+         } catch (SQLException e) {
+         System.out.println(e);
+         }
+         }
+         }
+         } catch (SQLException ex) {
+         System.out.println(ex);
+         }*/
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
 
@@ -1818,29 +1834,29 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
 
         /*tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+         @Override
+         public Component getTableCellRendererComponent(JTable table,
+         Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                int tmpEx = 0;
-                try {
-                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
-                } catch (NullPointerException s) {
+         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+         int tmpEx = 0;
+         try {
+         tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
+         } catch (NullPointerException s) {
 
-                }
+         }
 
-                if (tmpEx == 1) {
-                    setBackground(Color.RED);
-                } else {
-                    setBackground(table.getBackground());
-                    setForeground(table.getForeground());
-                }
+         if (tmpEx == 1) {
+         setBackground(Color.RED);
+         } else {
+         setBackground(table.getBackground());
+         setForeground(table.getForeground());
+         }
 
-                return this;
-            }
+         return this;
+         }
 
-        });*/
+         });*/
         lblStockStatus.setText("Morning Stock is set");
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
@@ -1851,6 +1867,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         addProductbtn.setVisible(false);
         jcomboAddTodaysStock.setVisible(false);
         jLabel9.setVisible(false);
+
+        //Set Data in the reports tab
+        lblDate.setText(today);
+        ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+        ReportsTableModel modelReports = new ReportsTableModel();
+        tblReports.setModel((TableModel) modelReports);
+        try {
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }//GEN-LAST:event_btnSetStockActionPerformed
 
     private void SearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchKeyPressed
@@ -2175,6 +2205,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
 
             }
+            lblDate.setText(today);
+            ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+            ReportsTableModel modelReports = new ReportsTableModel();
+            tblReports.setModel((TableModel) modelReports);
+            try {
+                while (rs.next()) {
+                    modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+                }
+
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
         }
     }//GEN-LAST:event_txtCashKeyPressed
 
@@ -2439,6 +2481,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
 
         }
+        ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+        ReportsTableModel modelReports = new ReportsTableModel();
+        tblReports.setModel((TableModel) modelReports);
+        try {
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }//GEN-LAST:event_btnBalanceActionPerformed
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
@@ -2506,14 +2559,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterFocusLost
 
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
-        for(int i = 0; i < tblOrder.getRowCount(); i++){
-            try{
+        for (int i = 0; i < tblOrder.getRowCount(); i++) {
+            try {
                 int qty = Integer.parseInt(tblOrder.getValueAt(i, 6).toString());
-                if(qty <= 0){
+                if (qty <= 0) {
                     JOptionPane.showMessageDialog(this, "Please enter only positive numbers for qty in the row number " + i + "!!!");
                     return;
                 }
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Please enter only numbers for qty in the row number " + i + "!!!");
                 return;
             }
@@ -2710,17 +2763,19 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ACCReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("F:\\University\\Second Year\\Semester 1\\Group Project\\Acc. Reports\\ACCReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf"));
                 document.open();
-                Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n");
+                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                document.add(image2);
+                Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
-                paragraph1 = new Paragraph("Account Report - " + today + "", FontFactory.getFont(FontFactory.HELVETICA, 18));
+                paragraph1 = new Paragraph("                Finalized Accounts Report - " + today + "", FontFactory.getFont(FontFactory.HELVETICA, 18));
                 document.add(paragraph1);
                 //adding a table
                 PdfPTable t = new PdfPTable(3);
                 t.setSpacingBefore(25);
                 t.setSpacingAfter(25);
-                
+
                 t.addCell(new PdfPCell(new Phrase("Description")));
                 t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
                 t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
@@ -2737,11 +2792,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         t.addCell(new PdfPCell(new Phrase("-")));
                     } else {
                         t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2) + "")));
-                    }/*
-                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0)+""))); 
-                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 1)+"")));
-                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 2)+"")));*/
-
+                    }
                 }
                 document.add(t);
                 float totalIncome = 0;
@@ -2768,10 +2819,25 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 document.add(paragraph1);
                 float profit = 0;
                 profit = totalIncome - expense;
-                paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + "");
+                paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + "" + "\n\n");
                 document.add(paragraph1);
+                String name = dbOps.getName(name1.getText());
+                paragraph1 = new Paragraph("Report Generated By : " + name);
+                document.add(paragraph1);
+                //view report
+                int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Accounts Report named ACCReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
+                if (reply1 == JOptionPane.YES_OPTION) {
+                    if ((new File("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf")).exists()) {
+
+                        Process p = Runtime
+                                .getRuntime()
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
+                        p.waitFor();
+                    }
+                }
             } catch (Exception ex) {
                 System.out.println(ex);
+                JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
             document.close();
         }
@@ -2800,6 +2866,80 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_addProductbtnActionPerformed
+
+    private void btnFinalReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalReportActionPerformed
+        int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Products Report now?", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            Document document = new Document(PageSize.A4);
+            try {
+                String date = today.replace(":", "_");
+                //New PDF File will be created as ProReport2016_01_01 //today's date
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf"));
+                document.open();
+                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                document.add(image2);
+                Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
+                document.add(paragraph1);
+                //Following blank space is for the alignment of the topic
+                paragraph1 = new Paragraph("                Finalized Products Report - " + today + "", FontFactory.getFont(FontFactory.HELVETICA, 18));
+                document.add(paragraph1);
+                //adding a table
+                PdfPTable t = new PdfPTable(3);
+                t.setSpacingBefore(25);
+                t.setSpacingAfter(25);
+                t.addCell(new PdfPCell(new Phrase("Product Name")));
+                t.addCell(new PdfPCell(new Phrase("Received Quantity")));
+                t.addCell(new PdfPCell(new Phrase("Remained Quantity")));
+                int rows = tblReports.getRowCount();
+                for (int i = 0; i < rows; i++) {
+                    t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 0) + "")));
+                    if (tblReports.getValueAt(i, 1) == null) {
+                        t.addCell(new PdfPCell(new Phrase("-")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 1) + "")));
+                    }
+                    if (tblReports.getValueAt(i, 2) == null) {
+                        t.addCell(new PdfPCell(new Phrase("-")));
+                    } else {
+                        t.addCell(new PdfPCell(new Phrase(tblReports.getValueAt(i, 2) + "")));
+                    }
+                }
+                document.add(t);
+                paragraph1 = new Paragraph("Expired Item Details");
+                document.add(paragraph1);
+                PdfPTable t2 = new PdfPTable(2);
+                t2.setSpacingBefore(25);
+                t2.setSpacingAfter(25);
+                t2.addCell(new PdfPCell(new Phrase("Product Name")));
+                t2.addCell(new PdfPCell(new Phrase("Remained Quantity")));
+                String dateToday = today.replace(":", "-");
+                ResultSet rs = dbOps.getExpiredItemList(dateToday);
+                while (rs.next()) {
+                    t2.addCell(new PdfPCell(new Phrase(rs.getString(1))));
+                    t2.addCell(new PdfPCell(new Phrase(rs.getString(3))));
+                }
+                document.add(t2);
+                String user = dbOps.getName(name1.getText());
+                paragraph1 = new Paragraph("Report Generated By : " + user);
+                document.add(paragraph1);
+                //view report
+                int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Products Report named ProReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
+                if (reply1 == JOptionPane.YES_OPTION) {
+                    if ((new File("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf")).exists()) {
+
+                        Process p = Runtime
+                                .getRuntime()
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
+                        p.waitFor();
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println(ex);
+                JOptionPane.showMessageDialog(this, "File already exists!!!");
+            }
+            document.close();
+        }
+    }//GEN-LAST:event_btnFinalReportActionPerformed
 
     /**
      * @return the name1
@@ -2881,6 +3021,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnDeletePrdct;
+    private javax.swing.JButton btnFinalReport;
     private javax.swing.JButton btnGenerateReport;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnNewUser;
