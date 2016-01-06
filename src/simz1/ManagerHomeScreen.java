@@ -391,12 +391,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
 
         }
+
         //this.Search.requestFocusInWindow();
         setMorningStock();
         TableColumn dateColumn = tableProduct.getColumnModel().getColumn(4);
         dateColumn.setCellEditor(new DatePickerCellEditor());
-        //DateCellRenderer renderer = new DateCellRenderer();
-        //tableProduct.getColumnModel().getColumn(4).setCellEditor(renderer.getFormats());
 
         this.dateLabel.setText(today);
         this.clocker();
@@ -423,11 +422,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             String s3 = rs.getString(3);
                             int s4 = rs.getInt(4);
                             int s5 = rs.getInt(5);
-                            if (((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) && ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) != 0)) {
+                            if (((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) && ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) > 0)) {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 2});
-                            }else if((rs.getDate(3).getDate() - rs.getDate(6).getDate()) == 0){
+                            } else if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) == 0) {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 1});
-                            }else {
+                            } else {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 0});
                             }
 
@@ -457,7 +456,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 if (tmpEx == 2) {
                     setBackground(Color.ORANGE);
-                }else if(tmpEx == 1){
+                } else if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
                     setBackground(table.getBackground());
@@ -1854,10 +1853,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        if (exp == 0) {
-                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
-                        } else {
+                        if (exp == 1) {
                             tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
+                        }else if (exp == 2) {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 2});
+                        } else {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
                         }
 
                     }
@@ -2838,7 +2839,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
                 t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
                 int rows = tblIncome.getRowCount();
-                
+
                 for (int i = 0; i < rows; i++) {
                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0) + "")));
                     if (tblIncome.getValueAt(i, 1) == null) {
@@ -3003,17 +3004,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to finish today's work?\nOnce you done this, stocks will be reset!!!", "", JOptionPane.YES_NO_OPTION);
-        if(reply == JOptionPane.YES_OPTION){
+        if (reply == JOptionPane.YES_OPTION) {
             //Deleting the content of income and expenditure table and set the petty cash to next day
-            if(trigger1 == 1){
-                if(dbOps.delIncomeAndExpen()){
+            if (trigger1 == 1) {
+                if (dbOps.delIncomeAndExpen()) {
                     int userID = dbOps.getID(name1.getText());
-                    dbOps.insertIncomeAndExpen(userID,"To Be Forward",totProfit, 0);
-                }else{
+                    dbOps.insertIncomeAndExpen(userID, "To Be Forward", totProfit, 0);
+                } else {
                     JOptionPane.showMessageDialog(this, "Error occured while deleting the income_expenditure table!!!");
                     return;
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Please get the account report in order to find the profit for the day!!!");
                 return;
             }
@@ -3023,16 +3024,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if ((int) tableProduct.getValueAt(i, 7) == 1) {
                     int id = (int) tableProduct.getValueAt(i, 1);
                     if (dbOps.deleteExpired(id)) {
-                        
-                    }else{
+
+                    } else {
                         JOptionPane.showMessageDialog(this, "Error occured while deleting an expired product!!!");
                         return;
                     }
                 }
             }
-            
+
         }
-        
+
     }//GEN-LAST:event_btnFinalActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
