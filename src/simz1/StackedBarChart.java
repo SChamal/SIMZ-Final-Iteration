@@ -304,7 +304,7 @@ public class StackedBarChart extends ApplicationFrame{
         
         JFreeChart chart5 = ChartFactory.createLineChart("Sales of Sweet items last week", "Date", "sales", sidata, PlotOrientation.VERTICAL, false, true, false);
         CategoryPlot c5 = chart5.getCategoryPlot();
-        c5.setBackgroundPaint(Color.white); 
+        c5.setBackgroundPaint(Color.lightGray); 
         c5.getRenderer().setSeriesPaint(0, Color.PINK);
         //c5.setRangeGridlinePaint(Color.pink);
         

@@ -59,8 +59,8 @@
                           <Component id="txtName" alignment="0" pref="177" max="32767" attributes="0"/>
                           <Component id="txtReceivingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
                           <Component id="txtSellingPrice" alignment="0" pref="177" max="32767" attributes="0"/>
-                          <Component id="jXDatePicker1" alignment="0" max="32767" attributes="0"/>
                           <Component id="txtType" alignment="0" max="32767" attributes="0"/>
+                          <Component id="jXDatePicker1" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" attributes="0">
@@ -124,12 +124,12 @@
                   <Component id="txtSellingPrice" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jXDatePicker1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtQtyLimit" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -284,8 +284,6 @@
         <Property name="text" type="java.lang.String" value="*"/>
       </Properties>
     </Component>
-    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker1">
-    </Component>
     <Component class="javax.swing.JComboBox" name="txtType">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -302,6 +300,8 @@
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtTypeMouseClicked"/>
       </Events>
+    </Component>
+    <Component class="org.jdesktop.swingx.JXDatePicker" name="jXDatePicker1">
     </Component>
   </SubComponents>
 </Form>

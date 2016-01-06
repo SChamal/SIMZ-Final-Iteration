@@ -212,6 +212,11 @@ public class OrderConfirmation extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, "Order placed successfully!!!");
         this.setVisible(false);
+        //clear the orders table
+        DefaultTableModel modelOrder = (DefaultTableModel) mhp.tblOrder.getModel();
+        for(int i=modelOrder.getRowCount()-1;i>=0;i--){
+            modelOrder.removeRow(i);
+        }
     }//GEN-LAST:event_btnConfirmOrderActionPerformed
 
     /**
