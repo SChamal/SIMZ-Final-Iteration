@@ -80,6 +80,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public int rawNo, incmRaw = 0;
     public static int orderRowNo;
     JComboBox combodesig = new JComboBox();
+    public int orderStatusFlag = 0;
 
     java.util.Date date = new java.util.Date();
     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -904,7 +905,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Time");
 
-        btnDeletePrdct.setText("Delete Product");
+        btnDeletePrdct.setText("Delete Entry");
         btnDeletePrdct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeletePrdctActionPerformed(evt);
@@ -1857,7 +1858,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
          }
 
          });*/
-        lblStockStatus.setText("Morning Stock is set");
+        lblStockStatus.setText("Morning Stock is set now");
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(false);
@@ -2764,9 +2765,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ACCReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -2828,11 +2829,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Accounts Report named ACCReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
@@ -2875,9 +2876,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ProReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -2926,11 +2927,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Products Report named ProReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
@@ -3018,7 +3019,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel billLabel;
     private javax.swing.JLabel billno;
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAddOrderToStock;
+    public javax.swing.JButton btnAddOrderToStock;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnDeletePrdct;
@@ -3027,9 +3028,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnNewUser;
     private javax.swing.JButton btnOK;
-    private javax.swing.JButton btnProcessOrder;
+    public javax.swing.JButton btnProcessOrder;
     private javax.swing.JButton btnProfit;
-    private javax.swing.JButton btnRefill;
+    public javax.swing.JButton btnRefill;
     private javax.swing.JButton btnRemoveUser;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSaveChanges;
@@ -3083,14 +3084,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JComboBox jcomboAddTodaysStock;
     public javax.swing.JLabel lablePic;
     private javax.swing.JLabel lblDate;
-    private javax.swing.JLabel lblOrderStatus;
-    private javax.swing.JLabel lblStockStatus;
+    public javax.swing.JLabel lblOrderStatus;
+    public javax.swing.JLabel lblStockStatus;
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     public javax.swing.JTable tableProduct;
     public javax.swing.JTable tblIncome;
     public javax.swing.JTable tblOrder;
-    private javax.swing.JTable tblReports;
+    public javax.swing.JTable tblReports;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel total;
