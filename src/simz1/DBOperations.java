@@ -1546,24 +1546,60 @@ ResultSet expireDates() { // getting values changed by me
         }
     }
     
-        boolean addToGraphData(String dte, int se, int cke,int bi,int dr,int si) {
+    String getCategory(int id) {
         try {
-            con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "INSERT INTO graphdata VALUES(?,?,?,?,?,?)";
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "SELECT productType FROM productdetails WHERE productID = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);//add values to the sql query
+            rs = pst.executeQuery();//execute the sql query and get the result
+            while (rs.next()) {
+                String cName = rs.getString(1);
+                return cName;
+            }
 
-            pst.setString(1, dte);
-            pst.setInt(2, se);
-            pst.setInt(3, cke);
-            pst.setInt(4, bi);
-            pst.setInt(5, dr);
-            pst.setInt(6, si);
-
-            pst.executeUpdate();
-            return true;
         } catch (SQLException e) {
             System.out.println(e);
-            return false;
+            return "";
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return "";
+    }
+    
+    int updateGraphDataByTransactions(String date,String category, int qty) { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT "+ category + " FROM graphdata WHERE Date =?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, date);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                if (rs.isFirst()) {
+                    int current = rs.getInt(1);
+                    int value = current+qty;
+                    String query1 = "UPDATE graphdata SET "+category+" = "+ value +" WHERE Date = ?";
+                    pst = (PreparedStatement) con.prepareStatement(query1);
+                    pst.setString(1, date);
+                    pst.executeUpdate();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return 0;
         } finally {
             try {
                 if (pst != null) {
@@ -1575,6 +1611,27 @@ ResultSet expireDates() { // getting values changed by me
             } catch (SQLException e) {
                 System.out.println(e);
             }
+        }
+        return 0;
+    }
+    
+    boolean insertGraphData(String date, int a, int b, int c, int d, int e) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "INSERT INTO graphdata VALUES(?,?,?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, date);
+            pst.setInt(2, a);
+            pst.setInt(3, b);
+            pst.setInt(4, c);
+            pst.setInt(5, d);
+            pst.setInt(6, e);
+            
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
         }
     }
 }

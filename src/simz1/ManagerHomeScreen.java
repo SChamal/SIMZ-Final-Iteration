@@ -94,6 +94,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     String time = sdf.format(date);
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
     String today = sdf2.format(date);
+    SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
+    String dteformat2 = sdf3.format(date);
 
     public void clocker() {
         class Listner implements ActionListener {
@@ -604,6 +606,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
+        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+
         btnAddProduct.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 11)); // NOI18N
         btnAddProduct.setText("Add New Product");
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -612,6 +616,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        tableProduct.setBackground(new java.awt.Color(204, 204, 204));
         tableProduct.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tableProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1300,7 +1305,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
-        chartPanel.setBackground(new java.awt.Color(255, 255, 255));
+        chartPanel.setBackground(new java.awt.Color(204, 204, 204));
         chartPanel.setLayout(new java.awt.BorderLayout());
 
         jButton4.setText("Shorteats");
@@ -1353,12 +1358,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(2, 2, 2)
                         .addComponent(jButton7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8))
-                    .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addComponent(jButton8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1377,28 +1385,29 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(4, 4, 4)
+                .addGap(8, 8, 8)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
-                    .addComponent(lblDate)
+                    .addComponent(lblDate))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFinalReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton4)
                     .addComponent(jButton5)
                     .addComponent(jButton6)
                     .addComponent(jButton7)
                     .addComponent(jButton8))
-                .addGap(13, 13, 13)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnFinalReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(21, 21, 21))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(75, 75, 75))))
+                .addGap(18, 18, 18)
+                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Reports  ", jPanel4);
@@ -1610,6 +1619,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Users ", users);
 
+        jPanel7.setBackground(new java.awt.Color(102, 102, 102));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
@@ -1637,14 +1647,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         });
         jPanel7.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, 40));
 
-        name1.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
+        name1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        name1.setForeground(new java.awt.Color(255, 255, 0));
         name1.setText("Lalith");
-        jPanel7.add(name1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 30, -1, -1));
+        jPanel7.add(name1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 30, -1, -1));
 
-        jLabel2.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(102, 102, 255));
         jLabel2.setText("Logged in As: ");
-        jPanel7.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 30, 145, -1));
+        jPanel7.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 30, 110, -1));
 
+        lablePic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         lablePic.setMaximumSize(new java.awt.Dimension(60, 60));
         lablePic.setMinimumSize(new java.awt.Dimension(60, 60));
         jPanel7.add(lablePic, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 10, 60, 60));
@@ -1963,6 +1976,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
          }
 
          });*/
+        dbOps.insertGraphData(dteformat2, 0, 0, 0, 0, 0);
         lblStockStatus.setText("Morning Stock is set");
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
@@ -2220,6 +2234,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         String prdctName = BillingTable.getValueAt(i, 1).toString();
                         int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
                         int subTot = Integer.parseInt(BillingTable.getValueAt(i, 3).toString());
+                        
+                        String category = dbOps.getCategory(id);
+                        dbOps.updateGraphDataByTransactions(dteformat2,category,quantity);
 
                         b1.printBill.setValueAt(prdctName, i, 0);
                         b1.printBill.setValueAt(quantity, i, 1);
@@ -2495,9 +2512,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 for (int i = 0; i < rawNo; i++) {
                     int id = Integer.parseInt(BillingTable.getValueAt(i, 0).toString());
+                    
                     String prdctName = BillingTable.getValueAt(i, 1).toString();
                     int quantity = Integer.parseInt(BillingTable.getValueAt(i, 2).toString());
                     int subTot = Integer.parseInt(BillingTable.getValueAt(i, 3).toString());
+                    
+                    String category = dbOps.getCategory(id);
+                    dbOps.updateGraphDataByTransactions(dteformat2,category,quantity);
 
                     b1.printBill.setValueAt(prdctName, i, 0);
                     b1.printBill.setValueAt(quantity, i, 1);
