@@ -5,7 +5,9 @@
  */
 package simz1;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
@@ -18,6 +20,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +30,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -41,6 +46,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -77,8 +84,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo, incmRaw = 0;
-    public static int orderRowNo;
+    public int rawNo, incmRaw = 0, trigger1 = 0;
+    public static int orderRowNo, alertCount = 0;
+    public float totProfit;
     JComboBox combodesig = new JComboBox();
     public int orderStatusFlag = 0;
 
@@ -327,6 +335,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }
 
     public ManagerHomeScreen() {
+        
         try {
             initComponents();
             this.btnReset.setVisible(false);
@@ -384,12 +393,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
 
         }
+
         //this.Search.requestFocusInWindow();
         setMorningStock();
         TableColumn dateColumn = tableProduct.getColumnModel().getColumn(4);
         dateColumn.setCellEditor(new DatePickerCellEditor());
-        //DateCellRenderer renderer = new DateCellRenderer();
-        //tableProduct.getColumnModel().getColumn(4).setCellEditor(renderer.getFormats());
 
         this.dateLabel.setText(today);
         this.clocker();
@@ -416,7 +424,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             String s3 = rs.getString(3);
                             int s4 = rs.getInt(4);
                             int s5 = rs.getInt(5);
-                            if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
+                            if (((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) && ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) > 0)) {
+                                modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 2});
+                            } else if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) == 0) {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 1});
                             } else {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 0});
@@ -446,7 +456,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 }
 
-                if (tmpEx == 1) {
+                if (tmpEx == 2) {
+                    setBackground(Color.ORANGE);
+                } else if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
                     setBackground(table.getBackground());
@@ -540,13 +552,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         lblDate = new javax.swing.JLabel();
         btnFinalReport = new javax.swing.JButton();
+        btnFinal = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        chartPanel = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblOrder = new javax.swing.JTable();
         btnProcessOrder = new javax.swing.JButton();
         btnRefill = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
+        lblAlert = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         lblOrderStatus = new javax.swing.JLabel();
@@ -585,7 +605,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
         btnAddProduct.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 11)); // NOI18N
-        btnAddProduct.setText("Add Product");
+        btnAddProduct.setText("Add New Product");
         btnAddProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddProductActionPerformed(evt);
@@ -730,11 +750,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addComponent(jcomboAddTodaysStock, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(addProductbtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                         .addComponent(btnAddOrderToStock, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(30, 30, 30)
                         .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
                         .addComponent(btnSetStock)
@@ -748,14 +768,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lblStockStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(Search, 0, 200, Short.MAX_VALUE))
-                                .addGap(448, 448, 448)
-                                .addComponent(btnAddProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 7, Short.MAX_VALUE))
+                                .addGap(441, 441, 441)
+                                .addComponent(btnAddProduct)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(673, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1266,14 +1286,81 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
+        btnFinal.setText("Settle The Day");
+        btnFinal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("All Category");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        chartPanel.setBackground(new java.awt.Color(255, 255, 255));
+        chartPanel.setLayout(new java.awt.BorderLayout());
+
+        jButton4.setText("Shorteats");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Cake");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("Bread Item");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Drinks");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton8.setText("Sweets");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(523, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8))
+                    .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel19)
@@ -1281,22 +1368,37 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 .addComponent(lblDate))
                             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnFinalReport)
-                        .addGap(127, 127, 127))))
+                        .addGap(18, 18, 18))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(8, 8, 8)
+                .addGap(4, 4, 4)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
-                    .addComponent(lblDate))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnFinalReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
+                    .addComponent(lblDate)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5)
+                    .addComponent(jButton6)
+                    .addComponent(jButton7)
+                    .addComponent(jButton8))
+                .addGap(13, 13, 13)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnFinalReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(75, 75, 75))))
         );
 
         jTabbedPane1.addTab("Reports  ", jPanel4);
@@ -1340,9 +1442,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("LABEL");
+        lblAlert.setText("You have no alerts");
 
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/alert2.png"))); // NOI18N
         jLabel8.setText("alert");
+        jLabel8.setPreferredSize(new java.awt.Dimension(100, 100));
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel18.setText("Order Status: ");
@@ -1358,27 +1462,28 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(390, 390, 390)
-                .addComponent(btnProcessOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addComponent(btnRefill)
-                .addContainerGap(52, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap(39, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42))
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblAlert, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(244, 244, 244)
+                        .addComponent(btnProcessOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
+                        .addComponent(btnRefill)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblOrderStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 852, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(42, 42, 42))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1396,8 +1501,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAlert, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRefill)
                     .addComponent(btnProcessOrder))
                 .addGap(19, 19, 19))
@@ -1407,16 +1512,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 949, Short.MAX_VALUE)
+            .addGap(0, 938, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 5, Short.MAX_VALUE)))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 546, Short.MAX_VALUE)
+            .addGap(0, 545, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel5Layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -1801,10 +1906,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        if (exp == 0) {
-                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
-                        } else {
+                        if (exp == 1) {
                             tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
+                        }else if (exp == 2) {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 2});
+                        } else {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
                         }
 
                     }
@@ -2155,6 +2262,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
+                                alertCount++;
+                                lblAlert.setText("You have received " + alertCount + " alerts");
                                 boolean checkOrder = true;
                                 for (int k = 0; k < model2.getRowCount(); k++) {
                                     if (model2.getValueAt(k, 2).equals(id)) {
@@ -2431,6 +2540,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
+                            alertCount++;
+                            lblAlert.setText("You have received " + alertCount + " alerts");
                             boolean checkOrder = true;
                             for (int k = 0; k < model2.getRowCount(); k++) {
                                 if (model2.getValueAt(k, 2).equals(id)) {
@@ -2760,7 +2871,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Accounts Report now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
-
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
             try {
                 String date = today.replace(":", "_");
@@ -2782,7 +2892,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
                 t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
                 int rows = tblIncome.getRowCount();
-                
+
                 for (int i = 0; i < rows; i++) {
                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0) + "")));
                     if (tblIncome.getValueAt(i, 1) == null) {
@@ -2821,6 +2931,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 document.add(paragraph1);
                 float profit = 0;
                 profit = totalIncome - expense;
+                totProfit = profit;
+                trigger1 = 1;
                 paragraph1 = new Paragraph("Total Profit (Rs.) : " + profit + "" + "\n\n");
                 document.add(paragraph1);
                 String name = dbOps.getName(name1.getText());
@@ -2935,13 +3047,77 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         p.waitFor();
                     }
                 }
-            } catch (Exception ex) {
+            } catch (HeadlessException | IOException | InterruptedException | SQLException ex) {
                 System.out.println(ex);
                 JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
             document.close();
         }
     }//GEN-LAST:event_btnFinalReportActionPerformed
+
+    private void btnFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalActionPerformed
+        int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to finish today's work?\nOnce you done this, stocks will be reset!!!", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            //Deleting the content of income and expenditure table and set the petty cash to next day
+            if (trigger1 == 1) {
+                if (dbOps.delIncomeAndExpen()) {
+                    int userID = dbOps.getID(name1.getText());
+                    dbOps.insertIncomeAndExpen(userID, "To Be Forward", totProfit, 0);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error occured while deleting the income_expenditure table!!!");
+                    return;
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please get the account report in order to find the profit for the day!!!");
+                return;
+            }
+
+            //Deleting expired products from today's stock
+            for (int i = 0; i < tableProduct.getRowCount(); i++) {
+                if ((int) tableProduct.getValueAt(i, 7) == 1) {
+                    int id = (int) tableProduct.getValueAt(i, 1);
+                    if (dbOps.deleteExpired(id)) {
+
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error occured while deleting an expired product!!!");
+                        return;
+                    }
+                }
+            }
+
+        }
+
+    }//GEN-LAST:event_btnFinalActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of last week");
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of Shorteats last week");
+        sbc.ShorteatsGraph();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of Cakes last week");
+        sbc.CakeGraph();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of Bread last week");
+        sbc.BreadGraph();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of Drinks last week");
+        sbc.DrinksGraph();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        StackedBarChart sbc = new StackedBarChart("Sales of Sweet Items last week");
+        sbc.SweetsGraph();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @return the name1
@@ -3023,6 +3199,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnDeletePrdct;
+    private javax.swing.JButton btnFinal;
     private javax.swing.JButton btnFinalReport;
     private javax.swing.JButton btnGenerateReport;
     private javax.swing.JButton btnLogOut;
@@ -3038,9 +3215,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnSetStock;
     private javax.swing.JButton btnTotalExpences;
     private javax.swing.JButton btnTotalIncome;
+    public javax.swing.JPanel chartPanel;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -3057,7 +3241,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -3083,6 +3266,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JComboBox jcomboAddTodaysStock;
     public javax.swing.JLabel lablePic;
+    public javax.swing.JLabel lblAlert;
     private javax.swing.JLabel lblDate;
     public javax.swing.JLabel lblOrderStatus;
     public javax.swing.JLabel lblStockStatus;

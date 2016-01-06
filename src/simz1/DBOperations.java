@@ -1524,4 +1524,99 @@ ResultSet expireDates() { // getting values changed by me
             return null;
         }
     }
+    
+    //Delete expired items
+    boolean deleteExpired(int id) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "DELETE from today_stock WHERE productID = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);  
+            pst.setInt(1,id);
+            rs = pst.executeQuery();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    
+    //Delete income and expenditure table content
+    boolean delIncomeAndExpen() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "DELETE * FROM income_expenditure";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            rs = pst.executeQuery();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    
+    //Insert petty cash to income_expenditure
+    boolean insertIncomeAndExpen(int id, String des, float credit, float debit) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "INSERT INTO income_expenditure VALUES(?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, id);
+            pst.setString(2, des);
+            pst.setFloat(3, credit);
+            pst.setFloat(4, debit);
+            
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+    }
+    
+    ResultSet getGraphData(String dte) { // getting values changed by me
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT Date,Shorteats,Cake,BreadItem,Drinks, SweetItems from graphdata where Date = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, dte);
+            rs = pst.executeQuery();
+            return rs;
+
+        } catch (SQLException ex) {
+            //System.out.println(ex);
+            return null;
+        }
+    }
+    
+        boolean addToGraphData(String dte, int se, int cke,int bi,int dr,int si) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "INSERT INTO graphdata VALUES(?,?,?,?,?,?)";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setString(1, dte);
+            pst.setInt(2, se);
+            pst.setInt(3, cke);
+            pst.setInt(4, bi);
+            pst.setInt(5, dr);
+            pst.setInt(6, si);
+
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+    }
 }
