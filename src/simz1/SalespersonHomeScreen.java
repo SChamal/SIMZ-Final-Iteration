@@ -203,8 +203,16 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
-                int tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 5).toString());
-                if (tmpEx == 1) {
+                int tmpEx = 0;
+                try {
+                    tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 5).toString());
+                } catch (NullPointerException s) {
+
+                }
+                
+                if (tmpEx == 2) {
+                    setBackground(Color.ORANGE);
+                } else if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
                     setBackground(table.getBackground());
@@ -663,7 +671,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Product Code", "Name", "Price", "Expiry Date", "Current Quantity", "If Expired"
+                "Product Code", "Product Name", "Price", "Expiry Date", "Current Quantity", "If Expired"
             }
         ));
         SalesPStock.setGridColor(new java.awt.Color(51, 51, 51));
@@ -773,8 +781,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No text feild should be empty");
             } else {
                 String payment = txtCash.getText();
-                int paymenti = 0;
-                int amounti = Integer.parseInt(amount);
+                float paymenti = 0;
+                float amounti = Float.parseFloat(amount);
                 try {
                     paymenti = Integer.parseInt(payment);
                     if (paymenti < 0) {
@@ -792,7 +800,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     txtCash.setText("");
                     return;
                 }
-                int balance = paymenti - amounti;
+                float balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
@@ -821,7 +829,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     mhp.incomeModel.addRow(new Object[]{descript, amounti, null});
                     dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
 
-                    DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
+                    DefaultTableModel model3 = (DefaultTableModel) spi.SalesPStock.getModel();
                     DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
                     Bill b1 = new Bill();
 
@@ -884,10 +892,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                             }
                         }
 
-                        for (int j = 0; j < model.getRowCount(); j++) {
-                            if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
-                                int current = (int) model.getValueAt(j, 5);
-                                model.setValueAt(current - quantity, j, 5);
+                        for (int j = 0; j < model3.getRowCount(); j++) {
+                            if (id == Integer.parseInt(model3.getValueAt(j, 0).toString())) {
+                                int current = Integer.parseInt(model3.getValueAt(j, 4).toString());
+                                model3.setValueAt(current - quantity, j, 4);
                             }
                         }
 
@@ -1051,7 +1059,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
             try {
-                quantity = Integer.parseInt(amount.getText().toString());
+                quantity = Integer.parseInt(amount.getText());
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Please enter only numbers!!!");
                 amount.setText("");
@@ -1152,8 +1160,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No text feild should be empty");
         } else {
             String payment = txtCash.getText();
-            int paymenti = 0;
-            int amounti = Integer.parseInt(amount);
+            float paymenti = 0;
+            float amounti = Float.parseFloat(amount);
             try {
                 paymenti = Integer.parseInt(payment);
                 if (paymenti < 0) {
@@ -1171,7 +1179,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 txtCash.setText("");
                 return;
             }
-            int balance = paymenti - amounti;
+            float balance = paymenti - amounti;
             txtBalance.setText(String.valueOf(balance));
             int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
@@ -1198,7 +1206,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 mhp.incomeModel.addRow(new Object[]{descript, amounti, null});
                 dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
 
-                DefaultTableModel model = (DefaultTableModel) spi.SalesPStock.getModel();
+                DefaultTableModel model3 = (DefaultTableModel) spi.SalesPStock.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
                 Bill b1 = new Bill();
 
@@ -1261,10 +1269,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         }
                     }
 
-                    for (int j = 0; j < model.getRowCount(); j++) {
-                        if (id == Integer.parseInt(model.getValueAt(j, 1).toString())) {
-                            int current = (int) model.getValueAt(j, 5);
-                            model.setValueAt(current - quantity, j, 5);
+                    for (int j = 0; j < model3.getRowCount(); j++) {
+                        if (id == Integer.parseInt(model3.getValueAt(j, 0).toString())) {
+                            int current = Integer.parseInt(model3.getValueAt(j, 4).toString());
+                            model3.setValueAt(current - quantity, j, 4);
                         }
                     }
 

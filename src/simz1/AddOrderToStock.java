@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *
@@ -152,6 +155,11 @@ public class AddOrderToStock extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tblAddOrder);
 
         btnTakeOrder.setText("Add to Stock");
+        btnTakeOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTakeOrderActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -237,6 +245,97 @@ public class AddOrderToStock extends javax.swing.JFrame {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnTakeOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTakeOrderActionPerformed
+        ArrayList<Integer> ProductIDList = new ArrayList<>();
+        int rows =mhp.tableProduct.getRowCount();
+        for(int i=0;i<rows;i++){
+            ProductIDList.add(Integer.parseInt(mhp.tableProduct.getValueAt(i, 1).toString()));
+        }
+        int rowNumber = tblAddOrder.getRowCount();
+        for(int j=0;j<rowNumber;j++){
+            if(ProductIDList.contains(Integer.parseInt(tblAddOrder.getValueAt(j, 1).toString()))){
+                int productID = Integer.parseInt(tblAddOrder.getValueAt(j, 1).toString());
+                int currTodaysQty;
+                int currReceivedQty;
+                for(int k=0;k<rows;k++){
+                    if(Integer.parseInt(mhp.tableProduct.getValueAt(k, 1).toString())==productID){
+                        currTodaysQty= Integer.parseInt(mhp.tableProduct.getValueAt(k, 5).toString());
+                        mhp.tableProduct.setValueAt(currTodaysQty+Integer.parseInt(tblAddOrder.getValueAt(j, 3).toString()), k, 5);
+                        currReceivedQty= Integer.parseInt(mhp.tableProduct.getValueAt(k, 6).toString());
+                        mhp.tableProduct.setValueAt(currReceivedQty+Integer.parseInt(tblAddOrder.getValueAt(j, 3).toString()), k, 6);
+                    }
+                }               
+            }else{
+                ResultSet rst = dbOps.getProductDetails(Integer.parseInt(tblAddOrder.getValueAt(j, 1).toString()));
+                DefaultTableModel model = (DefaultTableModel) mhp.tableProduct.getModel();
+                try {
+                    while (rst.next()) {
+                        int val =Integer.parseInt(tblAddOrder.getValueAt(j, 3).toString());
+                        model.addRow(new Object[]{false, Integer.parseInt(tblAddOrder.getValueAt(j, 1).toString()),rst.getString(1), rst.getString(2), rst.getString(3), val, val,  0});
+                    }
+                } catch (SQLException ex){
+                    System.err.println(ex);
+                }
+            }
+        }
+        //set evening stock to the orders table
+        DefaultTableModel modelOrder = (DefaultTableModel) mhp.tblOrder.getModel();
+        ResultSet rst = dbOps.combineEveningStockAndStock();
+        int orderTableRows = 0;
+        int max = dbOps.getMaxOrderID();
+        try {
+            while (rst.next()) {                                            
+                modelOrder.insertRow(orderTableRows, new Object[]{true, max + 1, rst.getInt(1), rst.getString(2), mhp.today, mhp.time, rst.getString(3)});
+                orderTableRows++;
+            }
+        } catch (SQLException ex) {
+
+        }
+        //update todayStock DB
+        int rowCount = mhp.tableProduct.getRowCount();
+        for (int i = 0; i < rowCount; i++) {
+            int id = Integer.parseInt(mhp.tableProduct.getValueAt(i, 1).toString());
+            int receivedQty = Integer.parseInt(mhp.tableProduct.getValueAt(i, 6).toString());
+            int currentQty = Integer.parseInt(mhp.tableProduct.getValueAt(i, 5).toString());
+            boolean result = dbOps.updateTodayStock(id, receivedQty, currentQty);
+            String exDate="0000-00-00";            
+            if(!result){                
+                boolean output = dbOps.setTodayStock(id, mhp.today, receivedQty, currentQty, exDate, receivedQty);  
+                if(!output){
+                    JOptionPane.showMessageDialog(this, "Newly arrived products didn't added to the database successfully!!!");
+                    return;
+                }
+            }                        
+        }
+
+
+        ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+        ReportsTableModel modelReports = new ReportsTableModel();
+        mhp.tblReports.setModel((TableModel) modelReports);
+        try {
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        mhp.orderStatusFlag++;
+        //Set Stock status messages
+        if(mhp.orderStatusFlag==1){
+            mhp.lblStockStatus.setText("Afternoon stock is set now");
+            mhp.lblOrderStatus.setText("Evening Stock is due to order");
+        }else if(mhp.orderStatusFlag==2){
+            mhp.lblStockStatus.setText("Evening stock is set now");
+            mhp.lblOrderStatus.setText("No more orders are allowed");
+            mhp.btnAddOrderToStock.setVisible(false); //Can't add more orders
+            mhp.btnProcessOrder.setVisible(false);    //Can't process more orders
+            mhp.btnRefill.setVisible(false);          //Can't re-fill quantities
+        }
+        JOptionPane.showMessageDialog(this, "Newly arrived added successfully!!!");        
+        this.setVisible(false);
+    }//GEN-LAST:event_btnTakeOrderActionPerformed
 
     /**
      * @param args the command line arguments

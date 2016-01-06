@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 public class tableModelSalesperson extends DefaultTableModel {
 
     public tableModelSalesperson() {
-      super(new String[]{ "Product Code", "Product Name", "Price", "Expiry Date", "Quantity", "If Expired"}, 0);
+      super(new String[]{ "Product Code", "Product Name", "Price", "Expiry Date", "Current Quantity", "If Expired"}, 0);
     }
 
    // @Override

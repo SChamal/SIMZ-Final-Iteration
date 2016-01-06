@@ -88,6 +88,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public static int orderRowNo, alertCount = 0;
     public float totProfit;
     JComboBox combodesig = new JComboBox();
+    public int orderStatusFlag = 0;
 
     java.util.Date date = new java.util.Date();
     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
@@ -394,12 +395,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException ex) {
 
         }
+
         //this.Search.requestFocusInWindow();
         setMorningStock();
         TableColumn dateColumn = tableProduct.getColumnModel().getColumn(4);
         dateColumn.setCellEditor(new DatePickerCellEditor());
-        //DateCellRenderer renderer = new DateCellRenderer();
-        //tableProduct.getColumnModel().getColumn(4).setCellEditor(renderer.getFormats());
 
         this.dateLabel.setText(today);
         this.clocker();
@@ -426,11 +426,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                             String s3 = rs.getString(3);
                             int s4 = rs.getInt(4);
                             int s5 = rs.getInt(5);
-                            if (((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) && ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) != 0)) {
+                            if (((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) && ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) > 0)) {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 2});
-                            }else if((rs.getDate(3).getDate() - rs.getDate(6).getDate()) == 0){
+                            } else if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) == 0) {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 1});
-                            }else {
+                            } else {
                                 modell.addRow(new Object[]{true, id1, s1, s2, s3, s4, 0, 0});
                             }
 
@@ -460,7 +460,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 if (tmpEx == 2) {
                     setBackground(Color.ORANGE);
-                }else if(tmpEx == 1){
+                } else if (tmpEx == 1) {
                     setBackground(Color.RED);
                 } else {
                     setBackground(table.getBackground());
@@ -606,7 +606,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
 
         btnAddProduct.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 11)); // NOI18N
         btnAddProduct.setText("Add New Product");
@@ -616,7 +617,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         });
 
-        tableProduct.setBackground(new java.awt.Color(204, 204, 204));
         tableProduct.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tableProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -930,7 +930,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Time");
 
-        btnDeletePrdct.setText("Delete Product");
+        btnDeletePrdct.setText("Delete Entry");
         btnDeletePrdct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeletePrdctActionPerformed(evt);
@@ -1619,7 +1619,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Users ", users);
 
-        jPanel7.setBackground(new java.awt.Color(102, 102, 102));
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Copperplate Gothic Light", 1, 36)); // NOI18N
@@ -1648,12 +1648,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jPanel7.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, 40));
 
         name1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        name1.setForeground(new java.awt.Color(255, 255, 0));
         name1.setText("Lalith");
         jPanel7.add(name1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 30, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(102, 102, 255));
         jLabel2.setText("Logged in As: ");
         jPanel7.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 30, 110, -1));
 
@@ -1919,10 +1917,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 while (rs.next()) {
                     if (rs.isFirst()) {
-                        if (exp == 0) {
-                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
-                        } else {
+                        if (exp == 1) {
                             tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 1});
+                        }else if (exp == 2) {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 2});
+                        } else {
+                            tmSPmodel.addRow(new Object[]{Id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), 0});
                         }
 
                     }
@@ -1976,8 +1976,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
          }
 
          });*/
+
         dbOps.insertGraphData(dteformat2, 0, 0, 0, 0, 0);
-        lblStockStatus.setText("Morning Stock is set");
+
+        lblStockStatus.setText("Morning Stock is set now");
+
         lblOrderStatus.setText("Afternoon Stock is due to order");
         btnSetStock.setVisible(false);
         btnSaveChanges.setVisible(false);
@@ -2894,9 +2897,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ACCReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -2911,7 +2914,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 t.addCell(new PdfPCell(new Phrase("Credit(Rs.)")));
                 t.addCell(new PdfPCell(new Phrase("Debit(Rs.)")));
                 int rows = tblIncome.getRowCount();
-                
+
                 for (int i = 0; i < rows; i++) {
                     t.addCell(new PdfPCell(new Phrase(tblIncome.getValueAt(i, 0) + "")));
                     if (tblIncome.getValueAt(i, 1) == null) {
@@ -2960,11 +2963,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Accounts Report named ACCReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
@@ -3007,9 +3010,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ProReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -3058,11 +3061,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Products Report named ProReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
@@ -3076,17 +3079,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
     private void btnFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to finish today's work?\nOnce you done this, stocks will be reset!!!", "", JOptionPane.YES_NO_OPTION);
-        if(reply == JOptionPane.YES_OPTION){
+        if (reply == JOptionPane.YES_OPTION) {
             //Deleting the content of income and expenditure table and set the petty cash to next day
-            if(trigger1 == 1){
-                if(dbOps.delIncomeAndExpen()){
+            if (trigger1 == 1) {
+                if (dbOps.delIncomeAndExpen()) {
                     int userID = dbOps.getID(name1.getText());
-                    dbOps.insertIncomeAndExpen(userID,"To Be Forward",totProfit, 0);
-                }else{
+                    dbOps.insertIncomeAndExpen(userID, "To Be Forward", totProfit, 0);
+                } else {
                     JOptionPane.showMessageDialog(this, "Error occured while deleting the income_expenditure table!!!");
                     return;
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(this, "Please get the account report in order to find the profit for the day!!!");
                 return;
             }
@@ -3096,16 +3099,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 if ((int) tableProduct.getValueAt(i, 7) == 1) {
                     int id = (int) tableProduct.getValueAt(i, 1);
                     if (dbOps.deleteExpired(id)) {
-                        
-                    }else{
+
+                    } else {
                         JOptionPane.showMessageDialog(this, "Error occured while deleting an expired product!!!");
                         return;
                     }
                 }
             }
-            
+
         }
-        
+
     }//GEN-LAST:event_btnFinalActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -3214,7 +3217,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JLabel billLabel;
     private javax.swing.JLabel billno;
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAddOrderToStock;
+    public javax.swing.JButton btnAddOrderToStock;
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnDeletePrdct;
@@ -3224,9 +3227,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnNewUser;
     private javax.swing.JButton btnOK;
-    private javax.swing.JButton btnProcessOrder;
+    public javax.swing.JButton btnProcessOrder;
     private javax.swing.JButton btnProfit;
-    private javax.swing.JButton btnRefill;
+    public javax.swing.JButton btnRefill;
     private javax.swing.JButton btnRemoveUser;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSaveChanges;
@@ -3287,14 +3290,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public javax.swing.JLabel lablePic;
     public javax.swing.JLabel lblAlert;
     private javax.swing.JLabel lblDate;
-    private javax.swing.JLabel lblOrderStatus;
-    private javax.swing.JLabel lblStockStatus;
+    public javax.swing.JLabel lblOrderStatus;
+    public javax.swing.JLabel lblStockStatus;
     public javax.swing.JLabel name;
     public javax.swing.JLabel name1;
     public javax.swing.JTable tableProduct;
     public javax.swing.JTable tblIncome;
     public javax.swing.JTable tblOrder;
-    private javax.swing.JTable tblReports;
+    public javax.swing.JTable tblReports;
     public javax.swing.JTable tblUsers;
     private javax.swing.JLabel timeLabel;
     private javax.swing.JLabel total;

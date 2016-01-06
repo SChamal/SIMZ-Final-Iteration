@@ -892,6 +892,20 @@ public class DBOperations {
         }
         return null;
     }
+    
+    ResultSet getProductDetails(int ID) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT productName,sellingPrice,expiryDate FROM productdetails where productID=?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1, ID);
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
 
     ResultSet combineTwoTables(int id, String crnt) {
         try {
@@ -953,6 +967,19 @@ public class DBOperations {
         }
 
     }
+    ResultSet combineEveningStockAndStock() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "SELECT e.productID,p.productName,e.totalreceivedQuantity from evening_stock e ,productdetails p where (p.productID=e.productID) ";
+            pst = (PreparedStatement) con.prepareStatement(query);           
+            rs = pst.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return null;
+        }
+
+    }
     
     ResultSet getProducts() {
         try {
@@ -973,15 +1000,30 @@ public class DBOperations {
             String query = "SELECT p.productName from today_stock t ,productdetails p where (p.productID=t.productID) Order By productName";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
-            System.out.println(rs);
-
+            
             return rs;
         } catch (SQLException ex) {
             System.out.println(ex);
         }
         return null;
     }
-
+    
+    boolean updateTodayStock(int id , int RQty, int CQty) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);
+            String query = "UPDATE today_stock SET totalreceivedQuantity=? ,currentQuantity=? WHERE productID=? ";            
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setInt(1,RQty);
+            pst.setInt(2,CQty);
+            pst.setInt(3,id);
+            pst.executeUpdate();            
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            return false;
+        }
+        
+    }
     ResultSet viewStock2(String productName) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
@@ -1534,7 +1576,7 @@ ResultSet expireDates() { // getting values changed by me
     ResultSet getGraphData(String dte) { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT Date,Shorteats,Cake,BreadItem,Drinks, SweetItems from graphdata where Date = ?";
+            String query = "SELECT Date,Shorteats,Cake,Bread,Drinks, Sweet_items from graphdata where Date = ?";
             pst = (PreparedStatement) con.prepareStatement(query);
             pst.setString(1, dte);
             rs = pst.executeQuery();
