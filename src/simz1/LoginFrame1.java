@@ -183,6 +183,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
         } else if (x == 1) {
             this.setVisible(false);
             mhp.setVisible(true);
+            StackedBarChart sbc = new StackedBarChart("Sales of last week");
             mhp.name1.setText(s1);
             mhp.tableProduct.getColumnModel().getColumn(7).setMinWidth(0);
             mhp.tableProduct.getColumnModel().getColumn(7).setMaxWidth(0);
@@ -270,6 +271,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
             } else if (x == 1) {
                 this.setVisible(false);
                 mhp.setVisible(true);
+                StackedBarChart sbc = new StackedBarChart("Sales of last week");
                 mhp.name1.setText(s1);
                 mhp.tableProduct.getColumnModel().getColumn(7).setMinWidth(0);
                 mhp.tableProduct.getColumnModel().getColumn(7).setMaxWidth(0);

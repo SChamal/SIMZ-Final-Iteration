@@ -33,22 +33,22 @@ public class StackedBarChart extends ApplicationFrame{
     
         private static final long serialVersionUID = 1L; 
         DBOperations dbOps = new DBOperations();
-        String d1=dataset(7),d2=dataset(6),d3=dataset(5),d4=dataset(4),d5=dataset(3),d6=dataset(2),d7=dataset(1);
-        int se1=0,se2=0,se3=0,se4=0,se5=0,se6=0,se7=0,cke1=0,cke2=0,cke3=0,cke4=0,cke5=0,cke6=0,cke7=0,bi1=0,bi2=0,bi3=0,bi4=0,bi5=0,bi6=0,bi7=0,
+        public String d1=dataset(7),d2=dataset(6),d3=dataset(5),d4=dataset(4),d5=dataset(3),d6=dataset(2),d7=dataset(1);
+        public int se1=0,se2=0,se3=0,se4=0,se5=0,se6=0,se7=0,cke1=0,cke2=0,cke3=0,cke4=0,cke5=0,cke6=0,cke7=0,bi1=0,bi2=0,bi3=0,bi4=0,bi5=0,bi6=0,bi7=0,
             dr1=0,dr2=0,dr3=0,dr4=0,dr5=0,dr6=0,dr7=0,si1=0,si2=0,si3=0,si4=0,si5=0,si6=0,si7=0;
         
     public StackedBarChart(String s)   
     {   
         super(s);
+        initialize();
         JPanel jpanel = createDemoPanel(); 
         mhp.chartPanel.removeAll();
         mhp.chartPanel.add(jpanel);
         /*jpanel.setPreferredSize(new Dimension(500, 270));   
         setContentPane(jpanel); */
         
-    }   
-   
-    private CategoryDataset createDataset()   { 
+    }  
+    public void initialize(){
         try{
             ResultSet rs =dbOps.getGraphData(dataset(7));
             while(rs.next()){
@@ -127,9 +127,11 @@ public class StackedBarChart extends ApplicationFrame{
                 si7 = rs7.getInt(6);
             }
             
-    }catch (SQLException e){
+        }catch (SQLException e){
         
+        }
     }
+        private CategoryDataset createDataset(){ 
         DefaultCategoryDataset defaultcategorydataset = new DefaultCategoryDataset();   
 
         defaultcategorydataset.addValue(se1, "Shorteats", d1);   
@@ -182,7 +184,7 @@ public class StackedBarChart extends ApplicationFrame{
         JFreeChart jfreechart = ChartFactory.createStackedBarChart("Sales of last week", "Day", "Sales fo the day", categorydataset, PlotOrientation.VERTICAL, true, true, false);   
         jfreechart.setBackgroundPaint(Color.white);   
         CategoryPlot categoryplot = (CategoryPlot)jfreechart.getPlot();   
-        categoryplot.setBackgroundPaint(Color.lightGray);   
+        categoryplot.setBackgroundPaint(Color.white);   
         categoryplot.setRangeGridlinePaint(Color.white);   
         StackedBarRenderer stackedbarrenderer = (StackedBarRenderer)categoryplot.getRenderer();   
         stackedbarrenderer.setDrawBarOutline(false);   
@@ -207,7 +209,109 @@ public class StackedBarChart extends ApplicationFrame{
        String dte =sdf2.format(c.getTime());
        return dte;
     }
-   
+    
+    public void ShorteatsGraph(){
+        DefaultCategoryDataset sedata = new DefaultCategoryDataset();
+        sedata.setValue(se1, "sales", d1);
+        sedata.setValue(se2, "sales", d2);
+        sedata.setValue(se3, "sales", d3);
+        sedata.setValue(se4, "sales", d4);
+        sedata.setValue(se5, "sales", d5);
+        sedata.setValue(se6, "sales", d6);
+        sedata.setValue(se7, "sales", d7);
+        
+        JFreeChart chart1 = ChartFactory.createLineChart("Sales of Shorteats last week", "Date", "sales", sedata, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot c1 = chart1.getCategoryPlot();
+        c1.setBackgroundPaint(Color.white); 
+        c1.getRenderer().setSeriesPaint(0, Color.RED);
+        //c1.setRangeGridlinePaint(Color.red);
+        
+        ChartPanel c1Panel = new ChartPanel(chart1);
+        mhp.chartPanel.removeAll();
+        mhp.chartPanel.add(c1Panel);
+    }
+    public void CakeGraph(){
+        DefaultCategoryDataset ckedata = new DefaultCategoryDataset();
+        ckedata.setValue(cke1, "sales", d1);
+        ckedata.setValue(cke2, "sales", d2);
+        ckedata.setValue(cke3, "sales", d3);
+        ckedata.setValue(cke4, "sales", d4);
+        ckedata.setValue(cke5, "sales", d5);
+        ckedata.setValue(cke6, "sales", d6);
+        ckedata.setValue(cke7, "sales", d7);
+        
+        JFreeChart chart2 = ChartFactory.createLineChart("Sales of Cakes last week", "Date", "sales", ckedata, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot c2 = chart2.getCategoryPlot();
+        c2.setBackgroundPaint(Color.white); 
+        c2.getRenderer().setSeriesPaint(0, Color.BLUE);
+        //c2.setRangeGridlinePaint(Color.BLUE);
+        
+        ChartPanel c2Panel = new ChartPanel(chart2);
+        mhp.chartPanel.removeAll();
+        mhp.chartPanel.add(c2Panel);
+    }
+    
+    public void BreadGraph(){
+        DefaultCategoryDataset bidata = new DefaultCategoryDataset();
+        bidata.setValue(bi1, "sales", d1);
+        bidata.setValue(bi2, "sales", d2);
+        bidata.setValue(bi3, "sales", d3);
+        bidata.setValue(bi4, "sales", d4);
+        bidata.setValue(bi5, "sales", d5);
+        bidata.setValue(bi6, "sales", d6);
+        bidata.setValue(bi7, "sales", d7);
+        
+        JFreeChart chart3 = ChartFactory.createLineChart("Sales of Bread Items last week", "Date", "sales", bidata, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot c3 = chart3.getCategoryPlot();
+        c3.setBackgroundPaint(Color.white); 
+        c3.getRenderer().setSeriesPaint(0, Color.GREEN);
+        //c3.setRangeGridlinePaint(Color.green);
+        
+        ChartPanel c3Panel = new ChartPanel(chart3);
+        mhp.chartPanel.removeAll();
+        mhp.chartPanel.add(c3Panel);
+    }
+    public void DrinksGraph(){
+        DefaultCategoryDataset drdata = new DefaultCategoryDataset();
+        drdata.setValue(dr1, "sales", d1);
+        drdata.setValue(dr2, "sales", d2);
+        drdata.setValue(dr3, "sales", d3);
+        drdata.setValue(dr4, "sales", d4);
+        drdata.setValue(dr5, "sales", d5);
+        drdata.setValue(dr6, "sales", d6);
+        drdata.setValue(dr7, "sales", d7);
+        
+        JFreeChart chart4 = ChartFactory.createLineChart("Sales of Drinks last week", "Date", "sales", drdata, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot c4 = chart4.getCategoryPlot();
+        c4.setBackgroundPaint(Color.white); 
+        c4.getRenderer().setSeriesPaint(0, Color.YELLOW);
+        //c4.setRangeGridlinePaint(Color.yellow);
+        
+        ChartPanel c4Panel = new ChartPanel(chart4);
+        mhp.chartPanel.removeAll();
+        mhp.chartPanel.add(c4Panel);
+    }
+    
+    public void SweetsGraph(){
+        DefaultCategoryDataset sidata = new DefaultCategoryDataset();
+        sidata.setValue(si1, "sales", d1);
+        sidata.setValue(si2, "sales", d2);
+        sidata.setValue(si3, "sales", d3);
+        sidata.setValue(si4, "sales", d4);
+        sidata.setValue(si5, "sales", d5);
+        sidata.setValue(si6, "sales", d6);
+        sidata.setValue(si7, "sales", d7);
+        
+        JFreeChart chart5 = ChartFactory.createLineChart("Sales of Sweet items last week", "Date", "sales", sidata, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot c5 = chart5.getCategoryPlot();
+        c5.setBackgroundPaint(Color.white); 
+        c5.getRenderer().setSeriesPaint(0, Color.PINK);
+        //c5.setRangeGridlinePaint(Color.pink);
+        
+        ChartPanel c5Panel = new ChartPanel(chart5);
+        mhp.chartPanel.removeAll();
+        mhp.chartPanel.add(c5Panel);
+    }
     public static void main(String args[]){   
   
     }
