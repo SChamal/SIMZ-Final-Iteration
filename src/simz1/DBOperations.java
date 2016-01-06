@@ -1502,9 +1502,9 @@ ResultSet expireDates() { // getting values changed by me
     boolean delIncomeAndExpen() {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "DELETE * FROM income_expenditure";
+            String query = "DELETE FROM income_expenditure";
             pst = (PreparedStatement) con.prepareStatement(query);
-            rs = pst.executeQuery();
+            pst.executeUpdate();
             return true;
         } catch (SQLException ex) {
             System.out.println(ex);

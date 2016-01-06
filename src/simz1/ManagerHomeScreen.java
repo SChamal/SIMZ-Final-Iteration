@@ -84,7 +84,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo, incmRaw = 0, trigger1 = 0;
+    public int rawNo, incmRaw = 0, trigger1 = 0, trigger2 = 0;
     public static int orderRowNo, alertCount = 0;
     public float totProfit;
     JComboBox combodesig = new JComboBox();
@@ -2874,9 +2874,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ACCReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -2940,11 +2940,11 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Accounts Report named ACCReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ACCReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Account Reports\\ACCReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
@@ -2987,9 +2987,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             try {
                 String date = today.replace(":", "_");
                 //New PDF File will be created as ProReport2016_01_01 //today's date
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf"));
+                PdfWriter.getInstance(document, new FileOutputStream("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf"));
                 document.open();
-                Image image2 = Image.getInstance("C:\\Users\\DELL\\Desktop\\upToNowProject\\simz - 2015.10.31-chamal\\src\\simz1\\logo1.jpg");
+                Image image2 = Image.getInstance("C:\\#SIMZ\\logo1.jpg");
                 document.add(image2);
                 Paragraph paragraph1 = new Paragraph("Perera and Sons Bakers(pvt)Ltd.\nAddress: 1/52, Galle Road,Colombo 03.\nT.P:0112552225\n\n");
                 document.add(paragraph1);
@@ -3037,16 +3037,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 document.add(paragraph1);
                 //view report
                 int reply1 = JOptionPane.showConfirmDialog(null, "Finalized Products Report named ProReportToday'sDate successfully generated.\nDo you want to view the report?", "", JOptionPane.YES_NO_OPTION);
+                trigger2 = 1;
                 if (reply1 == JOptionPane.YES_OPTION) {
-                    if ((new File("C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf")).exists()) {
+                    if ((new File("C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf")).exists()) {
 
                         Process p = Runtime
                                 .getRuntime()
-                                .exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\DELL\\Desktop\\ProReport" + date + "" + ".pdf");
+                                .exec("rundll32 url.dll,FileProtocolHandler C:\\#SIMZ\\Product Reports\\ProReport" + date + "" + ".pdf");
                         p.waitFor();
                     }
                 }
-            } catch (HeadlessException | IOException | InterruptedException | SQLException ex) {
+            } catch (HeadlessException | IOException | InterruptedException | SQLException |DocumentException ex) {
                 System.out.println(ex);
                 JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
@@ -3058,7 +3059,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to finish today's work?\nOnce you done this, stocks will be reset!!!", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             //Deleting the content of income and expenditure table and set the petty cash to next day
-            if (trigger1 == 1) {
+            if ((trigger1 == 1) && trigger2 == 1 ) {
                 if (dbOps.delIncomeAndExpen()) {
                     int userID = dbOps.getID(name1.getText());
                     dbOps.insertIncomeAndExpen(userID, "To Be Forward", totProfit, 0);
@@ -3067,8 +3068,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     return;
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Please get the account report in order to find the profit for the day!!!");
-                return;
+                if(trigger1 != 1){
+                    JOptionPane.showMessageDialog(this, "Please get the account report in order to find the profit for the day!!!");
+                    return;
+                }else if(trigger2 != 1){
+                    JOptionPane.showMessageDialog(this, "Please get the Product report in order to find the summary of total sales for the day!!!");
+                    return;
+                }               
             }
 
             //Deleting expired products from today's stock
@@ -3085,6 +3091,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
 
         }
+        JOptionPane.showMessageDialog(this, "The days proceedure is finished you can shut the system...");
 
     }//GEN-LAST:event_btnFinalActionPerformed
 
