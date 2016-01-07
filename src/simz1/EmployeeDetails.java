@@ -20,6 +20,7 @@ public class EmployeeDetails {
     private String propic;
     private String hint;
     private String NIC;
+    private String Mail;
 
     /**
      * @return the empId
@@ -118,7 +119,14 @@ public class EmployeeDetails {
     public void setPropic(String propic) {
         this.propic = propic;
     }
-
+    
+    public String getEMail() {
+        return Mail;
+    }
+    
+    public void setmail(String mail) {
+        this.Mail = mail;
+    }
     /**
      * @return the hint
      */
@@ -146,4 +154,7 @@ public class EmployeeDetails {
     public void setNIC(String NIC) {
         this.NIC = NIC;
     }
+    
+    
+    
 }

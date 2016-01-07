@@ -372,8 +372,10 @@ public class addProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTypeMouseClicked
 
     void clearFields() {
-
+        try{
         txtType.setSelectedIndex(-1);
+        }catch(Exception e){
+        }
         txtName.setText("");
         txtReceivingPrice.setText("");
         txtSellingPrice.setText("");
