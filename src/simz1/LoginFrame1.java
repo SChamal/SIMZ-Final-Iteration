@@ -233,7 +233,6 @@ public class LoginFrame1 extends javax.swing.JFrame {
     private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String s1 = getTxtUserName().getText();
-            //String s2 = txtPassword.getText();
 
             if ("".equals(s1) && "".equals(txtPassword.getText())) {
                 JOptionPane.showMessageDialog(this, "please enter your username and password!!!");
@@ -290,14 +289,30 @@ public class LoginFrame1 extends javax.swing.JFrame {
                 }
             } else if (x == 2) {
                 if (count != 3) {
+                    
                     JOptionPane.showMessageDialog(this, "Incorrect password!!!");
                     count += 1;
                     txtPassword.setText("");
                     btnHint.setVisible(true);
                 } else if (count == 3) {
-                    JOptionPane.showMessageDialog(this, "ERROR!!! System will close!");
-                    this.dispose();
-                }
+                    
+                    int result = JOptionPane.showConfirmDialog(null, "Maximum attempts are finished for entering the password, do you want to reset your password", null, JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+
+                        String password = "pereraandsons";
+                        String recoverEncrypt = PswrdEncrypt.main2(password);
+                        int id = dbOps.getID(txtUserName.getText());
+                        dbOps.resetPswrd(recoverEncrypt, id);
+                        String e_mail = dbOps.email();
+                        String massege = "Password of the user who has user id " + id + " is reset to " + password;
+                        System.err.println(e_mail);
+                        Mail mail = new Mail(e_mail, "Reset password", massege);
+                        this.dispose();
+                        
+                    } else if (result == JOptionPane.YES_OPTION) {
+                        this.dispose();
+                    }
+                
             } else if (x == 0) {
                 JOptionPane.showMessageDialog(this, "Incorrect user Name!!!");
                 txtPassword.setText("");
@@ -312,7 +327,8 @@ public class LoginFrame1 extends javax.swing.JFrame {
             txtUserName.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtPasswordKeyPressed
-
+    }
+    
     private void txtUserNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserNameKeyPressed
         int code = evt.getKeyCode();
         if (code == KeyEvent.VK_ENTER) {
@@ -381,5 +397,6 @@ public class LoginFrame1 extends javax.swing.JFrame {
     public void setTxtUserName(javax.swing.JTextField txtUserName) {
         this.txtUserName = txtUserName;
     }
+
 
 }

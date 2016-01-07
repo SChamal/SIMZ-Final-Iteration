@@ -24,7 +24,7 @@ public class DBOperations {
     boolean addEmployee(EmployeeDetails ed) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
-            String query = "INSERT INTO employeedetails VALUES(?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO employeedetails VALUES(?,?,?,?,?,?,?,?,?,?)";
             pst = (PreparedStatement) con.prepareStatement(query);
 
             pst.setInt(1, ed.getEmpId());//add values to the sql query
@@ -36,7 +36,7 @@ public class DBOperations {
             pst.setString(7, ed.getPropic());//add values to the sql query
             pst.setString(8, ed.getHint());//add values to the sql query
             pst.setString(9, ed.getNIC()); //add values to the sql query
-
+            pst.setString(10,ed.getEMail());
             pst.executeUpdate();//execute the sql query and insert the values to the db table
             return true;
 
@@ -361,6 +361,35 @@ public class DBOperations {
         return "";
     }
     
+    String email() {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "SELECT E_mail FROM employeedetails WHERE designation = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+            pst.setString(1, "Manager");
+            rs = pst.executeQuery();//execute the sql query and get the result
+            while(rs.next()){
+                return rs.getString(1);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return null;
+    }
+
     //Get the NIC number from the user details in order to view it in the profile details screen
     String getNic(String uName) {
         try {
@@ -483,7 +512,36 @@ public class DBOperations {
             }
         }
     }
-    
+
+    boolean resetPswrd(String ps, int id) {
+        try {
+            con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
+            String query = "UPDATE employeedetails SET password = ? WHERE emp_id = ?";
+            pst = (PreparedStatement) con.prepareStatement(query);
+
+            pst.setString(1, ps);//add values to the sql query
+            pst.setInt(2, id);//add values to the sql query
+
+            pst.executeUpdate();//execute the sql query and insert the values to the db table
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        } finally {
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
     //Check whether the old password is correct when changing the password of a user
     int checkPasswrd(String pswrd, int id) {
         try {

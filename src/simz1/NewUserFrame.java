@@ -65,6 +65,8 @@ public class NewUserFrame extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         txtNIC = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtMail = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SIMZ");
@@ -140,6 +142,8 @@ public class NewUserFrame extends javax.swing.JFrame {
         jLabel11.setForeground(new java.awt.Color(204, 0, 0));
         jLabel11.setText("* All the text fields are required to be filled");
 
+        jLabel12.setText("E-mail");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -156,7 +160,11 @@ public class NewUserFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 47, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtMail))
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -220,14 +228,22 @@ public class NewUserFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(txtNIC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnAddProfilePicture)
-                        .addComponent(btnSubmit)
-                        .addComponent(btnClose))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(txtMail, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddProfilePicture)
+                            .addComponent(btnSubmit)
+                            .addComponent(btnClose))
+                        .addGap(20, 20, 20))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -254,10 +270,11 @@ public class NewUserFrame extends javax.swing.JFrame {
         txtConfirmPassword.setText("");
         txtHint.setText("");
         txtNIC.setText("");
+        txtMail.setText("");
     }
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         
-        if (txtFirstName.getText().isEmpty() || txtLastName.getText().isEmpty() || txtUserName.getText().isEmpty() || txtPassword.getText().isEmpty() || txtConfirmPassword.getText().isEmpty() || txtHint.getText().isEmpty() || txtNIC.getText().isEmpty()){
+        if (txtFirstName.getText().isEmpty() || txtLastName.getText().isEmpty() || txtUserName.getText().isEmpty() || txtPassword.getText().isEmpty() ||txtMail.getText().isEmpty() || txtConfirmPassword.getText().isEmpty() || txtHint.getText().isEmpty() || txtNIC.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
             return;
         }
@@ -281,6 +298,11 @@ public class NewUserFrame extends javax.swing.JFrame {
             txtNIC.setText("");
             return;
         }
+        
+        if (!mail_valid(txtMail.getText())){
+            JOptionPane.showMessageDialog(this, "Please enter a valid E-mail!!!");
+            return;
+        }
         //create an instance of the entity class
         EmployeeDetails ed = new EmployeeDetails();
         //PswrdEncrypt pe = new PswrdEnceypt();
@@ -298,6 +320,7 @@ public class NewUserFrame extends javax.swing.JFrame {
                 ed.setPassword(encrypt);
                 ed.setHint(txtHint.getText());
                 ed.setNIC(txtNIC.getText());
+                ed.setmail(txtMail.getText());
                 try {
                     ed.setPropic(fc.getSelectedFile().getAbsolutePath());
                 } catch (NullPointerException e) {
@@ -371,6 +394,12 @@ public class NewUserFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ddDesignationActionPerformed
 
+    public boolean mail_valid(String mail) {
+        String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        String email1 = mail;
+        Boolean b = email1.matches(EMAIL_REGEX);
+        return b;
+    }
     /**
      * @param args the command line arguments
      */
@@ -414,6 +443,7 @@ public class NewUserFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -427,6 +457,7 @@ public class NewUserFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtHint;
     private javax.swing.JTextField txtLastName;
+    private javax.swing.JTextField txtMail;
     private javax.swing.JTextField txtNIC;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUserName;

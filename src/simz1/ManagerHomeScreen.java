@@ -3053,7 +3053,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     }
                 }
 
-            }  catch (DocumentException | HeadlessException | IOException | InterruptedException | SQLException ex) {
+            }  catch (SQLException | HeadlessException | IOException | InterruptedException | DocumentException ex) {
                 System.out.println(ex);
                 JOptionPane.showMessageDialog(this, "File already exists!!!");
             }
