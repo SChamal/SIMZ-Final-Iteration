@@ -5,7 +5,6 @@
  */
 package simz1;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.FontFactory;
@@ -30,10 +29,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -73,18 +72,18 @@ import static simz1.LoginFrame1.spi;
  * @author DELL
  */
 public class ManagerHomeScreen extends javax.swing.JFrame {
-
+    
     public static MyTableModel model1;
     // set table model for the income and expenditure table
     IncomeTableModel incomeModel = new IncomeTableModel();
-
+    
     AutoSuggest as = new AutoSuggest();
     DBOperations dbOps = new DBOperations();
     Vector<String> v = new Stack<String>();
     Vector<String> v2 = new Stack<String>();
     private boolean hide_flag = false;
     JTextField tx, tx2;
-    public int rawNo, incmRaw = 0, trigger1 = 0, trigger2 = 0;
+    public int rawNo, incmRaw = 0, trigger1 = 0, trigger2 = 0, trig = 0,trig2 = 0;
     public static int orderRowNo, alertCount = 0;
     public float totProfit;
     JComboBox combodesig = new JComboBox();
@@ -97,7 +96,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     String today = sdf2.format(date);
     SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
     String dteformat2 = sdf3.format(date);
-
+    
+    //The method to display the time and date in the home page
     public void clocker() {
         class Listner implements ActionListener {
 
@@ -124,7 +124,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         Timer t = new Timer(1000, new Listner());
         t.start();
     }
-
+    
+    //A method to get the suggestions when searching a product in the search box
     public void autoSuggest() {
 
         Search.removeAllItems();
@@ -150,7 +151,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException e) {
         }
 
-        //jComboBoxSearch.setEditable(true);
         tx = (JTextField) Search.getEditor().getEditorComponent();
         tx.addKeyListener(new KeyAdapter() {
             @Override
@@ -204,7 +204,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         });
     }
-
+    
+    //A method to get the suggestions when adding a product to the today stock table
     public void autoSuggest2() {
         jcomboAddTodaysStock.removeAllItems();
         try {
@@ -229,7 +230,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         } catch (SQLException e) {
         }
 
-        //jComboBoxSearch.setEditable(true);
         tx2 = (JTextField) jcomboAddTodaysStock.getEditor().getEditorComponent();
         tx2.addKeyListener(new KeyAdapter() {
             @Override
@@ -281,7 +281,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     if (flag2 == true) {
                                         model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                                     }
-                                    //jcomboAddTodaysStock.setSelectedIndex(-1);
+                                    
                                 }
                                 return;
                             } catch (SQLException ex) {
@@ -302,7 +302,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     if (flag3 == true) {
                                         model.addRow(new Object[]{true, rst.getInt(1), rst.getString(3), rst.getString(5), rst.getString(6), 0, 0});
                                     }
-                                    //jcomboAddTodaysStock.setSelectedIndex(-1);
+                                    
                                 }
                                 return;
                             } catch (SQLException ex) {
@@ -315,17 +315,20 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         });
     }
-
+    
+    //Methods regarding the auto_suggest methods
     private void setModel(DefaultComboBoxModel mdl, String str) {
         Search.setModel(mdl);
         tx.setText(str);
     }
-
+    
+    //Methods regarding the auto_suggest methods
     private void setModel2(DefaultComboBoxModel mdl, String str) {
         jcomboAddTodaysStock.setModel(mdl);
         tx2.setText(str);
     }
-
+    
+    //Methods regarding the auto_suggest methods
     private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
         DefaultComboBoxModel m = new DefaultComboBoxModel();
         for (String s : list) {
@@ -335,9 +338,21 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
         return m;
     }
+    //Method to add the result set of the user table in the DB to the user table in the Home_Screen
+    public static void updateTableModelData(DefaultTableModel tModel, ResultSet rs) throws Exception {
+        tModel.setRowCount(0);
+        ResultSetMetaData metaData = rs.getMetaData();
 
+        while (rs.next()) {
+            Vector newRow = new Vector();
+            for (int i = 1; i <= 5; i++) {
+                newRow.addElement(rs.getObject(i));
+            }
+            tModel.addRow(newRow);
+        }
+    }
+    //Constructor of the manager_home_screen class
     public ManagerHomeScreen() {
-        
         try {
             initComponents();
             this.btnReset.setVisible(false);
@@ -348,6 +363,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
             // Get income and expenditure data to the table
             tblIncome.setModel(incomeModel);
+            
+            //Set previous day's income and expenditure details to the income and expentiture table when logging
             ResultSet rs = dbOps.getIAndExpences();
             while (rs.next()) {
                 String Descript = rs.getString(1);
@@ -367,26 +384,23 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
             setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo1.jpg")));
 
-            /*JTable tblUsers2 = new JTable() {
-             public boolean isCellEditatable(int row, int column) {
-             return column == 4;
-             }
-             };*/
+            //Set user details to the users table in the system
             ResultSet rst = dbOps.viewUser();
-            tblUsers.setModel(DbUtils.resultSetToTableModel(rst));
+            
+            updateTableModelData((DefaultTableModel) tblUsers.getModel(), rst);
+            
             combodesig.addItem("Manager");
             combodesig.addItem("Sales Person");
             tblUsers.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(combodesig));
+            
             for (Class c : Arrays.asList(Object.class, Number.class, Boolean.class)) {
                 TableCellEditor ce = tblUsers.getDefaultEditor(c);
                 if (ce instanceof DefaultCellEditor) {
                     ((DefaultCellEditor) ce).setClickCountToStart(Integer.MAX_VALUE);
                 }
             }
-            //this.Search.requestFocusInWindow();
-            /*this.jComboBoxSearch = new JComboBox(new Object[] { "Ester", "Jordi",
-             "Jordina", "Jorge", "Sergi" });
-             AutoCompleteDecorator.decorate(this.jComboBoxSearch);*/
+            
+            //Setting the default morning stock to the todays_stock table
             setMorningStock();
             this.dateLabel.setText(today);
             this.clocker();
@@ -394,9 +408,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             this.billno.setText(max + 1 + "");
         } catch (SQLException ex) {
 
+        } catch (Exception ex) {
+            
         }
 
-        //this.Search.requestFocusInWindow();
         setMorningStock();
         TableColumn dateColumn = tableProduct.getColumnModel().getColumn(4);
         dateColumn.setCellEditor(new DatePickerCellEditor());
@@ -415,6 +430,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
                 tmp1.add(Id);
             }
+            trig = modell.getRowCount() - 1;
             while (rst.next()) {
                 int id1 = rst.getInt(1);
                 if (!tmp1.contains(id1)) {
@@ -441,10 +457,13 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     }
                 }
             }
+            
         } catch (SQLException ex) {
 
         }
-
+        trig2 = modell.getRowCount();
+        
+        //Setting the colours to the rows of the today's_stock table according to the expire dates
         tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
@@ -584,7 +603,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         name = new javax.swing.JLabel();
         btnLogOut = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnEditProfile = new javax.swing.JButton();
         name1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lablePic = new javax.swing.JLabel();
@@ -780,7 +799,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(673, Short.MAX_VALUE))))
+                        .addContainerGap(676, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1552,7 +1571,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1638,14 +1657,14 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/simz1/logo1.jpg"))); // NOI18N
         jPanel7.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, 61));
 
-        jButton1.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
-        jButton1.setText("Edit My Profile");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnEditProfile.setFont(new java.awt.Font("Copperplate Gothic Light", 0, 14)); // NOI18N
+        btnEditProfile.setText("Edit My Profile");
+        btnEditProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnEditProfileActionPerformed(evt);
             }
         });
-        jPanel7.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, 40));
+        jPanel7.add(btnEditProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 20, -1, 40));
 
         name1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         name1.setText("Lalith");
@@ -1684,7 +1703,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     public void loggedInAs() {
         LoginFrame1 lf = new LoginFrame1();
         String uName = lf.getTxtUserName().getText();
-        //name1.setText(uName);
         System.out.println(uName);
     }
 
@@ -1695,13 +1713,18 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
-        this.setVisible(false);
-        LoginFrame1 lf = new LoginFrame1();
-        lf.setSize(755, 610);
-        lf.setVisible(true);
-        lf.btnHint.setVisible(false);
+        int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (ans == JOptionPane.YES_OPTION) {
+            this.setVisible(false);
+            LoginFrame1 lf = new LoginFrame1();
+            lf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            lf.setSize(755, 610);
+            lf.setVisible(true);
+            lf.btnHint.setVisible(false);
+            lf.btnCancel.setVisible(false);
+        }       
     }//GEN-LAST:event_btnLogOutActionPerformed
-
+    //Button action of removing a user from the user table
     private void btnRemoveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveUserActionPerformed
         DefaultTableModel model = (DefaultTableModel) tblUsers.getModel();
         if (tblUsers.getSelectedRow() == -1) {
@@ -1734,9 +1757,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRemoveUserActionPerformed
 
+    private void btnEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProfileActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //this.setVisible(false);
         ManagerProfileFrame mpf = new ManagerProfileFrame();
         mpf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         mpf.name.setText(mhp.name1.getText());
@@ -1755,14 +1777,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         String tmpNic = dbOps.getNic(mpf.uName.getText());
         mpf.nicLabel.setText(tmpNic);
         mpf.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnEditProfileActionPerformed
 
+    //Button action of setting the todays_stock button
     private void btnSetStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetStockActionPerformed
 
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
 
         int count = tableProduct.getRowCount();
-
+        
+        //First checking the unselected products in the todays_stock table in order to remove them before set the stock
         int num = 0;
         for (int i = 0; i < count; i++) {
             if ((boolean) tableProduct.getModel().getValueAt(i, 0) == false) {
@@ -1786,7 +1810,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error occured while updating previous Today Stock");
             return;
         }
-
+        
+        //Checking the edited todays_stock table and save the changes and set the stock in the database
         for (int j = 0; j < model.getRowCount(); j++) {
             int id = Integer.parseInt(tableProduct.getModel().getValueAt(j, 1).toString());
 
@@ -1863,41 +1888,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-        /*try {
-         ResultSet rst = dbOps.searchTodayStock();
-         ArrayList<Integer> tmp = new ArrayList<>();
-         for (int k = 0; k < model.getRowCount(); k++) {
-         int Id = Integer.parseInt(tableProduct.getModel().getValueAt(k, 1).toString());
-         tmp.add(Id);
-         }
-         while (rst.next()) {
-         int id1 = rst.getInt(1);
-         if (!tmp.contains(id1)) {
-         //System.out.println(id1);
-         try {
-         ResultSet rs = dbOps.combineTwoTables(id1, today);
-         while (rs.next()) {
-         String s1 = rs.getString(1);
-         int s2 = rs.getInt(2);
-         String s3 = rs.getString(3);
-         int s4 = rs.getInt(4);
-         int s5 = rs.getInt(5);
-         if ((rs.getDate(3).getDate() - rs.getDate(6).getDate()) <= 3) {
-         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 1});
-         } else {
-         model.addRow(new Object[]{true, id1, s1, s2, s3, s4, s5, 0});
-         }
-
-         }
-
-         } catch (SQLException e) {
-         System.out.println(e);
-         }
-         }
-         }
-         } catch (SQLException ex) {
-         System.out.println(ex);
-         }*/
         as.autoSuggest(ItemSelecter);
         ItemSelecter.setSelectedIndex(-1);
 
@@ -1951,32 +1941,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             mhp.jTabbedPane1.setSelectedIndex(2);
             txtDescription.requestFocusInWindow();
         }
-
-        /*tableProduct.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-         @Override
-         public Component getTableCellRendererComponent(JTable table,
-         Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-
-         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-         int tmpEx = 0;
-         try {
-         tmpEx = Integer.parseInt(table.getModel().getValueAt(row, 7).toString());
-         } catch (NullPointerException s) {
-
-         }
-
-         if (tmpEx == 1) {
-         setBackground(Color.RED);
-         } else {
-         setBackground(table.getBackground());
-         setForeground(table.getForeground());
-         }
-
-         return this;
-         }
-
-         });*/
-
+        
+        //Calling the method in the dbOps class to set a row in the graph_data table of the DB in order to create graphs
         dbOps.insertGraphData(dteformat2, 0, 0, 0, 0, 0);
 
         lblStockStatus.setText("Morning Stock is set now");
@@ -1991,7 +1957,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         jcomboAddTodaysStock.setVisible(false);
         jLabel9.setVisible(false);
 
-        //Set Data in the reports tab
+        //Set Data in the reports tab of the home screen
         lblDate.setText(today);
         ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
         ReportsTableModel modelReports = new ReportsTableModel();
@@ -2017,7 +1983,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 //Set default morning stock to the tableProduct table
     private void setMorningStock() {
         ResultSet rst = dbOps.combineMorningStockAndStock();
-        //MyTableModel model = new MyTableModel();
         model1 = new MyTableModel();
         tableProduct.setModel(model1);
         try {
@@ -2025,11 +1990,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 model1.addRow(new Object[]{true, rst.getString(1), rst.getString(2), rst.getString(3), rst.getDate(4), rst.getString(5), rst.getString(6), 0});
             }
         } catch (SQLException ex) {
-            //Logger.getLogger(ManagerHomeScreen.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println(ex);
+            
         }
     }
-
+    
+    //Button to reset the stock in the todays_stock table
+    //CURRENTLY THIS BUTTON IS DISABLED IN THE SYSTEM
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         try {
             int a = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset? ", "warning", JOptionPane.YES_NO_OPTION);
@@ -2057,7 +2023,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         ad.setVisible(true);
         ad.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }//GEN-LAST:event_btnAddProductActionPerformed
-
+    
+    //Button action of adding a product and quantity to the transaction table
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         int quantity = 0;
         if (amount.getText().equals("")) {
@@ -2167,13 +2134,15 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOKActionPerformed
 
     private void amountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_amountActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_amountActionPerformed
 
     private void ItemSelecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSelecterActionPerformed
 
     }//GEN-LAST:event_ItemSelecterActionPerformed
-
+    
+    //Key event for the cash text field
+    //This event will check any errors of the transaction and give the balance of the entered cash
     private void txtCashKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCashKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String amount = txtTotal.getText();
@@ -2203,6 +2172,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
                 float balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
+                
+                //Ask the user to finish the transaction or continue the transactions
+                //Which means if user clicked the NO option he/she can add more products to the transaction 
+                //according to the customer requirement
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     String input = JOptionPane.showInputDialog(null, "Don't have change?\nEnter the exact amount you pay or if not just press enter", "0");
@@ -2228,8 +2201,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                     dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
 
                     DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
-                    //from transactions(here we get the table model of the stock table)
+                    //the transactions(here we get the table model of the stock table)
                     DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
+                    
+                    //Creating the object of the bill class and add data to the bill in order to view the print view of the bill
                     Bill b1 = new Bill();
 
                     for (int i = 0; i < rawNo; i++) {
@@ -2277,6 +2252,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                     break;
                                 }
                             }
+                            //Checking if a product is reached it's quantity limit in order to view the alert message
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
@@ -2334,6 +2310,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
             }
             lblDate.setText(today);
+            //Add the transaction details to the reports table in order to gain the final report for the day for transactions
             ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
             ReportsTableModel modelReports = new ReportsTableModel();
             tblReports.setModel((TableModel) modelReports);
@@ -2343,11 +2320,12 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
 
             } catch (SQLException ex) {
-                System.out.println(ex);
+                
             }
         }
     }//GEN-LAST:event_txtCashKeyPressed
-
+    
+    //Key event for the amount text field which adds a product and quantity to the transaction table
     private void amountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
@@ -2456,7 +2434,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_amountKeyPressed
-
+    
+    //Button action for the cash text field(Same as the txtCashkeyPressed method)
+    //This event will check any errors of the transaction and give the balance of the entered cash
     private void btnBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBalanceActionPerformed
         String amount = txtTotal.getText();
         if (txtCash.getText().equals("") || txtTotal.getText().equals("")) {
@@ -2502,14 +2482,16 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 }
                 dbOps.addTransaction(timeLabel.getText(), today);
                 int billNo = dbOps.getBillID(timeLabel.getText(), today);
-
+                
+                //add data of the transaction to the income and expenditure table in database and the interface
                 String descript = "bill " + Integer.toString(billNo);
                 int userID = dbOps.getID(name1.getText());
                 incomeModel.addRow(new Object[]{descript, amounti, null});
                 dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
-
-                DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();//update stock table from 
-                //from transactions(here we get the table model of the stock table)
+                
+                //Update stock table from transactions
+                //(here we get the table model of the stock table)
+                DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
                 Bill b1 = new Bill();
 
@@ -2559,6 +2541,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                                 break;
                             }
                         }
+                        //Checking if a product is reached it's quantity limit in order to view the alert message
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
@@ -2591,7 +2574,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                 b1.balance.setText(balance + "");
                 int max1 = dbOps.getMaxBillID();
                 b1.billnum.setText(max1 + "");
-                //b1.setSize(464, 568);
                 b1.setVisible(true);
                 b1.setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -2627,7 +2609,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             System.out.println(ex);
         }
     }//GEN-LAST:event_btnBalanceActionPerformed
-
+    
+    //Button to save the changes to the todays_stock after setting the stock
+    //THIS BUTTON IS CURRENTLY DISABLED
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         DefaultTableModel model = (DefaultTableModel) this.tableProduct.getModel();
         String cdate = today;
@@ -2677,27 +2661,23 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
 
-
-        /*if (tableProduct.isColumnSelected(6)) {
-         for (int i = 0; i < tableProduct.getRowCount(); i++) {
-         //tableProduct.setValueAt("mika", i, 5);
-         }
-         }*/
-
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
 
     private void ItemSelecterFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSelecterFocusLost
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_ItemSelecterFocusLost
-
+    
+    //Button to process the order to the database in order to send it to the main bakery through the website
     private void btnProcessOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessOrderActionPerformed
         for (int i = 0; i < tblOrder.getRowCount(); i++) {
             try {
                 int qty = Integer.parseInt(tblOrder.getValueAt(i, 6).toString());
-                if (qty <= 0) {
+                if (qty < 0) {
                     JOptionPane.showMessageDialog(this, "Please enter only positive numbers for qty in the row number " + i + "!!!");
+                    return;
+                }else if(qty == 0){
+                    JOptionPane.showMessageDialog(this, "Please enter a quantity greater than 0 in the row number " + i + "!!!");
                     return;
                 }
             } catch (NumberFormatException e) {
@@ -2720,20 +2700,22 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_ItemSelecterKeyPressed
 
     private void jcomboAddTodaysStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcomboAddTodaysStockActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jcomboAddTodaysStockActionPerformed
 
     private void jcomboAddTodaysStockKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jcomboAddTodaysStockKeyPressed
 
     }//GEN-LAST:event_jcomboAddTodaysStockKeyPressed
-
+    
+    //Button to view the received orders in order to add them to the stock
     private void btnAddOrderToStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderToStockActionPerformed
         AddOrderToStock order = new AddOrderToStock();
         order.setVisible(true);
         order.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         AddOrderToStock.dropDownMenu.setSelectedIndex(-1);
     }//GEN-LAST:event_btnAddOrderToStockActionPerformed
-
+    
+    //Button to calculate the order quantities of the products in the order table
     private void btnRefillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefillActionPerformed
         DefaultTableModel model2 = (DefaultTableModel) this.tblOrder.getModel();
         int rowCount = model2.getRowCount();
@@ -2750,14 +2732,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
                         int ID = result.getInt(1);
                         if (id == ID) {
                             ResultSet rst = dbOps.getTodayStockQty(id);
-                            //while(rst.next()){
+                            
                             current = rst.getInt(1);
                             regular = rst.getInt(4);
-                            System.out.println(current);
-                            //model2.setValueAt((regular - current), i, 6);
-                            //}
-                            System.out.println(current);
-                            //System.out.println(regular);
                             model2.setValueAt((regular - current), i, 6);
                         }
                     }
@@ -2770,11 +2747,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRefillActionPerformed
 
-    // set table model for the income and expenditure table
-    //IncomeTableModel incomeModel = new IncomeTableModel();
-
+    //Button to add the expences to the income and expenditure table
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        //tblIncome.setModel(incomeModel);
         String description = txtDescription.getText();
 
         DecimalFormat roundValue = new DecimalFormat("###.##");
@@ -2782,8 +2756,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         mhp.incomeModel.addRow(new Object[]{description, null, paidAmount});
         txtDescription.setText("");
         txtAmount.setText("");
+        txtDescription.requestFocusInWindow();
     }//GEN-LAST:event_btnAddActionPerformed
-
+    
+    //Action event for key pressed to add the expences to the income and expenditure table
     private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String description = txtDescription.getText();
@@ -2808,7 +2784,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             txtAmount.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtDescriptionKeyPressed
-
+    
+    //Button to calculate the total income for that time
     private void btnTotalIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalIncomeActionPerformed
         int rows = tblIncome.getRowCount();
         float totalIncome = 0;
@@ -2823,6 +2800,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         txtTotalIncome.setText(Float.toString(totalIncome));
     }//GEN-LAST:event_btnTotalIncomeActionPerformed
 
+    //Button to calculate the total expances for that time
     private void btnTotalExpencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalExpencesActionPerformed
         int rows = tblIncome.getRowCount();
 
@@ -2836,7 +2814,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
         }
         DecimalFormat roundValue = new DecimalFormat("###.##");
-        //float profit = Float.valueOf(roundValue.format(totalExpences));
         txtTotalExpences.setText(roundValue.format(totalExpences));
     }//GEN-LAST:event_btnTotalExpencesActionPerformed
 
@@ -2848,7 +2825,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         float profit = Float.valueOf(roundValue.format(income - expence));
         txtProfit.setText(Float.toString(profit));
     }//GEN-LAST:event_btnProfitActionPerformed
-
+    
+    //Button to delete a selected product from the transaction table along with it's quantity
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed
         DefaultTableModel model = (DefaultTableModel) BillingTable.getModel();
         int selectedRow = BillingTable.getSelectedRow();
@@ -2864,7 +2842,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             ItemSelecter.requestFocusInWindow();
         }
     }//GEN-LAST:event_btnDeletePrdctActionPerformed
-
+    
+    //Save the changes done to the users table and update the changes in the DB
     private void btnSaveUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUserActionPerformed
         boolean result = true;
         int selectedCol = tblUsers.getSelectedColumn();
@@ -2889,7 +2868,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         viewOrders view = new viewOrders();
         view.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
+    //Button to generate the accounts report for the day
     private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Accounts Report now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
@@ -2978,7 +2958,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             document.close();
         }
     }//GEN-LAST:event_btnGenerateReportActionPerformed
-
+    
+    //Button to add a new product to the todays_stock table
     private void addProductbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProductbtnActionPerformed
         try {
             JTextField st = (JTextField) jcomboAddTodaysStock.getEditor().getEditorComponent();
@@ -3002,7 +2983,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_addProductbtnActionPerformed
-
+    
+    //Button to generate the day's finalized product report
     private void btnFinalReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalReportActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Do you wish to fianlize Products Report now?", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
@@ -3078,7 +3060,9 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             document.close();
         }
     }//GEN-LAST:event_btnFinalReportActionPerformed
-
+    
+    //Button to finish the day's proceeding
+    //This will flush the data in the income and expenditure table, and delete the expired products from the stock
     private void btnFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalActionPerformed
         int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to finish today's work?\nOnce you done this, stocks will be reset!!!", "", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
@@ -3115,15 +3099,17 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             }
 
         }
-        JOptionPane.showMessageDialog(this, "The days proceedure is finished you can shut the system...");
-
+        JOptionPane.showMessageDialog(this, "The days proceedure is finished\n Now you can shut the system...");
+        mhp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        spi.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }//GEN-LAST:event_btnFinalActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         StackedBarChart sbc = new StackedBarChart("Sales of last week");
 
     }//GEN-LAST:event_jButton3ActionPerformed
-
+    
+    //Buttons to view the progress of selling of each product category
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         StackedBarChart sbc = new StackedBarChart("Sales of Shorteats last week");
         sbc.ShorteatsGraph();
@@ -3170,7 +3156,8 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
             btnLogOut = new JButton(logout);
         }
     }
-
+    
+    //Method to resize the images according to their assigned label sizes
     public static ImageIcon resizeImageIcon(ImageIcon imageIcon, Integer width, Integer height) {
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 
@@ -3210,6 +3197,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new ManagerHomeScreen().setVisible(true);
             }
@@ -3229,6 +3217,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnAddProduct;
     private javax.swing.JButton btnBalance;
     private javax.swing.JButton btnDeletePrdct;
+    private javax.swing.JButton btnEditProfile;
     private javax.swing.JButton btnFinal;
     private javax.swing.JButton btnFinalReport;
     private javax.swing.JButton btnGenerateReport;
@@ -3247,7 +3236,6 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JButton btnTotalIncome;
     public javax.swing.JPanel chartPanel;
     private javax.swing.JLabel dateLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -3297,7 +3285,7 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
     private javax.swing.JComboBox jcomboAddTodaysStock;
     public javax.swing.JLabel lablePic;
     public javax.swing.JLabel lblAlert;
-    private javax.swing.JLabel lblDate;
+    public javax.swing.JLabel lblDate;
     public javax.swing.JLabel lblOrderStatus;
     public javax.swing.JLabel lblStockStatus;
     public javax.swing.JLabel name;

@@ -17,7 +17,6 @@ import java.util.Stack;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JTextField;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;

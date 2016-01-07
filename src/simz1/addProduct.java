@@ -353,17 +353,6 @@ public class addProduct extends javax.swing.JFrame {
                 clearFields();
             }
         }
-        /*if(result==true){
-         pd.setProductID(Integer.parseInt(txtProductID.getText()));
-         pd.setProductType(txtType.getText());
-         pd.setProductName(txtName.getText());
-         pd.setReceivingPrice(Double.parseDouble(txtReceivingPrice.getText()));
-         pd.setSellingPrice(Double.parseDouble(txtSellingPrice.getText()));
-         pd.setDate(txtExpiryDate.getText());
-            
-         }else{
-        
-         }*/
 
     }//GEN-LAST:event_btnAddProductActionPerformed
 

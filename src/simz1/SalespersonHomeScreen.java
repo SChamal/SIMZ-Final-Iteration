@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import static simz1.LoginFrame1.mhp;
 import static simz1.LoginFrame1.spi;
 import static simz1.ManagerHomeScreen.model1;
@@ -56,7 +57,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     String time = sdf.format(date);
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy:MM:dd");
     String today = sdf2.format(date);
-
+    
+    //The method to display the time and date in the home page
     public void clocker() {
         class Listner implements ActionListener {
 
@@ -82,7 +84,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         Timer t = new Timer(1000, new Listner());
         t.start();
     }
-
+    
+    //A method to get the suggestions when searching a product in the search box
     public void autoSuggest() {
         jComboBoxSearch.removeAllItems();
         try {
@@ -108,7 +111,6 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         } catch (SQLException e) {
         }
 
-        //jComboBoxSearch.setEditable(true);
         tx = (JTextField) jComboBoxSearch.getEditor().getEditorComponent();
         tx.addKeyListener(new KeyAdapter() {
             @Override
@@ -161,12 +163,14 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
         });
     }
-
+    
+    //Methods regarding the auto_suggest method
     private void setModel(DefaultComboBoxModel mdl, String str) {
         jComboBoxSearch.setModel(mdl);
         tx.setText(str);
     }
-
+    
+    //Methods regarding the auto_suggest method
     private DefaultComboBoxModel getSuggestedModel(List<String> list, String txt) {
         DefaultComboBoxModel m = new DefaultComboBoxModel();
         for (String s : list) {
@@ -176,7 +180,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         }
         return m;
     }
-
+    
+    //Constructor of the salesperson_home_screen class
     public SalespersonHomeScreen() {
         initComponents();
         this.autoSuggest();
@@ -195,7 +200,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         } catch (Exception e) {
 
         }
-
+        
+        //Setting the colours to the rows of the today's_stock table according to the expire dates
         SalesPStock.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
@@ -736,24 +742,29 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         LoginFrame1 lf = new LoginFrame1();
         lf.setVisible(true);
     }//GEN-LAST:event_btnLogOutActionPerformed
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.setVisible(false);
         ManagerProfileFrame mpf = new ManagerProfileFrame();
         mpf.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void btnLogOut1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOut1ActionPerformed
-        this.setVisible(false);
-        LoginFrame1 lf = new LoginFrame1();
-        lf.setSize(755, 610);
-        lf.setVisible(true);
-        lf.btnHint.setVisible(false);
-        lf.btnHint.setVisible(false);
+        int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (ans == JOptionPane.YES_OPTION) {
+            this.setVisible(false);
+            LoginFrame1 lf = new LoginFrame1();
+            lf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            lf.setSize(755, 610);
+            lf.setVisible(true);
+            lf.btnHint.setVisible(false);
+            lf.btnCancel.setVisible(false);
+        }       
     }//GEN-LAST:event_btnLogOut1ActionPerformed
-
+    
+    //Button to view the edit profile frame
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //this.setVisible(false);
+        
         SalesPersonProfileFrame spf = new SalesPersonProfileFrame();
         spf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         spf.name.setText(spi.name3.getText());
@@ -773,7 +784,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         spf.nicLabel.setText(rst4);
         spf.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
+    //Key event for the cash text field
+    //This event will check any errors of the transaction and give the balance of the entered cash
     private void txtCashKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCashKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String amount = txtTotal.getText();
@@ -802,6 +815,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 }
                 float balance = paymenti - amounti;
                 txtBalance.setText(String.valueOf(balance));
+                //Ask the user to finish the transaction or continue the transactions
+                //Which means if user clicked the NO option he/she can add more products to the transaction 
+                //according to the customer requirement
                 int result = JOptionPane.showConfirmDialog(null, "Your balance is Rs " + String.valueOf(balance) + " Print the bill? ", null, JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     String input = JOptionPane.showInputDialog(null, "Don't have change? enter balance you pay  or just enter", "0");
@@ -831,6 +847,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
 
                     DefaultTableModel model3 = (DefaultTableModel) spi.SalesPStock.getModel();
                     DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
+                    //Creating the object of the bill class and add data to the bill in order to view the print view of the bill
                     Bill b1 = new Bill();
 
                     for (int i = 0; i < rawNo; i++) {
@@ -875,6 +892,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                                     break;
                                 }
                             }
+                            //Checking if a product is reached it's quantity limit in order to view the alert message
                             if (flag == true) {
                                 NotificationPopup nw2 = new NotificationPopup();
                                 nw2.main1("Quantity limit reached for " + prdctName);
@@ -930,6 +948,19 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 }
 
             }
+            mhp.lblDate.setText(today);
+            //Add the transaction details to the reports table in order to gain the final report for the day for transactions
+            ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+            ReportsTableModel modelReports = new ReportsTableModel();
+            mhp.tblReports.setModel((TableModel) modelReports);
+            try {
+                while (rs.next()) {
+                    modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+                }
+
+            } catch (SQLException ex) {
+                
+            }
         }
     }//GEN-LAST:event_txtCashKeyPressed
 
@@ -941,6 +972,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_amountActionPerformed
 
+    //Key event for the amount text field which adds a product and quantity to the transaction table
     private void amountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
@@ -1048,7 +1080,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_amountKeyPressed
-
+    
+    //Button action of adding a product and quantity to the transaction table
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         int quantity = 0;
         if (amount.getText().equals("")) {
@@ -1153,11 +1186,13 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnOKActionPerformed
-
+    
+    //Button action for the cash text field(Same as the txtCashkeyPressed method)
+    //This event will check any errors of the transaction and give the balance of the entered cash
     private void btnBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBalanceActionPerformed
         String amount = txtTotal.getText();
         if (txtCash.getText().equals("") || txtTotal.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "No text feild should be empty");
+            JOptionPane.showMessageDialog(this, "Please enter the cash first!");
         } else {
             String payment = txtCash.getText();
             float paymenti = 0;
@@ -1205,7 +1240,9 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                 int userID = dbOps.getID(name1.getText());
                 mhp.incomeModel.addRow(new Object[]{descript, amounti, null});
                 dbOps.addToIncomeAndExpenditure(userID, descript, amounti, 0);
-
+                
+                //Update stock table from transactions
+                //(here we get the table model of the stock table)
                 DefaultTableModel model3 = (DefaultTableModel) spi.SalesPStock.getModel();
                 DefaultTableModel model2 = (DefaultTableModel) mhp.tblOrder.getModel();
                 Bill b1 = new Bill();
@@ -1252,6 +1289,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                                 break;
                             }
                         }
+                        //Checking if a product is reached it's quantity limit in order to view the alert message
                         if (flag == true) {
                             NotificationPopup nw2 = new NotificationPopup();
                             nw2.main1("Quantity limit reached for " + prdctName);
@@ -1307,12 +1345,25 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             }
 
         }
+        mhp.lblDate.setText(today);
+        ResultSet rs = dbOps.combineProductDetailsAndTodaysStock();
+        ReportsTableModel modelReports = new ReportsTableModel();
+        mhp.tblReports.setModel((TableModel) modelReports);
+        try {
+            while (rs.next()) {
+                modelReports.addRow(new Object[]{rs.getString(1), rs.getString(2), rs.getString(3)});
+            }
+
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
     }//GEN-LAST:event_btnBalanceActionPerformed
 
     private void ItemSelecterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSelecterKeyPressed
 
     }//GEN-LAST:event_ItemSelecterKeyPressed
-
+    
+    //Button to delete a selected product from the transaction table along with it's quantity
     private void btnDeletePrdctActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePrdctActionPerformed
         DefaultTableModel model2 = (DefaultTableModel) BillingTable.getModel();
         int selectedRow = BillingTable.getSelectedRow();
@@ -1328,7 +1379,8 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
             ItemSelecter.requestFocusInWindow();
         }        
     }//GEN-LAST:event_btnDeletePrdctActionPerformed
-
+    
+    //Set the manager created stock to the stock table of the sales person
     private void setStock() {
         model1 = new MyTableModel();
         SalesPStock.setModel(model1);

@@ -1,9 +1,4 @@
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package simz1;
 
 import java.sql.*;
@@ -12,15 +7,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import sun.misc.JavaxSecurityAuthKerberosAccess;
 
-/**
- *
- * @author CHAM PC
- */
+//The Database operations handling class where defined all the database access methods 
 public class DBOperations {
 
-    //String url = "jdbc:mysql://localhost:3306/simz";
     private static String url = "jdbc:mysql://localhost:3306/simz?zeroDateTimeBehavior=convertToNull";
     String username = "root";
     String password = "";
@@ -30,6 +20,7 @@ public class DBOperations {
     Statement st = null;
 
     /////////////////////////////////////////USER DETAILS/////////////////////////////////////////////////////
+    //Adding a new user to the system
     boolean addEmployee(EmployeeDetails ed) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -66,7 +57,8 @@ public class DBOperations {
         }
 
     }
-
+    
+    //Get all the user details from the DB to set them to the user table of the manager home screen
     ResultSet viewUser() {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
@@ -79,7 +71,8 @@ public class DBOperations {
         }
         return null;
     }
-
+    
+    //Removing a user from the DB
     int removeUser(int empID) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
@@ -95,7 +88,8 @@ public class DBOperations {
             return 0; //false: user didn't remove successfully
         }
     }
-
+    
+    //Check whether the entered username is in the DB when a login
     int checkUserName(String userName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -129,7 +123,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Match the user entered username and the password with the user details in th DB to check the login
     int checkLogin(String userName, String pswrd) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -167,7 +162,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Get the path of the profile picture of the logged user in order to view the profile pic in the home screen
     String getPropic(String userName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -181,9 +177,6 @@ public class DBOperations {
                 if (userName.equals(rs.getString(1))) {
                     return rs.getString(2);//the provided username matched
                 }
-                /*else if(!userName.equals(rs.getString(1))){
-                 return null;//the provided username does not exist in the db
-                 }*/
             }
         } catch (SQLException x) {
             System.out.println(x);
@@ -202,7 +195,8 @@ public class DBOperations {
         }
         return null;
     }
-
+    
+    //Get the hint for the password if the password is forgot for a user
     String getHint(String userName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -216,9 +210,6 @@ public class DBOperations {
                 if (userName.equals(rs.getString(1))) {
                     return rs.getString(2);//the provided username matched
                 }
-                /*else if(!userName.equals(rs.getString(1))){
-                 return null;//the provided username does not exist in the db
-                 }*/
             }
         } catch (SQLException x) {
             System.out.println(x);
@@ -237,7 +228,8 @@ public class DBOperations {
         }
         return null;
     }
-
+    
+    //Add the newly entered path of the profile picture to the database
     boolean addProPic(String pic, String userName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -267,7 +259,8 @@ public class DBOperations {
         }
 
     }
-
+    
+    //Get the user details of a user
     EmployeeDetails getDetails(EmployeeDetails ed, String userName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -305,7 +298,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Update the name of a user in the DB
     boolean updateName(String name1, String name2, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -335,7 +329,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Get the name of a user in order to view it in the profile details screen
     String getName(String uName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -365,7 +360,8 @@ public class DBOperations {
         }
         return "";
     }
-
+    
+    //Get the NIC number from the user details in order to view it in the profile details screen
     String getNic(String uName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -396,6 +392,7 @@ public class DBOperations {
         return "";
     }
 
+    //Get the employee ID from the user details in order to view it in the profile details screen
     int getID(String uName) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -426,7 +423,7 @@ public class DBOperations {
         return -1;
     }
     
-
+    //Update the username of a user by himself in the profle details screen
     boolean updateUserName(String name, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -455,7 +452,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Update the password of a user by himself in the profle details screen
     boolean updatePswrd(String ps, String hnt, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -485,7 +483,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Check whether the old password is correct when changing the password of a user
     int checkPasswrd(String pswrd, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -521,7 +520,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Checking the correctness of the password of the manager
     boolean checkPassword(String pswd) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -552,7 +552,8 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Update the designation of a user in the users table
     boolean promoteUser(String desig, int id) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
@@ -582,50 +583,8 @@ public class DBOperations {
         }
     }
     
-    /*boolean addToUsersTable(){
-     try{
-     con = (Connection) DriverManager.getConnection(url, username, password);//get the connection
-     String query = "SELECT emp_id,first_name,last_name,NICno FROM employeedetails ";
-            
-     st = con.createStatement();
-     rs = st.executeQuery(query);
-     ResultSetMetaData rsmt = rs.getMetaData();
-            
-     int columnCount = rsmt.getColumnCount();
-     Vector column = new Vector(columnCount);
-            
-     for(int i=1;i<=columnCount;i++){
-     column.add(rsmt.getColumnName(i));
-     }
-
-     Vector data = new Vector();
-     Vector row =new Vector();
-            
-     while(rs.next()){
-     row = new Vector();
-     for(int i =1;i<=columnCount;i++){
-     row.add(rs.getString(i));
-     }
-     data.add(row);
-            
-     //JTable table = new JTable(data,column);
-     res.column=column;
-     res.data = data;
-     }return true;
-     }catch(Exception e){
-     JOptionPane.showMessageDialog(null, "Error !!");
-     return false;
-     }finally{
-     try{
-     st.close();
-     rs.close();
-     con.close();
-     }catch(Exception e){
-     JOptionPane.showMessageDialog(null, "Error in the process");
-     }
-     }
-     }*/
     //////////////////////////////////////////STOCK DETAILS////////////////////////////////////////
+    //Add a new product to the products table in the DB
     boolean addProduct(ProductDetails pd) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
@@ -660,9 +619,9 @@ public class DBOperations {
             }
         }
     }
-
+    
+    //Removing a product from the product table in the DB
     int removeProduct(int productID, String productType) {
-
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query1 = "SELECT productID FROM productdetails WHERE productID = ? AND productType = ?";
@@ -688,8 +647,9 @@ public class DBOperations {
         }
         return 2;
     }
-
-    ResultSet viewStock() { // getting values changed by me
+    
+    //Get the stock details from the products table in the DB to view them the stock table in the Home screen
+    ResultSet viewStock() { 
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "SELECT productID,productName,sellingPrice,expiryDate,Quantity FROM productdetails ORDER BY productName";
@@ -701,8 +661,9 @@ public class DBOperations {
         }
         return null;
     }
-
-    boolean setTodayStock(int id, String date, int totl, int crnt, String dte, int tot) { // getting values changed by me
+    
+    //Insert the data to the today's stock table after setting the stock for the day
+    boolean setTodayStock(int id, String date, int totl, int crnt, String dte, int tot) {
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "INSERT INTO today_stock VALUES(?,?,?,?,?,?)";
@@ -733,16 +694,18 @@ public class DBOperations {
             }
         }
     }
-
-    boolean deleteTodayStock() { // getting values changed by me
+    
+    //Delete previous day's stock details when setting the new stock for the new day
+    boolean deleteTodayStock() { 
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "SELECT expiryDate,productID,currentQuantity FROM today_stock";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             while (rs.next()) {
+                //Checking the products which won't expire in one day in order to not to remove them from the table
                 if (!(rs.getString(1)==null) && rs.getInt(3) != 0) {
-                    //System.out.println(rs.getString(1));
+                    
                 } else {
                     String query1 = "DELETE FROM today_stock WHERE productID = ?";
                     pst = (PreparedStatement) con.prepareStatement(query1);
@@ -767,8 +730,9 @@ public class DBOperations {
             }
         }
     }
-
-    ResultSet getTodayStockQty(int id) { // getting values changed by me
+    
+    
+    ResultSet getTodayStockQty(int id) { 
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
             String query = "SELECT currentQuantity,totalreceivedQuantity,expiryDate,firstReceivedQty FROM today_stock WHERE productID = ?";
@@ -1305,7 +1269,7 @@ public class DBOperations {
 ResultSet getIAndExpences() { // getting values changed by me
         try {
             con = (Connection) DriverManager.getConnection(url, username, password);
-            String query = "SELECT Description,Credit,	Debit FROM income_expenditure ";
+            String query = "SELECT Description, Credit,	Debit FROM income_expenditure ";
             pst = (PreparedStatement) con.prepareStatement(query);
             rs = pst.executeQuery();
             return rs;
@@ -1672,7 +1636,6 @@ ResultSet expireDates() { // getting values changed by me
             pst.executeUpdate();
             return true;
         } catch (SQLException ex) {
-            System.out.println(ex);
             return false;
         }
     }

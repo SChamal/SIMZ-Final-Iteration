@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import static simz1.LoginFrame1.mhp;
 
 /**
  *
@@ -35,7 +36,11 @@ public class MyTableModel extends DefaultTableModel {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-      return column == 0 || column == 4 || column ==6;
+        if(row > mhp.trig && row < mhp.trig2){
+            return column == 6;
+        }else{
+           return column == 0 || column == 4 || column == 6; 
+        }     
     }
 
     @Override

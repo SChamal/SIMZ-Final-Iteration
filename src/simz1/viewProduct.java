@@ -257,7 +257,15 @@ public class viewProduct extends javax.swing.JFrame {
         if(a ==JOptionPane.YES_OPTION){
             int ID = Integer.parseInt(txtID.getText());
             String type = txtType.getText();
-
+            
+            for(int i = 0; i < mhp.tableProduct.getRowCount(); i++){
+                int id = Integer.parseInt(mhp.tableProduct.getValueAt(i, 1).toString());
+                if(id == ID){
+                    JOptionPane.showMessageDialog(this, "The product cannot be deleted!\nIt is already in the todays stock.", "Warning!!!", 0);
+                    return;
+                }
+            }
+            
             int result = dbOps.removeProduct(ID,type);
 
             if(result==1){

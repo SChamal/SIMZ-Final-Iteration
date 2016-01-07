@@ -333,7 +333,7 @@ public class AddOrderToStock extends javax.swing.JFrame {
             mhp.btnProcessOrder.setVisible(false);    //Can't process more orders
             mhp.btnRefill.setVisible(false);          //Can't re-fill quantities
         }
-        JOptionPane.showMessageDialog(this, "Newly arrived added successfully!!!");        
+        JOptionPane.showMessageDialog(this, "Newly arrived order added successfully!!!");        
         this.setVisible(false);
     }//GEN-LAST:event_btnTakeOrderActionPerformed
 
