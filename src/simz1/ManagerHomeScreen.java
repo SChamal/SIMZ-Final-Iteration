@@ -3135,6 +3135,10 @@ public class ManagerHomeScreen extends javax.swing.JFrame {
         sbc.SweetsGraph();
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void txtCashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCashActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCashActionPerformed
+
     /**
      * @return the name1
      */
