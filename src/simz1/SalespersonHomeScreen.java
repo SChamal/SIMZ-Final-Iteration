@@ -804,7 +804,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                         return;
                     }
                     if (paymenti < amounti) {
-                        JOptionPane.showMessageDialog(this, "Please enter an amonut larger than total");
+                        JOptionPane.showMessageDialog(this, "Please enter an amount larger than total");
                         txtCash.setText("");
                         return;
                     }
@@ -976,10 +976,10 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     private void amountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_amountKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int quantity = 0;
-            if (amount.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please enter the quantity");
-            } else if (ItemSelecter.getSelectedIndex() == -1) {
-                JOptionPane.showMessageDialog(this, "First you should select an item");
+            if (ItemSelecter.getSelectedIndex() == -1) {
+                JOptionPane.showMessageDialog(this, "First you should select an item, only in the todays stock");
+            } else if (amount.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please enter the quantity");              
             } else {
                 int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
@@ -1084,11 +1084,11 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
     //Button action of adding a product and quantity to the transaction table
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         int quantity = 0;
-        if (amount.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please enter the quantity");
-        } else if (ItemSelecter.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "First you should select an item");
-        } else {
+        if (ItemSelecter.getSelectedIndex() == -1) {
+                JOptionPane.showMessageDialog(this, "First you should select an item, only in the todays stock");
+            } else if (amount.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please enter the quantity");              
+            } else {
             int crntQty = dbOps.getPrdctQty(String.valueOf(ItemSelecter.getSelectedItem()));
 
             try {
@@ -1205,7 +1205,7 @@ public class SalespersonHomeScreen extends javax.swing.JFrame {
                     return;
                 }
                 if (paymenti < amounti) {
-                    JOptionPane.showMessageDialog(this, "Please enter an amonut larger than total");
+                    JOptionPane.showMessageDialog(this, "Please enter an amount larger than total");
                     txtCash.setText("");
                     return;
                 }

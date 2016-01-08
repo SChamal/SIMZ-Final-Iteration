@@ -39,7 +39,6 @@ class AutoSuggest {
                 do {
                     Search.addItem(rst.getString(1));
                     v.addElement(rst.getString(1));
-                    //System.out.println(rst.getString(1));
                     Search.addItemListener(new ItemListener() {
                         @Override
                         public void itemStateChanged(ItemEvent ie) {
@@ -54,9 +53,9 @@ class AutoSuggest {
                 Search.addItem("");
             }
         } catch (SQLException e) {
+            
         }
 
-        //jComboBoxSearch.setEditable(true);
         tx = (JTextField) Search.getEditor().getEditorComponent();
         tx.addKeyListener(new KeyAdapter() {
             @Override
@@ -95,7 +94,11 @@ class AutoSuggest {
                 } else if (code == KeyEvent.VK_ENTER) {
                     for (int i = 0; i < v.size(); i++) {
                         String str = (String) v.elementAt(i);
-                        if (str.toLowerCase().startsWith(txt)) {
+                        if(txt.equals("")){
+                            mhp.amount.requestFocusInWindow();
+                            spi.amount.requestFocusInWindow();
+                            return;
+                        }else if (str.toLowerCase().startsWith(txt)) {
                             tx.setText(str);
                             mhp.amount.requestFocusInWindow();
                             spi.amount.requestFocusInWindow();

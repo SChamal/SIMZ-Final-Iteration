@@ -281,8 +281,7 @@ public class NewUserFrame extends javax.swing.JFrame {
         if(txtNIC.getText().length() != 10){
             JOptionPane.showMessageDialog(this, "Please enter a valid NIC!!!");
             txtNIC.setText("");
-            return;
-            
+            return;           
         }
         if(txtPassword.getText().length()<6){
             JOptionPane.showMessageDialog(this, "Password length should be larger than six!!! ");
@@ -294,6 +293,13 @@ public class NewUserFrame extends javax.swing.JFrame {
         try{
             Integer.parseInt(nic);
         }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Please enter a valid NIC!!!");
+            txtNIC.setText("");
+            return;
+        }
+        
+        char lastChar = txtNIC.getText().charAt(9);
+        if(Character.toLowerCase(lastChar) != 'v'){
             JOptionPane.showMessageDialog(this, "Please enter a valid NIC!!!");
             txtNIC.setText("");
             return;

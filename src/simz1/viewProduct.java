@@ -87,7 +87,7 @@ public class viewProduct extends javax.swing.JFrame {
 
         jLabel7.setText("Product Type                     :");
 
-        jLabel8.setText("Recieving Price                  :");
+        jLabel8.setText("Receiving Price                  :");
 
         jLabel9.setText("Product Name                    :");
 
@@ -287,19 +287,41 @@ public class viewProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_btncancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        double rPrice= Double.parseDouble(txtReceivingPrice.getText());
-        double sPrice= Double.parseDouble(txtSellingPrice.getText());
-        int Qlimit = Integer.parseInt(txtQty.getText());
+        double rPrice;
+        double sPrice;
+        try{
+            rPrice = Double.parseDouble(txtReceivingPrice.getText());
+            sPrice = Double.parseDouble(txtSellingPrice.getText());
+            if(rPrice <= 0 || sPrice <= 0){
+                JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in price fields");
+                return;
+            }
+        }catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(this, "Please enter only numbers to price fields");
+            return;
+        }
+        int Qlimit;
+        try{
+           Qlimit = Integer.parseInt(txtQty.getText()); 
+           if(Qlimit <= 0){
+               JOptionPane.showMessageDialog(this, "Please enter numbers greater than 0 in the Qlimit field");
+               return;
+           }
+        }catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(this, "Please enter only numbers to Qlimit field");
+            return;
+        }
+        
         int id = Integer.parseInt(txtID.getText());
         boolean result= dbOps.updateProductPrice(rPrice, sPrice,Qlimit, id);
         if(result==true){
-            JOptionPane.showMessageDialog(this, "Prices updated successfully !");
+            JOptionPane.showMessageDialog(this, "Changes updated successfully !");
             txtReceivingPrice.setEditable(false);
             txtSellingPrice.setEditable(false);
             txtQty.setEditable(false);
             btnSave.setVisible(false);
         }else{
-            JOptionPane.showMessageDialog(this, "Error occured ! Check the inserted values again !");
+            JOptionPane.showMessageDialog(this, "Error occured!\nCheck the inserted values again!");
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

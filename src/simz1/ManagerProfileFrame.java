@@ -375,34 +375,6 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                 }
             }
 
-            /*if (e2 == true) {
-             if(txtUserName.getText().isEmpty()){
-             JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
-             return;
-             }
-             String un = txtUserName.getText();
-             int rsUname = dbOp.checkUserName(un);
-             if (rsUname == 1) { //given user name is not in the db
-             rsUn = dbOp.updateUserName(un, id);
-             if (rsUn) { //new user name successfully updated 
-             txtUserName.setEditable(false);
-             this.name.setText(un);
-             e2 = false;
-             } else {
-             a1 = 0; //new user name didn't inserted to the db
-             JOptionPane.showMessageDialog(this, "User name hasn't saved! Please enter again...");
-             txtUserName.setText("");
-             }
-             } else if (rsUname == 0) { //given user name already exists in the db
-             a2 = 0;
-             JOptionPane.showMessageDialog(this, "User name already exists.. Enter another...");
-             txtUserName.setText("");
-             } else if (rsUname == 2) { //error occured while executing
-             a2 = 0;
-             JOptionPane.showMessageDialog(this, "Error occured while executing use name!!! Please enter again...");
-             txtUserName.setText("");
-             }
-             }*/
             if (e3 == true) {
                 if (txtCrntP.getText().isEmpty() || txtNewP.getText().isEmpty() || txtCnfrmP.getText().isEmpty() || txtHint.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "No text field should be empty!!!");
@@ -412,6 +384,12 @@ public class ManagerProfileFrame extends javax.swing.JFrame {
                 int prslt = dbOp.checkPasswrd(ps, id);
 
                 if (prslt == 1) { //password matched with the given user
+                    if(txtNewP.getText().length()<6){
+                        JOptionPane.showMessageDialog(this, "Password length should be larger than six!!! ");
+                        txtNewP.setText("");
+                        txtCnfrmP.setText("");
+                        return;
+                    }
                     String np = PswrdEncrypt.main2(txtNewP.getText());
                     String cp = PswrdEncrypt.main2(txtCnfrmP.getText());
                     String hnt = txtHint.getText();
