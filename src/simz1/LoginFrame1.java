@@ -166,7 +166,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
         if (x == 11) {
             this.setVisible(false);
             spi.setVisible(true);
-            spi.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            //spi.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             spi.name3.setText(s1);
             spi.SalesPStock.getColumnModel().getColumn(5).setMinWidth(0);
             spi.SalesPStock.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -182,7 +182,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
         } else if (x == 1) {
             this.setVisible(false);
             mhp.setVisible(true);
-            mhp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            //mhp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             StackedBarChart sbc = new StackedBarChart("Sales of last week");
             mhp.name1.setText(s1);
             mhp.tableProduct.getColumnModel().getColumn(7).setMinWidth(0);
@@ -255,7 +255,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
             if (x == 11) {
                 this.setVisible(false);
                 spi.setVisible(true);
-                spi.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                //spi.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 spi.name3.setText(s1);
                 spi.SalesPStock.getColumnModel().getColumn(5).setMinWidth(0);
                 spi.SalesPStock.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -271,7 +271,7 @@ public class LoginFrame1 extends javax.swing.JFrame {
             } else if (x == 1) {
                 this.setVisible(false);
                 mhp.setVisible(true);
-                mhp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                //mhp.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 StackedBarChart sbc = new StackedBarChart("Sales of last week");
                 mhp.name1.setText(s1);
                 mhp.tableProduct.getColumnModel().getColumn(7).setMinWidth(0);
